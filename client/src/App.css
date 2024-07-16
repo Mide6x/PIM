@@ -23,3 +23,12 @@ body {
 .btn {
   width: 100%;
 }
+.auth-img {
+  width: 100%;
+  height: 80%;
+  margin-top: 10%;
+  border-radius: 8px;
+}
+.alert {
+  margin-bottom: 1.5rem;
+}

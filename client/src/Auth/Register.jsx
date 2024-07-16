@@ -1,5 +1,7 @@
-import { Button, Card, Flex, Form, Input, Typography } from "antd";
+import { Alert, Button, Card, Flex, Form, Input, Spin, Typography } from "antd";
 import { Link } from "react-router-dom";
+
+import registerImage from "../assets/login.png";
 
 const Register = () => {
   const handleRegister = (values) => {
@@ -8,7 +10,7 @@ const Register = () => {
 
   return (
     <Card className="form-container">
-      <Flex>
+      <Flex gap="large" align="centers">
         {/*This for the Registration Form*/}
         <Flex vertical flex={1}>
           <Typography.Title level={3} strong className="title">
@@ -53,7 +55,7 @@ const Register = () => {
               rules={[
                 {
                   required: true,
-                  message: "Your Password is Important.",
+                  message: "We kinda need a Password to continue 🫢",
                 },
               ]}
             >
@@ -75,15 +77,26 @@ const Register = () => {
               <Input.Password
                 size="large"
                 placeholder="type your password again."
-              ></Input.Password>
+              />
             </Form.Item>
+
+            {/*error && (
+              <Alert
+                description={error}
+                type="error"
+                showIcon
+                closable
+                className="alert"
+              />
+            )*/}
             <Form.Item>
               <Button
-                type="primary"
+                //type={`${loading ? '' : 'primary'}`}
                 htmlType="submit"
                 size="large"
                 className="btn"
               >
+                {/*{loading ? <Spin/>: 'Create Account'}*/}
                 Create Account
               </Button>
             </Form.Item>
@@ -98,7 +111,9 @@ const Register = () => {
         </Flex>
 
         {/*This for the Picture*/}
-        <Flex></Flex>
+        <Flex flex={1}>
+          <img src={registerImage} className="auth-img" />
+        </Flex>
       </Flex>
     </Card>
   );
