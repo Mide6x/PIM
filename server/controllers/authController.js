@@ -47,7 +47,10 @@ exports.login = async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) return next(new createError("User not found, sigh. 😔", 404));
+    if (!user)
+      return next(
+        new createError("We can't seem to find your account, sorry 😔", 404)
+      );
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 

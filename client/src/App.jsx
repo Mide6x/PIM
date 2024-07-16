@@ -11,7 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import useAuth from "./contexts/useAuth";
 
 const App = () => {
-  const { isAuthenticated } = useAuth(); // Corrected usage of useAuth
+  const { isAuthenticated } = useAuth();
 
   return (
     <Router>
