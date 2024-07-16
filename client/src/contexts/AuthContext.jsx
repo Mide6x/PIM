@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 const AuthContext = createContext();
@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
       "user_data",
       JSON.stringify({ userToken: newToken, user: newData })
     );
-
     setToken(newToken);
     setUserData(newData);
     setIsAuthenticated(true);
@@ -49,4 +48,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const useAuth = () => useContext(AuthContext);
+export default AuthContext;

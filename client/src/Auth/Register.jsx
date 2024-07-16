@@ -2,16 +2,19 @@ import { Alert, Button, Card, Flex, Form, Input, Spin, Typography } from "antd";
 import { Link } from "react-router-dom";
 
 import registerImage from "../assets/login.png";
+import useSignUp from "../hooks/useSignUp";
 
 const Register = () => {
+  const { loading, error, registerUser } = useSignUp();
+
   const handleRegister = (values) => {
-    console.log(values);
+    registerUser(values);
   };
 
   return (
     <Card className="form-container">
-      <Flex gap="large" align="centers">
-        {/*This for the Registration Form*/}
+      <Flex gap="large" align="center">
+        {/* This for the Registration Form */}
         <Flex vertical flex={1}>
           <Typography.Title level={3} strong className="title">
             Welcome Pookie, let&apos;s create an account for you! 🎉
@@ -30,7 +33,7 @@ const Register = () => {
                 },
               ]}
             >
-              <Input size="large" placeholder="Enter your full name"></Input>
+              <Input size="large" placeholder="Enter your full name" />
             </Form.Item>
             <Form.Item
               label="Sabi E-mail Address"
@@ -47,7 +50,7 @@ const Register = () => {
                 },
               ]}
             >
-              <Input size="large" placeholder="...and your E-mail"></Input>
+              <Input size="large" placeholder="...and your E-mail" />
             </Form.Item>
             <Form.Item
               label="Password"
@@ -62,10 +65,10 @@ const Register = () => {
               <Input.Password
                 size="large"
                 placeholder="Give us a Strong Password? 🥷🏿"
-              ></Input.Password>
+              />
             </Form.Item>
             <Form.Item
-              label="Password"
+              label="Password Confirm"
               name="passwordConfirm"
               rules={[
                 {
@@ -76,11 +79,11 @@ const Register = () => {
             >
               <Input.Password
                 size="large"
-                placeholder="type your password again."
+                placeholder="Type your password again."
               />
             </Form.Item>
 
-            {/*error && (
+            {error && (
               <Alert
                 description={error}
                 type="error"
@@ -88,16 +91,15 @@ const Register = () => {
                 closable
                 className="alert"
               />
-            )*/}
+            )}
             <Form.Item>
               <Button
-                //type={`${loading ? '' : 'primary'}`}
+                type={loading ? "" : "primary"}
                 htmlType="submit"
                 size="large"
                 className="btn"
               >
-                {/*{loading ? <Spin/>: 'Create Account'}*/}
-                Create Account
+                {loading ? <Spin /> : "Create Account"}
               </Button>
             </Form.Item>
             <Form.Item>
@@ -110,9 +112,9 @@ const Register = () => {
           </Form>
         </Flex>
 
-        {/*This for the Picture*/}
+        {/* This for the Picture */}
         <Flex flex={1}>
-          <img src={registerImage} className="auth-img" />
+          <img src={registerImage} className="auth-img" alt="Register" />
         </Flex>
       </Flex>
     </Card>
