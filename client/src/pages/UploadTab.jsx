@@ -1,7 +1,7 @@
 import { Card, Flex } from "antd";
 import Sidebar from "./sidebar/Sidebar";
 
-const Dashboard = () => {
+const UploadTab = () => {
   return (
     <Card className="container">
       <Flex gap="large" align="centers">
@@ -10,7 +10,7 @@ const Dashboard = () => {
         </Flex>
 
         <Flex vertical flex={1}>
-          <h2>Content of the Dashboard goes here...</h2>
+          <h2>Upload excel sheet Here</h2>
           <p>Additional content...</p>
         </Flex>
       </Flex>
@@ -18,4 +18,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default UploadTab;

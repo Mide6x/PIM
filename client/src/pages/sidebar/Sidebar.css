@@ -1,0 +1,15 @@
+/* Sidebar.css */
+.ant-menu-item-selected {
+  background-color: #1890ff !important;
+  color: #fff !important;
+}
+
+.ant-menu-item-selected a {
+  color: #fff !important;
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}

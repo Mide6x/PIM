@@ -9,6 +9,7 @@ import Register from "./Auth/Register";
 import Login from "./Auth/Login";
 import Dashboard from "./pages/Dashboard";
 import useAuth from "./contexts/useAuth";
+import UploadTab from "./pages/UploadTab";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -27,8 +28,12 @@ const App = () => {
           element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
         />
         <Route
-          path="/dashboard"
+          path="/dashboard/*"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/uploadtab/*"
+          element={isAuthenticated ? <UploadTab /> : <Navigate to="/" />}
         />
       </Routes>
     </Router>
