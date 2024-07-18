@@ -6,6 +6,7 @@ import {
   ContainerOutlined,
   DesktopOutlined,
   PieChartOutlined,
+  MacCommandOutlined,
 } from "@ant-design/icons";
 import useAuth from "../../contexts/useAuth";
 import "./Sidebar.css";
@@ -37,6 +38,8 @@ const items = [
       {
         key: "4",
         label: "Manage Manufacturers",
+        icon: <MacCommandOutlined />,
+        to: "/mngmanufacturers",
       },
       {
         key: "5",

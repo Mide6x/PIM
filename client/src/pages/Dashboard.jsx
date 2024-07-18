@@ -38,7 +38,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/products/${id}`);
-      message.success("Product deleted successfully");
+      message.success("Product deleted successfully 🎉");
       fetchProducts();
     } catch (error) {
       message.error("Failed to delete product");
@@ -57,10 +57,10 @@ const Dashboard = () => {
           `http://localhost:3000/api/products/${editingProduct._id}`,
           values
         );
-        message.success("Product updated successfully");
+        message.success("Product updated successfully 🎉");
       } else {
         await axios.post("http://localhost:3000/api/products", values);
-        message.success("Product created successfully");
+        message.success("Product created successfully 🎉");
       }
       fetchProducts();
       setIsModalVisible(false);
@@ -159,7 +159,7 @@ const Dashboard = () => {
       </div>
       <Modal
         title={editingProduct ? "Edit Product" : "Create Product"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
