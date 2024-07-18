@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Input, message, Space } from "antd";
+import {
+  Button,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Select,
+  message,
+  Space,
+} from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
+
+const { Option } = Select;
 
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
@@ -175,10 +186,26 @@ const Dashboard = () => {
 
 const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
+  const [manufacturers, setManufacturers] = useState([]);
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
   }, [initialValues, form]);
+
+  useEffect(() => {
+    const fetchManufacturers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/manufacturer"
+        );
+        setManufacturers(response.data);
+      } catch (error) {
+        message.error("Failed to fetch manufacturers");
+      }
+    };
+
+    fetchManufacturers();
+  }, []);
 
   const onFinish = (values) => {
     onOk(values);
@@ -193,7 +220,13 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           { required: true, message: "Please enter the manufacturer name" },
         ]}
       >
-        <Input />
+        <Select>
+          {manufacturers.map((manufacturer) => (
+            <Option key={manufacturer._id} value={manufacturer.name}>
+              {manufacturer.name}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         name="brand"

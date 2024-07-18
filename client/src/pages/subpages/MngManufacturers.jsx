@@ -39,7 +39,7 @@ const MngManufacturers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/manufacturers/${id}`);
+      await axios.delete(`http://localhost:3000/api/manufacturer/${id}`);
       message.success("Manufacturer deleted successfully 🎉");
       fetchManufacturers();
     } catch (error) {
