@@ -105,14 +105,86 @@ const UploadTab = () => {
     return null;
   };
 
+  const convertVariantFormat = (variant) => {
+    variant = String(variant);
+    variant = variant.replace(/\s*[xX×]\s*/g, "x").replace("ltr", "L");
+
+    const pattern1 = /(\d+)\s*([a-zA-Z]+)\s*x\s*(\d+)/i;
+    const pattern2 = /(\d+)\s*x\s*(\d+)\s*([a-zA-Z]+)/i;
+    const pattern3 = /(\d+)x(\d+)([a-zA-Z]+)/i;
+
+    const match1 = variant.match(pattern1);
+    if (match1) {
+      const [, size, unit, count] = match1; // Use comma to ignore the first item
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    const match2 = variant.match(pattern2);
+    if (match2) {
+      const [, count, size, unit] = match2;
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    const match3 = variant.match(pattern3);
+    if (match3) {
+      const [, count, size, unit] = match3;
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    return variant;
+  };
+
+  const extractSize = (weightStr) => {
+    try {
+      const pattern = /(\d+\.?\d*)(KG|G|ML|L|CL)/i;
+      const match = weightStr.match(pattern);
+      if (match) {
+        const value = parseFloat(match[1]);
+        const unit = match[2].toUpperCase();
+        if (unit === "KG") return value * 1000;
+        if (unit === "G") return value;
+        if (unit === "ML") return value * 1;
+        if (unit === "L") return value * 1000;
+        if (unit === "CL") return value * 10;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const extractAmount = (weightStr) => {
+    try {
+      let amount_start = weightStr.indexOf("x");
+      if (amount_start === -1) amount_start = weightStr.indexOf("×");
+      if (amount_start === -1) amount_start = weightStr.indexOf("X");
+      if (amount_start === -1) return null;
+      return parseInt(weightStr.slice(amount_start + 1));
+    } catch {
+      return null;
+    }
+  };
+
   const cleanData = (df) => {
-    df = df.map((row) => ({
-      ...row,
-      "Product Category": categorizeProduct(
-        row["Product Name"],
-        row["Manufacturer Name"]
-      ),
-    }));
+    df = df.map((row) => {
+      const variant = convertVariantFormat(row["Variant"]);
+      const weight = extractSize(variant);
+      const amount = extractAmount(variant);
+      const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
+
+      return {
+        ...row,
+        "Product Category": categorizeProduct(
+          row["Product Name"],
+          row["Manufacturer Name"]
+        ),
+        Variant: variant,
+        "Variant Type": "Size",
+        Weight: weight,
+        Amount: amount,
+        "Weight (in Kg)": weightInKg ? Math.round(weightInKg) : null,
+      };
+    });
     return df;
   };
 
@@ -140,6 +212,31 @@ const UploadTab = () => {
       dataIndex: "Product Category",
       key: "product_category",
     },
+    {
+      title: "Variant",
+      dataIndex: "Variant",
+      key: "variant",
+    },
+    {
+      title: "Variant Type",
+      dataIndex: "Variant Type",
+      key: "variant_type",
+    },
+    {
+      title: "Weight",
+      dataIndex: "Weight",
+      key: "weight",
+    },
+    {
+      title: "Amount",
+      dataIndex: "Amount",
+      key: "amount",
+    },
+    {
+      title: "Weight (in Kg)",
+      dataIndex: "Weight (in Kg)",
+      key: "weight_in_kg",
+    },
   ];
 
   return (
@@ -149,7 +246,7 @@ const UploadTab = () => {
           <Sidebar />
         </div>
         <Flex vertical flex={1} className="content">
-          <div style={{ width: "800px" }}>
+          <div>
             <h2>Upload Excel Sheet Here</h2>
             <Upload
               name="file"
