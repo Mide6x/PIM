@@ -247,17 +247,19 @@ const UploadTab = () => {
         </div>
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>Upload Excel Sheet Here</h2>
+            <h2>Upload Excel Sheet Here 📂</h2>
+            <p className="spaced">
+              From here, you can upload you product sheet.
+            </p>
             <Upload
               name="file"
               accept=".xlsx, .xls"
               beforeUpload={() => false} // Prevent automatic upload
               onChange={handleUpload}
               showUploadList={false}
+              className="spaced"
             >
-              <Button className="spaced" icon={<UploadOutlined />}>
-                Click to Upload
-              </Button>
+              <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
             <span style={{ margin: "0 8px" }} />
             <Button
