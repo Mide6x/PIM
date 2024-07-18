@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Flex, Button, message, Upload, Table } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
 import axios from "axios";
-import Sidebar from "./sidebar/Sidebar";
 
 const UploadTab = () => {
   const [data, setData] = useState([]);
@@ -24,107 +24,56 @@ const UploadTab = () => {
   };
 
   const handleUpload = (info) => {
-    console.log("Upload Info:", info);
-
     const file = info.file;
     if (!file) {
       message.error("No file selected");
       return;
     }
 
+    if (
+      !file.type.includes("spreadsheetml.sheet") &&
+      !file.type.includes("excel")
+    ) {
+      message.error("Invalid file type. Please upload an Excel file.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const arrayBuffer = e.target.result;
-      console.log("ArrayBuffer:", arrayBuffer);
-
-      const binaryString = new TextDecoder("utf-8").decode(
-        new Uint8Array(arrayBuffer)
-      );
-      console.log("Binary String:", binaryString);
-
-      const wb = XLSX.read(binaryString, { type: "binary" });
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
-      const data = XLSX.utils.sheet_to_json(ws);
-      console.log("Parsed Data:", data);
-
-      setData(data);
+      try {
+        const wb = XLSX.read(arrayBuffer, { type: "array" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        setData(data);
+      } catch (error) {
+        message.error(
+          "Failed to read the file. Ensure it is a valid Excel file. 😔"
+        );
+        console.error("Error reading file:", error);
+      }
     };
     reader.readAsArrayBuffer(file);
   };
 
-  const convertVariantFormat = (variant) => {
-    variant = String(variant);
-
-    // Normalize input by replacing '×' with 'x', 'ltr' with 'L', and removing spaces around 'x'
-    variant = variant.replace(/ltr/g, "L").replace(/\s*[xX×]\s*/g, "x");
-
-    // Patterns to match various formats with dynamic units
-    const pattern1 = new RegExp("(\\d+)\\s*([a-zA-Z]+)\\s*x\\s*(\\d+)", "i");
-    const pattern2 = new RegExp("(\\d+)\\s*x\\s*(\\d+)\\s*([a-zA-Z]+)", "i");
-    const pattern3 = new RegExp("(\\d+)x(\\d+)([a-zA-Z]+)", "i");
-
-    // Try to match each pattern and convert to "sizeUNIT x number"
-    const match1 = pattern1.exec(variant);
-    if (match1) {
-      const size = match1[1];
-      const unit = match1[2];
-      const count = match1[3];
-      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
-    }
-
-    const match2 = pattern2.exec(variant);
-    if (match2) {
-      const count = match2[1];
-      const size = match2[2];
-      const unit = match2[3];
-      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
-    }
-
-    const match3 = pattern3.exec(variant);
-    if (match3) {
-      const count = match3[1];
-      const size = match3[2];
-      const unit = match3[3];
-      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
-    }
-
-    return variant;
+  const preprocessCategories = (categories) => {
+    const categoryMap = {};
+    categories.forEach((category) => {
+      categoryMap[category.name.toLowerCase()] = category.name;
+      category.subcategories.forEach((subcategory) => {
+        categoryMap[
+          subcategory.toLowerCase()
+        ] = `${category.name} > ${subcategory}`;
+      });
+    });
+    return categoryMap;
   };
 
-  const extractSize = (weightStr) => {
-    try {
-      // Use regular expression to match a number followed by "kg", "G", or "ml"
-      const match = weightStr.match(/(\d+\.?\d*)(KG|G|ML|L|CL)/i);
-      if (match) {
-        const value = parseFloat(match[1]); // Extract the numeric part
-        const unit = match[2].toUpperCase();
-        if (unit === "KG") return value * 1000; // Convert kg to grams
-        if (unit === "G") return value;
-        if (unit === "ML") return value; // Assuming density of 1 g/ml
-        if (unit === "L") return value * 1000; // Convert litre to grams
-        if (unit === "CL") return value * 10; // Convert centilitre to grams
-      }
-      return null; // Handle cases where no unit or invalid format is found
-    } catch {
-      return null; // Handle other potential errors during conversion
-    }
-  };
-
-  const extractAmount = (weightStr) => {
-    try {
-      let amountStart = weightStr.indexOf("x");
-      if (amountStart === -1) amountStart = weightStr.indexOf("×");
-      if (amountStart === -1) amountStart = weightStr.indexOf("X");
-      if (amountStart === -1) return null;
-      return parseInt(weightStr.slice(amountStart + 1));
-    } catch {
-      return null;
-    }
-  };
+  const categoryMap = preprocessCategories(categoryData);
 
   const categorizeProduct = (productName, manufacturer) => {
-    const tokens = productName.toLowerCase().split();
+    const tokens = new Set(productName.toLowerCase().split());
     const lowerCaseManufacturer = manufacturer.toLowerCase();
 
     for (const token of tokens) {
@@ -147,14 +96,9 @@ const UploadTab = () => {
       return "Liquers & Creams";
     }
 
-    for (const category of categoryData) {
-      const productTypes = category.product_types || [];
-      for (const productType of productTypes) {
-        for (const token of tokens) {
-          if (productType.toLowerCase().includes(token)) {
-            return category.name;
-          }
-        }
+    for (const token of tokens) {
+      if (categoryMap[token]) {
+        return categoryMap[token];
       }
     }
 
@@ -168,17 +112,6 @@ const UploadTab = () => {
         row["Product Name"],
         row["Manufacturer Name"]
       ),
-      Variant: convertVariantFormat(row["Variant"]),
-      "Variant Type": "Size",
-      Weight: extractSize(row["Variant"]),
-      Amount: extractAmount(row["Variant"]),
-      "Weight (g)": Math.round(
-        (extractSize(row["Variant"]) * extractAmount(row["Variant"])) / 1000 + 1
-      ),
-      "Product Name": row["Product Name"]
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" "),
     }));
     return df;
   };
@@ -188,7 +121,7 @@ const UploadTab = () => {
     let cleanedData = cleanData(data);
     setData(cleanedData);
     setLoading(false);
-    message.success("Data processing completed.");
+    message.success("Data processing completed 🎉.");
   };
 
   const columns = [
@@ -203,39 +136,9 @@ const UploadTab = () => {
       key: "manufacturer_name",
     },
     {
-      title: "Variant",
-      dataIndex: "Variant",
-      key: "variant",
-    },
-    {
-      title: "Variant Type",
-      dataIndex: "Variant Type",
-      key: "variant_type",
-    },
-    {
-      title: "Weight (g)",
-      dataIndex: "Weight (g)",
-      key: "weight",
-    },
-    {
-      title: "Amount",
-      dataIndex: "Amount",
-      key: "amount",
-    },
-    {
       title: "Product Category",
       dataIndex: "Product Category",
       key: "product_category",
-    },
-    {
-      title: "Image URL 1",
-      dataIndex: "Image URL 1",
-      key: "image_url_1",
-      render: (text) => (
-        <a href={text} target="_blank" rel="noopener noreferrer">
-          {text}
-        </a>
-      ),
     },
   ];
 
@@ -245,7 +148,6 @@ const UploadTab = () => {
         <div className="sidebar">
           <Sidebar />
         </div>
-
         <Flex vertical flex={1} className="content">
           <div style={{ width: "800px" }}>
             <h2>Upload Excel Sheet Here</h2>
@@ -256,10 +158,17 @@ const UploadTab = () => {
               onChange={handleUpload}
               showUploadList={false}
             >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              <Button className="spaced" icon={<UploadOutlined />}>
+                Click to Upload
+              </Button>
             </Upload>
-
-            <Button onClick={handleProcess} disabled={loading || !data.length}>
+            <span style={{ margin: "0 8px" }} />
+            <Button
+              type="primary"
+              className="spaced"
+              onClick={handleProcess}
+              disabled={loading || !data.length}
+            >
               Process Data
             </Button>
 
@@ -268,6 +177,7 @@ const UploadTab = () => {
                 columns={columns}
                 dataSource={data}
                 rowKey="Product Name"
+                className="spaced"
               />
             )}
           </div>

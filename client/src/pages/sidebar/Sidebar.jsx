@@ -132,10 +132,10 @@ const Sidebar = () => {
             <MenuItem key={item.key} item={item} />
           )
         )}
-        <Button onClick={handleLogout} className="logout-button">
-          Logout
-        </Button>
       </Menu>
+      <Button onClick={handleLogout} danger className="logout-button">
+        Logout
+      </Button>
     </>
   );
 };

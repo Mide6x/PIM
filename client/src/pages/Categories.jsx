@@ -41,7 +41,7 @@ const Categories = () => {
       message.success("Category deleted successfully 🎉");
       fetchCategories();
     } catch (error) {
-      message.error("Failed to delete category");
+      message.error("Failed to delete category 😔");
     }
   };
 
