@@ -1,0 +1,92 @@
+[
+  {
+    "Manufacturer Name": "Veetee Foods Ltd",
+    "Brand": "Veetee",
+    "Product Category": "Grains & Rice",
+    "Product Name": "Pilau Rice",
+    "Variant Type": "Size",
+    "Variant": "280G x 6",
+    "Weight": 3,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1719587556/file_dmgubt.png"
+  },
+  {
+    "Manufacturer Name": "Gullon Company",
+    "Brand": "Gullon",
+    "Product Category": "Biscuits, Chin Chin & Cookies",
+    "Product Name": "Finas Zoro Sugar",
+    "Variant Type": "Size",
+    "Variant": "150G × 12",
+    "Weight": 3,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1719587558/file_qvyvhu.png"
+  },
+  {
+    "Manufacturer Name": "Gullon Company",
+    "Brand": "Gullon",
+    "Product Category": "Biscuits, Chin Chin & Cookies",
+    "Product Name": "Choc Chip Cookies Sugar free zero",
+    "Variant Type": "Size",
+    "Variant": "75G × 16",
+    "Weight": 2,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1719587559/file_ndonle.png"
+  },
+  {
+    "Manufacturer Name": "Veetee Foods Ltd",
+    "Brand": "Veetee",
+    "Product Category": "Grains & Rice",
+    "Product Name": "Basmati Rice",
+    "Variant Type": "Size",
+    "Variant": "280G x 6",
+    "Weight": 3,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1719587561/file_r4nhnb.png"
+  },
+  {
+    "Manufacturer Name": "Veetee Foods Ltd",
+    "Brand": "Veetee",
+    "Product Category": "Grains & Rice",
+    "Product Name": "Thai Jasmine Rice",
+    "Variant Type": "Size",
+    "Variant": "300G x 6",
+    "Weight": 3,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1719587564/file_tfk8rm.png"
+  },
+  {
+    "Manufacturer Name": "Deli Italia",
+    "Brand": "Deli Italia",
+    "Product Category": "Snacks & Confectioneries",
+    "Product Name": "Ricotta & Spinach Tortelloni",
+    "Variant Type": "Size",
+    "Variant": "250g x 6",
+    "Weight": 3,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1717542986/production/bow29vfbv5qhgiophqar.jpg"
+  },
+  {
+    "Manufacturer Name": "Taste of Sicily",
+    "Brand": "Diforti",
+    "Product Category": "Snacks & Confectioneries",
+    "Product Name": "Sicilian Cannoli Salted Caramel",
+    "Variant Type": "Size",
+    "Variant": "150g x 6",
+    "Weight": 3,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1717515085/production/xrbnautfrgfqtwnrlupb.jpg"
+  },
+  {
+    "Manufacturer Name": "Taste of Sicily",
+    "Brand": "Diforti",
+    "Product Category": "Snacks & Confectioneries",
+    "Product Name": "Pappardelle",
+    "Variant Type": "Size",
+    "Variant": "250g x 12",
+    "Weight": 4,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1717515807/production/jv9wonqh4yy9djmf03zs.jpg"
+  },
+  {
+    "Manufacturer Name": "The Oetker Group",
+    "Brand": "Dr Oetker",
+    "Product Category": "Baking Ingredients",
+    "Product Name": "Bicarbonate of Soda -Sachet",
+    "Variant Type": "Size",
+    "Variant": "7g x 14",
+    "Weight": 1,
+    "Image URL 1": "https://res.cloudinary.com/rensourceenergy/image/upload/v1717515999/production/gkx9lmbnat2mxe9fyk6d.jpg"
+  }
+]

@@ -92,7 +92,9 @@ const Categories = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleDelete(record._id)}>Delete</Button>
+          <Button danger onClick={() => handleDelete(record._id)}>
+            Delete
+          </Button>
         </Space>
       ),
     },
@@ -156,14 +158,18 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="name"
         label="Category Name"
-        rules={[{ required: true, message: "Please enter the category name" }]}
+        rules={[
+          { required: true, message: "Please enter the category name 😤" },
+        ]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="subcategories"
         label="Subcategories"
-        rules={[{ required: true, message: "Please enter the subcategories" }]}
+        rules={[
+          { required: true, message: "Please enter the subcategories 🫣" },
+        ]}
       >
         <Input />
       </Form.Item>
@@ -171,7 +177,10 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
         <Button type="primary" htmlType="submit">
           Submit
         </Button>
-        <Button onClick={onCancel}>Cancel</Button>
+        <span style={{ margin: "0 8px" }} />
+        <Button type="default" danger onClick={onCancel}>
+          Cancel
+        </Button>
       </Form.Item>
     </Form>
   );
