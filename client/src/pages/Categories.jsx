@@ -110,9 +110,11 @@ const Categories = () => {
         <Flex vertical flex={1} className="content">
           {categories.length > 0 && (
             <div>
-              <h2>Categories</h2>
-
-              <Button type="primary" onClick={handleCreate}>
+              <h2>Categories 🛍️</h2>
+              <p className="spaced">
+                From here, you can manually create and edit categories.
+              </p>
+              <Button className="spaced" type="primary" onClick={handleCreate}>
                 Add New Category
               </Button>
               <Table

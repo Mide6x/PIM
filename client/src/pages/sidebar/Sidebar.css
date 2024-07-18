@@ -1,3 +1,7 @@
 .logout-button {
   position: bottom;
+  margin-bottom: 20px;
+}
+.spaced {
+  margin-bottom: 20px;
 }

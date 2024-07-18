@@ -120,6 +120,7 @@ const Sidebar = () => {
         mode="inline"
         theme="light"
         selectedKeys={[location.pathname]}
+        className="spaced"
       >
         {items.map((item) =>
           item.children ? (

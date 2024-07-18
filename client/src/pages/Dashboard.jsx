@@ -139,8 +139,12 @@ const Dashboard = () => {
       <div className="content">
         {products.length > 0 && (
           <div>
-            <h2>Products Dashboard</h2>
-            <Button type="primary" onClick={handleCreate}>
+            <h2>Products Dashboard 📦</h2>
+            <p className="spaced">
+              From here, you can manually create and edit products.
+            </p>
+
+            <Button type="primary" className="spaced" onClick={handleCreate}>
               Add New Product
             </Button>
             <Table

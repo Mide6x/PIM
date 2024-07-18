@@ -24,20 +24,102 @@ const UploadTab = () => {
   };
 
   const handleUpload = (info) => {
-    const { status, originFileObj } = info.file;
-    if (status === "done" || status === "uploading") {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const bstr = e.target.result;
-        const wb = XLSX.read(bstr, { type: "binary" });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws);
-        setData(data);
-      };
-      reader.readAsBinaryString(originFileObj);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
+    console.log("Upload Info:", info);
+
+    const file = info.file;
+    if (!file) {
+      message.error("No file selected");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const arrayBuffer = e.target.result;
+      console.log("ArrayBuffer:", arrayBuffer);
+
+      const binaryString = new TextDecoder("utf-8").decode(
+        new Uint8Array(arrayBuffer)
+      );
+      console.log("Binary String:", binaryString);
+
+      const wb = XLSX.read(binaryString, { type: "binary" });
+      const wsname = wb.SheetNames[0];
+      const ws = wb.Sheets[wsname];
+      const data = XLSX.utils.sheet_to_json(ws);
+      console.log("Parsed Data:", data);
+
+      setData(data);
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const convertVariantFormat = (variant) => {
+    variant = String(variant);
+
+    // Normalize input by replacing '×' with 'x', 'ltr' with 'L', and removing spaces around 'x'
+    variant = variant.replace(/ltr/g, "L").replace(/\s*[xX×]\s*/g, "x");
+
+    // Patterns to match various formats with dynamic units
+    const pattern1 = new RegExp("(\\d+)\\s*([a-zA-Z]+)\\s*x\\s*(\\d+)", "i");
+    const pattern2 = new RegExp("(\\d+)\\s*x\\s*(\\d+)\\s*([a-zA-Z]+)", "i");
+    const pattern3 = new RegExp("(\\d+)x(\\d+)([a-zA-Z]+)", "i");
+
+    // Try to match each pattern and convert to "sizeUNIT x number"
+    const match1 = pattern1.exec(variant);
+    if (match1) {
+      const size = match1[1];
+      const unit = match1[2];
+      const count = match1[3];
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    const match2 = pattern2.exec(variant);
+    if (match2) {
+      const count = match2[1];
+      const size = match2[2];
+      const unit = match2[3];
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    const match3 = pattern3.exec(variant);
+    if (match3) {
+      const count = match3[1];
+      const size = match3[2];
+      const unit = match3[3];
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    return variant;
+  };
+
+  const extractSize = (weightStr) => {
+    try {
+      // Use regular expression to match a number followed by "kg", "G", or "ml"
+      const match = weightStr.match(/(\d+\.?\d*)(KG|G|ML|L|CL)/i);
+      if (match) {
+        const value = parseFloat(match[1]); // Extract the numeric part
+        const unit = match[2].toUpperCase();
+        if (unit === "KG") return value * 1000; // Convert kg to grams
+        if (unit === "G") return value;
+        if (unit === "ML") return value; // Assuming density of 1 g/ml
+        if (unit === "L") return value * 1000; // Convert litre to grams
+        if (unit === "CL") return value * 10; // Convert centilitre to grams
+      }
+      return null; // Handle cases where no unit or invalid format is found
+    } catch {
+      return null; // Handle other potential errors during conversion
+    }
+  };
+
+  const extractAmount = (weightStr) => {
+    try {
+      let amountStart = weightStr.indexOf("x");
+      if (amountStart === -1) amountStart = weightStr.indexOf("×");
+      if (amountStart === -1) amountStart = weightStr.indexOf("X");
+      if (amountStart === -1) return null;
+      return parseInt(weightStr.slice(amountStart + 1));
+    } catch {
+      return null;
     }
   };
 
@@ -79,38 +161,31 @@ const UploadTab = () => {
     return null;
   };
 
-  const processImages = async (df) => {
-    for (let row of df) {
-      const imageUrl = row["Image URL 1"];
-      const Amount = extractAmount(row["Variant"]);
-      try {
-        // Simulate downloading and uploading image
-        const transformedImageUrl = await uploadAndTransformImage(
-          imageUrl,
-          Amount
-        );
-        row["Image URL 1"] = transformedImageUrl;
-      } catch (error) {
-        console.error("Image processing error: ", error);
-      }
-    }
-    return df;
-  };
-
-  const handleProcess = async () => {
-    setLoading(true);
-    let cleanedData = cleanData(data);
-    cleanedData = await processImages(cleanedData);
-
-    // Categorize each product
-    cleanedData = cleanedData.map((row) => ({
+  const cleanData = (df) => {
+    df = df.map((row) => ({
       ...row,
       "Product Category": categorizeProduct(
         row["Product Name"],
         row["Manufacturer Name"]
       ),
+      Variant: convertVariantFormat(row["Variant"]),
+      "Variant Type": "Size",
+      Weight: extractSize(row["Variant"]),
+      Amount: extractAmount(row["Variant"]),
+      "Weight (g)": Math.round(
+        (extractSize(row["Variant"]) * extractAmount(row["Variant"])) / 1000 + 1
+      ),
+      "Product Name": row["Product Name"]
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" "),
     }));
+    return df;
+  };
 
+  const handleProcess = () => {
+    setLoading(true);
+    let cleanedData = cleanData(data);
     setData(cleanedData);
     setLoading(false);
     message.success("Data processing completed.");
@@ -139,7 +214,7 @@ const UploadTab = () => {
     },
     {
       title: "Weight (g)",
-      dataIndex: "Weight",
+      dataIndex: "Weight (g)",
       key: "weight",
     },
     {
@@ -183,32 +258,23 @@ const UploadTab = () => {
             >
               <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
+
             <Button onClick={handleProcess} disabled={loading || !data.length}>
               Process Data
             </Button>
+
             {data.length > 0 && (
-              <Table columns={columns} dataSource={data} rowKey="id" />
+              <Table
+                columns={columns}
+                dataSource={data}
+                rowKey="Product Name"
+              />
             )}
           </div>
         </Flex>
       </Flex>
     </Flex>
   );
-};
-
-const cleanData = (data) => {
-  // Implement your data cleaning logic here
-  return data;
-};
-
-const uploadAndTransformImage = async (imageUrl, amount) => {
-  // Implement your image upload and transformation logic using Cloudinary
-  return imageUrl; // Replace with actual transformed image URL
-};
-
-const extractAmount = (variant) => {
-  // Implement your logic to extract amount from variant
-  return variant; // Replace with actual amount extracted from variant
 };
 
 export default UploadTab;
