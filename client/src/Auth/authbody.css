@@ -1,0 +1,28 @@
+.authbody {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-left: 500px;
+}
+
+/* Styling the form */
+.form-container {
+  width: 1000px;
+}
+
+.title,
+.slogan {
+  text-align: center;
+}
+
+.btn {
+  width: 100%;
+}
+
+.auth-img {
+  width: 100%;
+  height: 80%;
+  margin-top: 10%;
+  border-radius: 8px;
+}

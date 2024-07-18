@@ -1,20 +1,22 @@
-import { Card, Flex } from "antd";
+import { Flex } from "antd";
 import Sidebar from "./sidebar/Sidebar";
 
 const Dashboard = () => {
   return (
-    <Card className="container">
-      <Flex gap="large" align="centers">
-        <Flex flex={1}>
+    <Flex className="container">
+      <Flex gap="medium" align="centers">
+        <div className="sidebar">
           <Sidebar />
-        </Flex>
+        </div>
 
-        <Flex vertical flex={1}>
-          <h2>Content of the Dashboard goes here...</h2>
-          <p>Additional content...</p>
+        <Flex vertical flex={1} className="content">
+          <div>
+            <h2>Content of the Dashboard goes here...</h2>
+            <p>Additional content...</p>
+          </div>
         </Flex>
       </Flex>
-    </Card>
+    </Flex>
   );
 };
 

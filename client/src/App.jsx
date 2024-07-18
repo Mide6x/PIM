@@ -10,6 +10,7 @@ import Login from "./Auth/Login";
 import Dashboard from "./pages/Dashboard";
 import useAuth from "./contexts/useAuth";
 import UploadTab from "./pages/UploadTab";
+import Categories from "./pages/Categories";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -34,6 +35,10 @@ const App = () => {
         <Route
           path="/uploadtab/*"
           element={isAuthenticated ? <UploadTab /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/categories/*"
+          element={isAuthenticated ? <Categories /> : <Navigate to="/" />}
         />
       </Routes>
     </Router>

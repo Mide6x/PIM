@@ -14,6 +14,10 @@ const SidebarRoutes = () => {
         path="/uploadtab"
         element={isAuthenticated ? <Navigate to="/uploadtab" /> : <Login />}
       />
+      <Route
+        path="/approval"
+        element={isAuthenticated ? <Navigate to="/approval" /> : <Login />}
+      />
     </Routes>
   );
 };

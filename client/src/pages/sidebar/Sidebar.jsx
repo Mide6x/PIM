@@ -1,4 +1,3 @@
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { Menu, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
@@ -6,12 +5,10 @@ import {
   AppstoreOutlined,
   ContainerOutlined,
   DesktopOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   PieChartOutlined,
 } from "@ant-design/icons";
 import useAuth from "../../contexts/useAuth";
-import "./Sidebar.css"; // Import custom CSS
+import "./Sidebar.css";
 
 const items = [
   {
@@ -29,7 +26,8 @@ const items = [
   {
     key: "3",
     icon: <ContainerOutlined />,
-    label: "Approval",
+    label: "Categories",
+    to: "/categories",
   },
   {
     key: "sub1",
@@ -44,19 +42,20 @@ const items = [
         key: "5",
         label: "Manage Categories",
       },
+    ],
+  },
+  {
+    key: "sub2",
+    label: "More Details",
+    icon: <AppstoreOutlined />,
+    children: [
       {
-        key: "sub3",
-        label: "More Details",
-        children: [
-          {
-            key: "6",
-            label: "Image Catalogue",
-          },
-          {
-            key: "7",
-            label: "Report Error",
-          },
-        ],
+        key: "6",
+        label: "Image Catalogue",
+      },
+      {
+        key: "7",
+        label: "Report Error",
       },
     ],
   },
@@ -113,11 +112,6 @@ const Sidebar = () => {
     logout();
   };
 
-  const [collapsed, setCollapsed] = useState(false);
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
-
   return (
     <>
       <Menu
@@ -125,12 +119,8 @@ const Sidebar = () => {
         defaultOpenKeys={["sub1"]}
         mode="inline"
         theme="light"
-        inlineCollapsed={collapsed}
         selectedKeys={[location.pathname]}
       >
-        <Button type="primary" onClick={toggleCollapsed}>
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
         {items.map((item) =>
           item.children ? (
             <SubMenu key={item.key} item={item} />
