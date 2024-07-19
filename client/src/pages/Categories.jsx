@@ -3,6 +3,7 @@ import { Button, Flex, Table, Modal, Form, Input, message, Space } from "antd";
 import Sidebar from "./sidebar/Sidebar";
 import axios from "axios";
 import PropTypes from "prop-types";
+import { debounce } from "lodash";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
@@ -73,6 +74,14 @@ const Categories = () => {
     setIsModalVisible(false);
   };
 
+  const handleSearch = debounce((value) => {
+    if (value.length >= 3) {
+      fetchCategories(value);
+    } else {
+      fetchCategories();
+    }
+  }, 300);
+
   const columns = [
     {
       title: "Category Name",
@@ -114,6 +123,12 @@ const Categories = () => {
               <p className="spaced">
                 From here, you can manually create and edit categories.
               </p>
+              <Input
+                placeholder="Search categories..."
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ marginBottom: "20px", width: "300px" }}
+              />{" "}
+              <span style={{ margin: "0 8px" }} />
               <Button className="spaced" type="primary" onClick={handleCreate}>
                 Add New Category
               </Button>

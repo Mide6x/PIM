@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
+import { debounce } from "lodash";
 
 const { Option } = Select;
 
@@ -21,9 +22,11 @@ const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (search = "") => {
     try {
-      const response = await axios.get("http://localhost:3000/api/products");
+      const response = await axios.get("http://localhost:3000/api/products", {
+        params: { search },
+      });
       if (Array.isArray(response.data)) {
         setProducts(response.data);
       } else {
@@ -83,6 +86,14 @@ const Dashboard = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  const handleSearch = debounce((value) => {
+    if (value.length >= 3) {
+      fetchProducts(value);
+    } else {
+      fetchProducts();
+    }
+  }, 300);
 
   const columns = [
     {
@@ -153,7 +164,12 @@ const Dashboard = () => {
             <p className="spaced">
               From here, you can manually create and edit products.
             </p>
-
+            <Input
+              placeholder="Search products..."
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ marginBottom: "20px", width: "300px" }}
+            />{" "}
+            <span style={{ margin: "0 8px" }} />
             <Button type="primary" className="spaced" onClick={handleCreate}>
               Add New Product
             </Button>

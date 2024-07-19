@@ -3,6 +3,7 @@ import { Button, Table, Modal, Form, Input, message, Space, List } from "antd";
 import axios from "axios";
 import Sidebar from "../sidebar/Sidebar";
 import PropTypes from "prop-types";
+import { debounce } from "lodash";
 
 const MngManufacturers = () => {
   const [manufacturers, setManufacturers] = useState([]);
@@ -75,6 +76,14 @@ const MngManufacturers = () => {
     setIsModalVisible(false);
   };
 
+  const handleSearch = debounce((value) => {
+    if (value.length >= 3) {
+      fetchManufacturers(value);
+    } else {
+      fetchManufacturers();
+    }
+  }, 300);
+
   const columns = [
     {
       title: "Name",
@@ -116,6 +125,12 @@ const MngManufacturers = () => {
         <p className="spaced">
           From here, you can manually create and edit Manufacturers.
         </p>
+        <Input
+          placeholder="Search manufacturers..."
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: "20px", width: "300px" }}
+        />{" "}
+        <span style={{ margin: "0 8px" }} />
         <Button type="primary" className="spaced" onClick={handleCreate}>
           Add New Manufacturer
         </Button>
