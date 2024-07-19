@@ -4,9 +4,10 @@ import { Link, useLocation } from "react-router-dom";
 import {
   AppstoreOutlined,
   ContainerOutlined,
-  DesktopOutlined,
+  UploadOutlined,
   PieChartOutlined,
   MacCommandOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import useAuth from "../../contexts/useAuth";
 import "./Sidebar.css";
@@ -20,15 +21,22 @@ const items = [
   },
   {
     key: "2",
-    icon: <DesktopOutlined />,
+    icon: <UploadOutlined />,
     label: "Product Upload",
     to: "/uploadtab",
   },
+
   {
     key: "3",
     icon: <ContainerOutlined />,
     label: "Categories",
     to: "/categories",
+  },
+  {
+    key: "4",
+    icon: <CheckSquareOutlined />,
+    label: "Approve Products",
+    to: "/approval",
   },
   {
     key: "sub1",
