@@ -240,7 +240,7 @@ const UploadTab = () => {
   ];
 
   return (
-    <Flex className="container">
+    <div className="container">
       <Flex gap="medium" align="centers">
         <div className="sidebar">
           <Sidebar />
@@ -282,7 +282,7 @@ const UploadTab = () => {
           </div>
         </Flex>
       </Flex>
-    </Flex>
+    </div>
   );
 };
 
