@@ -14,6 +14,7 @@ exports.getManufacturers = async (req, res) => {
 exports.createManufacturer = async (req, res) => {
   const manufacturer = new Manufacturer({
     name: req.body.name,
+    brands: req.body.brands,
   });
 
   try {
@@ -33,6 +34,7 @@ exports.updateManufacturer = async (req, res) => {
     }
 
     manufacturer.name = req.body.name;
+    manufacturer.brands = req.body.brands;
     const updatedManufacturer = await manufacturer.save();
     res.json(updatedManufacturer);
   } catch (err) {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Input, message, Space } from "antd";
+import { Button, Table, Modal, Form, Input, message, Space, List } from "antd";
 import axios from "axios";
 import Sidebar from "../sidebar/Sidebar";
 import PropTypes from "prop-types";
@@ -82,6 +82,17 @@ const MngManufacturers = () => {
       key: "name",
     },
     {
+      title: "Brands",
+      dataIndex: "brands",
+      key: "brands",
+      render: (brands) => (
+        <List
+          dataSource={brands}
+          renderItem={(brand) => <List.Item>{brand}</List.Item>}
+        />
+      ),
+    },
+    {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
@@ -154,6 +165,13 @@ const ManufacturerForm = ({ initialValues, onCancel, onOk }) => {
         ]}
       >
         <Input />
+      </Form.Item>
+      <Form.Item
+        name="brands"
+        label="Brands"
+        rules={[{ required: true, message: "Please enter at least one brand" }]}
+      >
+        <Input.TextArea />
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">

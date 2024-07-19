@@ -102,7 +102,6 @@ const Dashboard = () => {
       dataIndex: "productName",
       key: "productName",
     },
-
     {
       title: "Manufacturer",
       dataIndex: "manufacturerName",
@@ -187,6 +186,8 @@ const Dashboard = () => {
 const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
   const [manufacturers, setManufacturers] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [selectedManufacturer, setSelectedManufacturer] = useState(null);
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
@@ -207,6 +208,15 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     fetchManufacturers();
   }, []);
 
+  const onManufacturerChange = (value) => {
+    const selectedManu = manufacturers.find(
+      (manufacturer) => manufacturer.name === value
+    );
+    setSelectedManufacturer(selectedManu);
+    setBrands(selectedManu ? selectedManu.brands : []);
+    form.setFieldsValue({ brand: null }); // Reset brand field
+  };
+
   const onFinish = (values) => {
     onOk(values);
   };
@@ -220,7 +230,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           { required: true, message: "Please enter the manufacturer name" },
         ]}
       >
-        <Select>
+        <Select onChange={onManufacturerChange}>
           {manufacturers.map((manufacturer) => (
             <Option key={manufacturer._id} value={manufacturer.name}>
               {manufacturer.name}
@@ -233,7 +243,13 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         label="Brand"
         rules={[{ required: true, message: "Please enter the brand" }]}
       >
-        <Input />
+        <Select disabled={!selectedManufacturer}>
+          {brands.map((brand, index) => (
+            <Option key={index} value={brand}>
+              {brand}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         name="productCategory"
