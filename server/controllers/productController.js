@@ -1,4 +1,3 @@
-// productController.js
 const Product = require("../models/productModel");
 
 // Get all products
@@ -31,6 +30,41 @@ exports.createProduct = async (req, res, next) => {
     res.status(201).json(newProduct);
   } catch (error) {
     next(error);
+  }
+};
+
+// Create multiple products (Bulk creation)
+exports.createProducts = async (req, res, next) => {
+  try {
+    const products = req.body;
+
+    // Validate the data
+    if (!Array.isArray(products)) {
+      return res.status(400).json({ error: "Invalid data format" });
+    }
+
+    // Create products
+    const createdProducts = [];
+    for (const productData of products) {
+      const product = new Product({
+        manufacturerName: productData["Manufacturer Name"],
+        brand: productData["Brand"],
+        productCategory: productData["Product Category"],
+        productName: productData["Product Name"],
+        variantType: productData["Variant Type"],
+        variant: productData["Variant"],
+        weight: productData["Weight"],
+        imageUrl: productData["Image URL"],
+      });
+
+      const savedProduct = await product.save();
+      createdProducts.push(savedProduct);
+    }
+
+    res.status(201).json(createdProducts);
+  } catch (error) {
+    console.error("Error saving products:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

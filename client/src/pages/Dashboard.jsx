@@ -99,11 +99,11 @@ const Dashboard = () => {
   const columns = [
     {
       title: "Image",
-      dataIndex: "imageUrl1",
-      key: "imageUrl1",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
       render: (text, record) => (
         <img
-          src={record.imageUrl1}
+          src={record.imageUrl}
           alt={record.productName}
           style={{ maxWidth: "200px", maxHeight: "200px" }}
         />
@@ -159,8 +159,7 @@ const Dashboard = () => {
         <Sidebar />
       </div>
       <Flex vertical flex={1} className="content">
-
-        {products.length > 0 && (
+      
           <div>
             <h2>Products Dashboard 📦</h2>
             <p className="spaced">
@@ -182,9 +181,9 @@ const Dashboard = () => {
               rowKey="_id"
             />
           </div>
-        )}
-        {products.length === 0 && !loading && <p>No products found.</p>}
-        </Flex>
+       
+       
+        
 
       <Modal
         title={editingProduct ? "Edit Product" : "Create Product"}
@@ -198,7 +197,7 @@ const Dashboard = () => {
           onOk={handleOk}
         />
       </Modal>
-     
+      </Flex>
     </div>
   );
 };

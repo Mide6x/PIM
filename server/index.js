@@ -1,3 +1,4 @@
+// index.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -6,6 +7,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoute");
 const manufacturerRoutes = require("./routes/manufacturerRoutes");
 const imageRoutes = require("./routes/imageRoutes");
+const approvalRoutes = require("./routes/approvalRoutes"); // Add this line
 
 const app = express();
 
@@ -19,7 +21,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/manufacturer", manufacturerRoutes);
 app.use("/api/images", imageRoutes);
-
+app.use("/api/approvals", approvalRoutes); // Add this line
 
 // MongoDB connect
 mongoose

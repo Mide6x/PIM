@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flex, Button, message, Upload, Table } from "antd";
+import { Flex, Button, message, Upload, Table, Modal } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
@@ -9,6 +9,7 @@ const UploadTab = () => {
   const [data, setData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     fetchCategoryData();
@@ -76,6 +77,7 @@ const UploadTab = () => {
     const tokens = new Set(productName.toLowerCase().split());
     const lowerCaseManufacturer = manufacturer.toLowerCase();
 
+    // Check specific keywords and manufacturers
     for (const token of tokens) {
       if (token.includes("poundo") || token.includes("iyan")) {
         return "Poundo, Wheat & Semolina";
@@ -96,14 +98,17 @@ const UploadTab = () => {
       return "Liquers & Creams";
     }
 
+    // Check category map for classification
     for (const token of tokens) {
       if (categoryMap[token]) {
         return categoryMap[token];
       }
     }
 
-    return null;
+    // Default return value when classification is unknown
+    return "unknown";
   };
+
 
   const convertVariantFormat = (variant) => {
     variant = String(variant);
@@ -196,6 +201,32 @@ const UploadTab = () => {
     message.success("Data processing completed 🎉.");
   };
 
+  const handlePushToApproval = async () => {
+    try {
+      await axios.post("http://localhost:3000/api/approvals", data);
+      message.success("Data successfully sent for approval.");
+    } catch (error) {
+      message.error("Failed to send data for approval.");
+      console.error("Error sending data for approval:", error);
+    }
+  };
+  
+  // Update handleModalOk to use the new function
+  const handleModalOk = async () => {
+    setIsModalVisible(false);
+    await handlePushToApproval(); // Change this line
+  };
+  
+  const handleConfirm = () => {
+    setIsModalVisible(true);
+  };
+
+ 
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
   const columns = [
     {
       title: "Product Name",
@@ -223,65 +254,80 @@ const UploadTab = () => {
       key: "variant_type",
     },
     {
-      title: "Weight",
-      dataIndex: "Weight",
-      key: "weight",
-    },
-    {
-      title: "Amount",
+      title: "Quantity",
       dataIndex: "Amount",
       key: "amount",
     },
     {
-      title: "Weight (in Kg)",
+      title: "Weight (Kg)",
       dataIndex: "Weight (in Kg)",
       key: "weight_in_kg",
+    },
+    {
+      title: "Image URL",
+      dataIndex: "Image URL",
+      key: "image_url",
     },
   ];
 
   return (
     <div className="container">
-      
-        <div className="sidebar">
-          <Sidebar />
-        </div>
-        <Flex vertical flex={1} className="content">
-          <div>
-            <h2>Upload Excel Sheet Here 📂</h2>
-            <p className="spaced">
-              From here, you can upload you product sheet.
-            </p>
-            <Upload
-              name="file"
-              accept=".xlsx, .xls"
-              beforeUpload={() => false}
-              onChange={handleUpload}
-              showUploadList={false}
-              className="spaced"
-            >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <span style={{ margin: "0 8px" }} />
-            <Button
-              type="primary"
-              className="spaced"
-              onClick={handleProcess}
-              disabled={loading || !data.length}
-            >
-              Process Data
-            </Button>
+      <div className="sidebar">
+        <Sidebar />
+      </div>
+      <Flex vertical flex={1} className="content">
+        <div>
+          <h2>Upload Excel Sheet Here 📂</h2>
+          <p className="spaced">
+            From here, you can upload your product sheet.
+          </p>
+          <Upload
+            name="file"
+            accept=".xlsx, .xls"
+            beforeUpload={() => false}
+            onChange={handleUpload}
+            showUploadList={false}
+            className="spaced"
+          >
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
+          <span style={{ margin: "0 8px" }} />
+          <Button
+            type="primary"
+            className="spaced"
+            onClick={handleProcess}
+            disabled={loading || !data.length}
+          >
+            Process Data
+          </Button>
 
-            {data.length > 0 && (
+      
+            <>
               <Table
                 columns={columns}
                 dataSource={data}
                 rowKey="Product Name"
                 className="spaced"
               />
-            )}
-          </div>
-        </Flex>
-      
+              <Button
+                type="primary"
+                className="spaced"
+                onClick={handleConfirm}
+              >
+                Confirm & Send to Approval Page
+              </Button>
+            </>
+          
+          <Modal
+            title="Confirm Data"
+            visible={isModalVisible}
+            onOk={handleModalOk}
+            onCancel={handleModalCancel}
+          >
+            <p>Are you sure you want to send this products to the Approval Page?</p>
+          </Modal>
+        </div>
+      </Flex>
     </div>
   );
 };

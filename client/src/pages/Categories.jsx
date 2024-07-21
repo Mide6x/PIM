@@ -117,7 +117,7 @@ const Categories = () => {
         </div>
 
         <Flex vertical flex={1} className="content">
-          {categories.length > 0 && (
+          
             <div>
               <h2>Categories 🛍️</h2>
               <p className="spaced">
@@ -139,7 +139,7 @@ const Categories = () => {
                 rowKey="_id"
               />
             </div>
-          )}
+       
           {categories.length === 0 && !loading && <p>No categories found.</p>}
         </Flex>
    

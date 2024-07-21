@@ -1,6 +1,7 @@
+// models/approvalModel.js
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
+const approvalSchema = new mongoose.Schema({
   manufacturerName: { type: String, required: true },
   brand: { type: String, required: true },
   productCategory: { type: String, required: true },
@@ -9,8 +10,9 @@ const productSchema = new mongoose.Schema({
   variant: { type: String, required: true },
   weight: { type: Number, required: true },
   imageUrl: { type: String, required: true },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
 });
 
-const Product = mongoose.model("Product", productSchema);
+const Approval = mongoose.model("Approval", approvalSchema);
 
-module.exports = Product;
+module.exports = Approval;
