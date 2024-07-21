@@ -4,6 +4,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import Sidebar from "../sidebar/Sidebar";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { saveAs } from 'file-saver'; 
 
 const Images = () => {
     const [data, setData] = useState([]);
@@ -31,12 +32,11 @@ const Images = () => {
                 const wb = XLSX.read(arrayBuffer, { type: "array" });
                 const wsname = wb.SheetNames[0];
                 const ws = wb.Sheets[wsname];
-                const data = XLSX.utils.sheet_to_json(ws);
-                setData(data);
+                const parsedData = XLSX.utils.sheet_to_json(ws);
+                console.log('Parsed data:', parsedData); // Log data to verify
+                setData(parsedData);
             } catch (error) {
-                message.error(
-                    "Failed to read the file. Ensure it is a valid Excel file. 😔"
-                );
+                message.error("Failed to read the file. Ensure it is a valid Excel file. 😔");
                 console.error("Error reading file:", error);
             }
         };
@@ -46,15 +46,41 @@ const Images = () => {
     const processImages = async () => {
         setLoading(true);
         try {
-            const response = await axios.post("/api/images/process", { images: data });
-            message.success("Images processed successfully.");
-            console.log(response.data.results);
+            const response = await axios.post('http://localhost:3000/api/images/process', {
+                images: data, // 
+            });
+    
+            const transformedImages = response.data.results;
+    
+          
+            console.log('Transformed Images:', transformedImages);
+    
+            
+            if (!Array.isArray(transformedImages) || !transformedImages.length) {
+                throw new Error('No valid image data received from the server.');
+            }
+    
+          
+            const ws = XLSX.utils.json_to_sheet(transformedImages);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Transformed Images");
+    
+        
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    
+          
+            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'transformed_images.xlsx');
+    
+            message.success('Images processed and file downloaded successfully');
         } catch (error) {
-            message.error("Failed to process images.");
-            console.error("Error processing images:", error);
+            console.error('Error processing images:', error);
+            message.error(`Error processing images: ${error.message}`);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
+    
+    
 
     const columns = [
         {
@@ -71,7 +97,7 @@ const Images = () => {
 
     return (
         <div className="container">
-            <Flex gap="medium" align="centers">
+            <Flex gap="medium" align="center">
                 <div className="sidebar">
                     <Sidebar />
                 </div>
@@ -84,7 +110,7 @@ const Images = () => {
                         <Upload
                             name="file"
                             accept=".xlsx, .xls"
-                            beforeUpload={() => false} // Prevent automatic upload
+                            beforeUpload={() => false} 
                             onChange={handleUpload}
                             showUploadList={false}
                             className="spaced"

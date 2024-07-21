@@ -115,7 +115,7 @@ const UploadTab = () => {
 
     const match1 = variant.match(pattern1);
     if (match1) {
-      const [, size, unit, count] = match1; // Use comma to ignore the first item
+      const [, size, unit, count] = match1; 
       return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
     }
 
@@ -254,7 +254,7 @@ const UploadTab = () => {
             <Upload
               name="file"
               accept=".xlsx, .xls"
-              beforeUpload={() => false} // Prevent automatic upload
+              beforeUpload={() => false}
               onChange={handleUpload}
               showUploadList={false}
               className="spaced"

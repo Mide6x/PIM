@@ -230,7 +230,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     );
     setSelectedManufacturer(selectedManu);
     setBrands(selectedManu ? selectedManu.brands : []);
-    form.setFieldsValue({ brand: null }); // Reset brand field
+    form.setFieldsValue({ brand: null }); 
   };
 
   const onFinish = (values) => {
