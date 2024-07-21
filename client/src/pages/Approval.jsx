@@ -9,6 +9,7 @@ import {
   Select,
   message,
   Space,
+  Tabs,
 } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -16,12 +17,16 @@ import Sidebar from "./sidebar/Sidebar";
 import { debounce } from "lodash";
 
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 const Approval = () => {
   const [approvals, setApprovals] = useState([]);
+  const [rejectedApprovals, setRejectedApprovals] = useState([]);
+  const [approvedApprovals, setApprovedApprovals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
     fetchApprovals();
@@ -30,15 +35,19 @@ const Approval = () => {
   const fetchApprovals = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/approvals");
-      setApprovals(response.data);
+      setApprovals(response.data.filter((item) => item.status === "pending"));
+      setRejectedApprovals(
+        response.data.filter((item) => item.status === "rejected")
+      );
+      setApprovedApprovals(
+        response.data.filter((item) => item.status === "approved")
+      );
     } catch (error) {
       message.error("Failed to fetch approvals");
     } finally {
       setLoading(false);
     }
   };
-
-  
 
   const handleEdit = (item) => {
     setEditingItem(item);
@@ -78,6 +87,23 @@ const Approval = () => {
       message.error("Failed to save approval entry");
     }
   };
+  const handleConfirm = async () => {
+    try {
+      // Send the approved products to the server to be pushed to the main products database
+      await axios.post(
+        "http://localhost:3000/api/products/bulk",
+        approvedApprovals
+      );
+      message.success(
+        "Approved products have been successfully pushed to the database 🎉"
+      );
+      // Optionally, you can fetch the approvals again to update the state
+      fetchApprovals();
+    } catch (error) {
+      message.error("Failed to push approved products to the database");
+    }
+  };
+
   const handleSearch = debounce((value) => {
     if (value.length >= 3) {
       fetchApprovals(value);
@@ -91,6 +117,18 @@ const Approval = () => {
   };
 
   const columns = [
+    {
+      title: "Image",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+      render: (imageUrl) => (
+        <img
+          src={imageUrl}
+          alt="Product Image"
+          style={{ width: 100, height: 100, objectFit: "cover" }}
+        />
+      ),
+    },
     {
       title: "Product Name",
       dataIndex: "productName",
@@ -112,9 +150,9 @@ const Approval = () => {
       key: "variant",
     },
     {
-      title: "Weight",
-      dataIndex: "weight",
-      key: "weight",
+      title: "Weight (in Kg)",
+      dataIndex: "weightInKg",
+      key: "weightInKg",
     },
     {
       title: "Image URL",
@@ -140,6 +178,15 @@ const Approval = () => {
     },
   ];
 
+  const rejectedColumns = [
+    ...columns,
+    {
+      title: "Rejection Reason",
+      dataIndex: "rejectionReason",
+      key: "rejectionReason",
+    },
+  ];
+
   return (
     <div className="container">
       <div className="sidebar">
@@ -153,20 +200,47 @@ const Approval = () => {
             database.
           </p>
           <Input
-              placeholder="Search products..."
-              onChange={(e) => handleSearch(e.target.value)}
-              style={{ marginBottom: "20px", width: "300px" }}
-            />{" "}
-            <span style={{ margin: "0 8px" }} />
+            placeholder="Search products..."
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ marginBottom: "20px", width: "300px" }}
+          />
+          <span style={{ margin: "0 8px" }} />
           <Button type="primary" className="spaced" onClick={handleCreate}>
             Create New Approval
           </Button>
-          <Table
-            columns={columns}
-            dataSource={approvals}
-            loading={loading}
-            rowKey="_id"
-          />
+          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+            <TabPane tab="Pending Approvals" key="pending">
+              <Table
+                columns={columns}
+                dataSource={approvals}
+                loading={loading}
+                rowKey="_id"
+              />
+            </TabPane>
+            <TabPane tab="Approved Products" key="approved">
+              <Table
+                columns={columns}
+                dataSource={approvedApprovals}
+                loading={loading}
+                rowKey="_id"
+              />
+              <Button
+                type="primary"
+                onClick={handleConfirm}
+                style={{ marginBottom: "20px" }}
+              >
+                Confirm and Push to Database
+              </Button>
+            </TabPane>
+            <TabPane tab="Rejected Products" key="rejected">
+              <Table
+                columns={rejectedColumns}
+                dataSource={rejectedApprovals}
+                loading={loading}
+                rowKey="_id"
+              />
+            </TabPane>
+          </Tabs>
         </div>
 
         <Modal
@@ -179,7 +253,6 @@ const Approval = () => {
             initialValues={editingItem}
             onCancel={handleCancel}
             onOk={handleOk}
-  
           />
         </Modal>
       </Flex>
@@ -192,15 +265,21 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
   const [manufacturers, setManufacturers] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
+  const [status, setStatus] = useState(initialValues?.status || "pending");
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
+    if (initialValues) {
+      setStatus(initialValues.status);
+    }
   }, [initialValues, form]);
 
   useEffect(() => {
     const fetchManufacturers = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/manufacturer");
+        const response = await axios.get(
+          "http://localhost:3000/api/manufacturer"
+        );
         setManufacturers(response.data);
       } catch (error) {
         message.error("Failed to fetch manufacturers");
@@ -216,7 +295,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
     );
     setSelectedManufacturer(selectedManu);
     setBrands(selectedManu ? selectedManu.brands : []);
-    form.setFieldsValue({ brand: null }); 
+    form.setFieldsValue({ brand: null });
   };
 
   const onFinish = (values) => {
@@ -228,9 +307,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="productName"
         label="Product Name"
-        rules={[
-          { required: true, message: "Please enter the product name" },
-        ]}
+        rules={[{ required: true, message: "Please enter the product name" }]}
       >
         <Input />
       </Form.Item>
@@ -255,8 +332,8 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
         rules={[{ required: true, message: "Please enter the brand" }]}
       >
         <Select disabled={!selectedManufacturer}>
-          {brands.map((brand, index) => (
-            <Option key={index} value={brand}>
+          {brands.map((brand) => (
+            <Option key={brand} value={brand}>
               {brand}
             </Option>
           ))}
@@ -279,9 +356,9 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name="weight"
-        label="Weight"
-        rules={[{ required: true, message: "Please enter the weight" }]}
+        name="weightInKg"
+        label="weightInKg"
+        rules={[{ required: true, message: "Please enter the weight (in Kg)" }]}
       >
         <Input />
       </Form.Item>
@@ -295,14 +372,28 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="status"
         label="Status"
-        rules={[{ required: true, message: "Please select the status" }]}
+        rules={[{ required: true, message: "Please enter the status" }]}
       >
-        <Select>
+        <Select onChange={(value) => setStatus(value)}>
           <Option value="pending">Pending</Option>
-          <Option value="approved">Approved</Option>
-          <Option value="rejected">Rejected</Option>
+          <Option value="approved">Approve</Option>
+          <Option value="rejected">Reject</Option>
         </Select>
       </Form.Item>
+      {status === "rejected" && (
+        <Form.Item
+          name="rejectionReason"
+          label="Rejection Reason"
+          rules={[
+            {
+              required: true,
+              message: "Please provide a reason for rejection",
+            },
+          ]}
+        >
+          <Input.TextArea rows={4} />
+        </Form.Item>
+      )}
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Submit

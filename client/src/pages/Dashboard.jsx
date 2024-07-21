@@ -301,7 +301,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         <Input />
       </Form.Item>
       <Form.Item
-        name="imageUrl1"
+        name="imageUrl"
         label="Image URL"
         rules={[{ required: true, message: "Please enter the image URL" }]}
       >

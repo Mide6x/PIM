@@ -211,10 +211,10 @@ const UploadTab = () => {
     }
   };
   
-  // Update handleModalOk to use the new function
+
   const handleModalOk = async () => {
     setIsModalVisible(false);
-    await handlePushToApproval(); // Change this line
+    await handlePushToApproval();
   };
   
   const handleConfirm = () => {
@@ -320,7 +320,7 @@ const UploadTab = () => {
           
           <Modal
             title="Confirm Data"
-            visible={isModalVisible}
+           open={isModalVisible}
             onOk={handleModalOk}
             onCancel={handleModalCancel}
           >

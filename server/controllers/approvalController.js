@@ -31,7 +31,7 @@ exports.createApproval = async (req, res, next) => {
         productName: productData["Product Name"],
         variantType: productData["Variant Type"],
         variant: productData["Variant"],
-        weight: productData["Weight"],
+        weightInKg: productData["Weight (in Kg)"],
         imageUrl: productData["Image URL"],
       });
 

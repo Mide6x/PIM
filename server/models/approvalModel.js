@@ -8,9 +8,10 @@ const approvalSchema = new mongoose.Schema({
   productName: { type: String, required: true },
   variantType: { type: String, required: true },
   variant: { type: String, required: true },
-  weight: { type: Number, required: true },
+  weightInKg: { type: Number, required: true },
   imageUrl: { type: String, required: true },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  rejectionReason: { type: String } 
 });
 
 const Approval = mongoose.model("Approval", approvalSchema);
