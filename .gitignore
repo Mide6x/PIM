@@ -1,8 +1,9 @@
 # Environment variables
-.env
+server/.env
 
 # Node.js modules
-node_modules
+server/node_modules
+client/node_modules
 
 # Local JSON files for configuration or data
 categories.json
