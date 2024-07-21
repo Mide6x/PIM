@@ -97,7 +97,7 @@ const Images = () => {
 
     return (
         <div className="container">
-            <Flex gap="medium" align="center">
+           
                 <div className="sidebar">
                     <Sidebar />
                 </div>
@@ -138,7 +138,7 @@ const Images = () => {
                         )}
                     </div>
                 </Flex>
-            </Flex>
+       
         </div>
     );
 };

@@ -1,12 +1,13 @@
 import Sidebar from "./sidebar/Sidebar";
-
+import { Flex } from "antd";
 const Approval = () => {
   return (
     <div className="container">
       <div className="sidebar">
         <Sidebar />
       </div>
-      <div className="content">
+      <Flex vertical flex={1} className="content">
+      <div>
         <div>
           <h2>Product Approval ✅</h2>
           <p className="spaced">
@@ -15,6 +16,7 @@ const Approval = () => {
           </p>
         </div>
       </div>
+      </Flex>
     </div>
   );
 };

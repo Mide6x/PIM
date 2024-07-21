@@ -1,0 +1,7 @@
+.env
+
+node_modules
+
+categories.json
+manufacturers.json
+products.json

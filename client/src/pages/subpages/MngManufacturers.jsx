@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Input, message, Space, List } from "antd";
+import { Button, Table, Modal, Form, Flex, Input, message, Space, List } from "antd";
 import axios from "axios";
 import Sidebar from "../sidebar/Sidebar";
 import PropTypes from "prop-types";
@@ -120,7 +120,8 @@ const MngManufacturers = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <div className="content">
+      <Flex vertical flex={1} className="content">
+      <div>
         <h2>Manufacturer 🏭</h2>
         <p className="spaced">
           From here, you can manually create and edit Manufacturers.
@@ -155,6 +156,7 @@ const MngManufacturers = () => {
           />
         </Modal>
       </div>
+      </Flex>
     </div>
   );
 };

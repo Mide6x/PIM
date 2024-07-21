@@ -3,6 +3,7 @@ import {
   Button,
   Table,
   Modal,
+  Flex,
   Form,
   Input,
   Select,
@@ -157,7 +158,8 @@ const Dashboard = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <div className="content">
+      <Flex vertical flex={1} className="content">
+
         {products.length > 0 && (
           <div>
             <h2>Products Dashboard 📦</h2>
@@ -182,7 +184,8 @@ const Dashboard = () => {
           </div>
         )}
         {products.length === 0 && !loading && <p>No products found.</p>}
-      </div>
+        </Flex>
+
       <Modal
         title={editingProduct ? "Edit Product" : "Create Product"}
         open={isModalVisible}
@@ -195,6 +198,7 @@ const Dashboard = () => {
           onOk={handleOk}
         />
       </Modal>
+     
     </div>
   );
 };

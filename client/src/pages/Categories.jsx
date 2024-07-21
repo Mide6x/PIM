@@ -110,8 +110,8 @@ const Categories = () => {
   ];
 
   return (
-    <Flex className="container">
-      <Flex gap="medium" align="centers">
+    <div className="container">
+    
         <div className="sidebar">
           <Sidebar />
         </div>
@@ -142,7 +142,7 @@ const Categories = () => {
           )}
           {categories.length === 0 && !loading && <p>No categories found.</p>}
         </Flex>
-      </Flex>
+   
       <Modal
         title={editingCategory ? "Edit Category" : "Create Category"}
         visible={isModalVisible}
@@ -155,7 +155,7 @@ const Categories = () => {
           onOk={handleOk}
         />
       </Modal>
-    </Flex>
+    </div>
   );
 };
 
