@@ -1,4 +1,3 @@
-// controllers/approvalController.js
 const Approval = require("../models/approvalModel");
 
 // Get all products awaiting approval
@@ -11,23 +10,22 @@ exports.getAllAwaitingApproval = async (req, res, next) => {
   }
 };
 
-// Create a new product awaiting approval
+// Create new products awaiting approval
 exports.createApproval = async (req, res, next) => {
   try {
     const products = req.body;
 
-  
     if (!Array.isArray(products)) {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
- 
     const createdApprovals = [];
     for (const productData of products) {
       const approval = new Approval({
         manufacturerName: productData["Manufacturer Name"],
         brand: productData["Brand"],
         productCategory: productData["Product Category"],
+        productSubcategory: productData["Product Subcategory"],  // Added field
         productName: productData["Product Name"],
         variantType: productData["Variant Type"],
         variant: productData["Variant"],
@@ -46,13 +44,19 @@ exports.createApproval = async (req, res, next) => {
   }
 };
 
-
 // Update a product awaiting approval by ID
 exports.updateApproval = async (req, res, next) => {
   try {
+    const updateData = req.body;
+    
+    // Ensure productSubcategory is included in the update
+    if (updateData.productSubcategory === undefined) {
+      updateData.productSubcategory = ""; // or any default value
+    }
+
     const updatedApproval = await Approval.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
     if (!updatedApproval) {

@@ -1,6 +1,5 @@
 const Category = require("../models/categoryModel");
 
-// Get all categories
 exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
@@ -10,7 +9,6 @@ exports.getCategories = async (req, res) => {
   }
 };
 
-// Create a new category
 exports.createCategory = async (req, res) => {
   const category = new Category({
     name: req.body.name,
@@ -25,7 +23,6 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-// Update a category
 exports.updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -42,7 +39,6 @@ exports.updateCategory = async (req, res) => {
   }
 };
 
-// Delete a category
 exports.deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -52,6 +48,18 @@ exports.deleteCategory = async (req, res) => {
 
     await Category.deleteOne({ _id: req.params.id });
     res.json({ message: "Category deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getSubcategories = async (req, res) => {
+  try {
+    const category = await Category.findOne({ name: req.params.categoryName });
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.json(category.subcategories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

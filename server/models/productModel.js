@@ -4,6 +4,7 @@ const productSchema = new mongoose.Schema({
   manufacturerName: { type: String, required: true },
   brand: { type: String, required: true },
   productCategory: { type: String, required: true },
+  productSubcategory: { type: String, required: true  },
   productName: { type: String, required: true },
   variantType: { type: String, required: true },
   variant: { type: String, required: true },

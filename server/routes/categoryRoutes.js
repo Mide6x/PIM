@@ -14,4 +14,7 @@ router.put("/:id", categoryController.updateCategory);
 // Delete a category
 router.delete("/:id", categoryController.deleteCategory);
 
+// Get subcategories by category name
+router.get("/:categoryName/subcategories", categoryController.getSubcategories);
+
 module.exports = router;
