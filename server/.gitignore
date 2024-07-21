@@ -1,7 +1,10 @@
+# Environment variables
 .env
 
+# Node.js modules
 node_modules
 
+# Local JSON files for configuration or data
 categories.json
 manufacturers.json
 products.json
