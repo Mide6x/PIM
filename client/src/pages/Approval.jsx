@@ -187,7 +187,7 @@ const Approval = () => {
   );
 };
 
-const ApprovalForm = ({ initialValues, onCancel, onOk,}) => {
+const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
   const [manufacturers, setManufacturers] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -200,9 +200,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk,}) => {
   useEffect(() => {
     const fetchManufacturers = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/manufacturer"
-        );
+        const response = await axios.get("http://localhost:3000/api/manufacturer");
         setManufacturers(response.data);
       } catch (error) {
         message.error("Failed to fetch manufacturers");
@@ -211,6 +209,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk,}) => {
 
     fetchManufacturers();
   }, []);
+
   const onManufacturerChange = (value) => {
     const selectedManu = manufacturers.find(
       (manufacturer) => manufacturer.name === value
@@ -242,7 +241,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk,}) => {
           { required: true, message: "Please select the manufacturer name" },
         ]}
       >
-       <Select onChange={onManufacturerChange}>
+        <Select onChange={onManufacturerChange}>
           {manufacturers.map((manufacturer) => (
             <Option key={manufacturer._id} value={manufacturer.name}>
               {manufacturer.name}
@@ -296,9 +295,13 @@ const ApprovalForm = ({ initialValues, onCancel, onOk,}) => {
       <Form.Item
         name="status"
         label="Status"
-        rules={[{ required: true, message: "Please enter the status" }]}
+        rules={[{ required: true, message: "Please select the status" }]}
       >
-        <Input />
+        <Select>
+          <Option value="pending">Pending</Option>
+          <Option value="approved">Approved</Option>
+          <Option value="rejected">Rejected</Option>
+        </Select>
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">
