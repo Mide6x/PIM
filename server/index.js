@@ -5,6 +5,7 @@ const authRouter = require("./routes/authRoute");
 const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoute");
 const manufacturerRoutes = require("./routes/manufacturerRoutes");
+const imageRoutes = require("./routes/imageRoutes");
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/manufacturer", manufacturerRoutes);
+app.use("/api/images", imageRoutes);
+
 
 // MongoDB connect
 mongoose
