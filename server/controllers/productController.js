@@ -3,10 +3,13 @@ const Product = require("../models/productModel");
 // Get all products
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const { search } = req.query;
+    const query = search ? { productName: { $regex: search, $options: 'i' } } : {};
+    const products = await Product.find(query);
     res.status(200).json(products);
   } catch (error) {
     next(error);
+    res.status(500).json({ message: error.message });
   }
 };
 

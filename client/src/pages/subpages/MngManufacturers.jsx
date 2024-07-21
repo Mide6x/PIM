@@ -11,11 +11,12 @@ const MngManufacturers = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingManufacturer, setEditingManufacturer] = useState(null);
 
-  const fetchManufacturers = async () => {
+  const fetchManufacturers = async (search = "") => {
+    setLoading(true);
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/manufacturer"
-      );
+      const response = await axios.get("http://localhost:3000/api/manufacturer", {
+        params: { search }
+      });
       if (Array.isArray(response.data)) {
         setManufacturers(response.data);
       } else {
@@ -121,41 +122,41 @@ const MngManufacturers = () => {
         <Sidebar />
       </div>
       <Flex vertical flex={1} className="content">
-      <div>
-        <h2>Manufacturer 🏭</h2>
-        <p className="spaced">
-          From here, you can manually create and edit Manufacturers.
-        </p>
-        <Input
-          placeholder="Search manufacturers..."
-          onChange={(e) => handleSearch(e.target.value)}
-          style={{ marginBottom: "20px", width: "300px" }}
-        />{" "}
-        <span style={{ margin: "0 8px" }} />
-        <Button type="primary" className="spaced" onClick={handleCreate}>
-          Add New Manufacturer
-        </Button>
-        <Table
-          columns={columns}
-          dataSource={manufacturers}
-          loading={loading}
-          rowKey="_id"
-        />
-        <Modal
-          title={
-            editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
-          }
-          open={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <ManufacturerForm
-            initialValues={editingManufacturer}
-            onCancel={handleCancel}
-            onOk={handleOk}
+        <div>
+          <h2>Manufacturer 🏭</h2>
+          <p className="spaced">
+            From here, you can manually create and edit Manufacturers.
+          </p>
+          <Input
+            placeholder="Search manufacturers..."
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ marginBottom: "20px", width: "300px" }}
           />
-        </Modal>
-      </div>
+          <span style={{ margin: "0 8px" }} />
+          <Button type="primary" className="spaced" onClick={handleCreate}>
+            Add New Manufacturer
+          </Button>
+          <Table
+            columns={columns}
+            dataSource={manufacturers}
+            loading={loading}
+            rowKey="_id"
+          />
+          <Modal
+            title={
+              editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
+            }
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={null}
+          >
+            <ManufacturerForm
+              initialValues={editingManufacturer}
+              onCancel={handleCancel}
+              onOk={handleOk}
+            />
+          </Modal>
+        </div>
       </Flex>
     </div>
   );

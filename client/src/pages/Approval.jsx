@@ -49,10 +49,7 @@ const Approval = () => {
     }
   };
 
-  const handleCreate = () => {
-    setEditingItem(null);
-    setIsModalVisible(true);
-  };
+ 
 
   const handleOk = async (values) => {
     try {
@@ -191,10 +188,7 @@ const Approval = () => {
             onChange={(e) => handleSearch(e.target.value)}
             style={{ marginBottom: "20px", width: "300px" }}
           />
-          <span style={{ margin: "0 8px" }} />
-          <Button type="primary" className="spaced" onClick={handleCreate}>
-            Create New Approval
-          </Button>
+          
           <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
             <TabPane tab="Pending Approvals" key="pending">
               <Table columns={columns} dataSource={approvals} loading={loading} rowKey="_id" />

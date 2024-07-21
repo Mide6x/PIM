@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
 
   const fetchProducts = async (search = "") => {
+    setLoading(true); // Set loading true when fetching
     try {
       const response = await axios.get("http://localhost:3000/api/products", {
         params: { search },
@@ -37,7 +38,7 @@ const Dashboard = () => {
     } catch (error) {
       message.error("Failed to fetch products");
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -92,7 +93,7 @@ const Dashboard = () => {
     if (value.length >= 3) {
       fetchProducts(value);
     } else {
-      fetchProducts();
+      fetchProducts(); 
     }
   }, 300);
 
@@ -159,44 +160,40 @@ const Dashboard = () => {
         <Sidebar />
       </div>
       <Flex vertical flex={1} className="content">
-      
-          <div>
-            <h2>Products Dashboard 📦</h2>
-            <p className="spaced">
-              From here, you can manually create and edit products.
-            </p>
-            <Input
-              placeholder="Search products..."
-              onChange={(e) => handleSearch(e.target.value)}
-              style={{ marginBottom: "20px", width: "300px" }}
-            />{" "}
-            <span style={{ margin: "0 8px" }} />
-            <Button type="primary" className="spaced" onClick={handleCreate}>
-              Add New Product
-            </Button>
-            <Table
-              columns={columns}
-              dataSource={products}
-              loading={loading}
-              rowKey="_id"
-            />
-          </div>
-       
-       
-        
+        <div>
+          <h2>Products Dashboard 📦</h2>
+          <p className="spaced">
+            From here, you can manually create and edit products.
+          </p>
+          <Input
+            placeholder="Search products..."
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ marginBottom: "20px", width: "300px" }}
+          />
+          <span style={{ margin: "0 8px" }} />
+          <Button type="primary" className="spaced" onClick={handleCreate}>
+            Add New Product
+          </Button>
+          <Table
+            columns={columns}
+            dataSource={products}
+            loading={loading}
+            rowKey="_id"
+          />
+        </div>
 
-      <Modal
-        title={editingProduct ? "Edit Product" : "Create Product"}
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <ProductForm
-          initialValues={editingProduct}
+        <Modal
+          title={editingProduct ? "Edit Product" : "Create Product"}
+          open={isModalVisible}
           onCancel={handleCancel}
-          onOk={handleOk}
-        />
-      </Modal>
+          footer={null}
+        >
+          <ProductForm
+            initialValues={editingProduct}
+            onCancel={handleCancel}
+            onOk={handleOk}
+          />
+        </Modal>
       </Flex>
     </div>
   );

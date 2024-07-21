@@ -7,6 +7,7 @@ exports.getAllAwaitingApproval = async (req, res, next) => {
     res.status(200).json(approvals);
   } catch (error) {
     next(error);
+    res.status(500).json({ message: error.message });
   }
 };
 

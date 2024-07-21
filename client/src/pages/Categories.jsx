@@ -11,9 +11,12 @@ const Categories = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
 
-  const fetchCategories = async () => {
+  const fetchCategories = async (search = "") => {
+    setLoading(true); // Set loading true when fetching
     try {
-      const response = await axios.get("http://localhost:3000/api/categories");
+      const response = await axios.get("http://localhost:3000/api/categories", {
+        params: { search },
+      });
       if (Array.isArray(response.data)) {
         setCategories(response.data);
       } else {
@@ -23,7 +26,7 @@ const Categories = () => {
     } catch (error) {
       message.error("Failed to fetch categories");
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading false when fetching is done
     }
   };
 
@@ -78,7 +81,7 @@ const Categories = () => {
     if (value.length >= 3) {
       fetchCategories(value);
     } else {
-      fetchCategories();
+      fetchCategories(); // Fetch all categories if search term is too short
     }
   }, 300);
 
@@ -111,38 +114,33 @@ const Categories = () => {
 
   return (
     <div className="container">
-    
-        <div className="sidebar">
-          <Sidebar />
+      <div className="sidebar">
+        <Sidebar />
+      </div>
+      <Flex vertical flex={1} className="content">
+        <div>
+          <h2>Categories 🛍️</h2>
+          <p className="spaced">
+            From here, you can manually create and edit categories.
+          </p>
+          <Input
+            placeholder="Search categories..."
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ marginBottom: "20px", width: "300px" }}
+          />
+          <span style={{ margin: "0 8px" }} />
+          <Button className="spaced" type="primary" onClick={handleCreate}>
+            Add New Category
+          </Button>
+          <Table
+            columns={columns}
+            dataSource={categories}
+            loading={loading}
+            rowKey="_id"
+          />
         </div>
-
-        <Flex vertical flex={1} className="content">
-          
-            <div>
-              <h2>Categories 🛍️</h2>
-              <p className="spaced">
-                From here, you can manually create and edit categories.
-              </p>
-              <Input
-                placeholder="Search categories..."
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ marginBottom: "20px", width: "300px" }}
-              />{" "}
-              <span style={{ margin: "0 8px" }} />
-              <Button className="spaced" type="primary" onClick={handleCreate}>
-                Add New Category
-              </Button>
-              <Table
-                columns={columns}
-                dataSource={categories}
-                loading={loading}
-                rowKey="_id"
-              />
-            </div>
-       
-          {categories.length === 0 && !loading && <p>No categories found.</p>}
-        </Flex>
-   
+        {categories.length === 0 && !loading && <p>No categories found.</p>}
+      </Flex>
       <Modal
         title={editingCategory ? "Edit Category" : "Create Category"}
         open={isModalVisible}
