@@ -87,22 +87,38 @@ const Approval = () => {
       message.error("Failed to save approval entry");
     }
   };
+  const checkForDuplicates = async (products) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/products/check-duplicates", products);
+      return response.data; 
+    } catch (error) {
+      message.error("Failed to check for duplicates");
+      return [];
+    }
+  };
+  
   const handleConfirm = async () => {
     try {
-      // Send the approved products to the server to be pushed to the main products database
-      await axios.post(
-        "http://localhost:3000/api/products/bulk",
-        approvedApprovals
-      );
-      message.success(
-        "Approved products have been successfully pushed to the database 🎉"
-      );
-      // Optionally, you can fetch the approvals again to update the state
+      // Check for duplicates before pushing to the database
+      const duplicateNames = await checkForDuplicates(approvedApprovals);
+  
+      if (duplicateNames.length > 0) {
+        message.warning(`Some products are already in the database: ${duplicateNames.join(', ')}`);
+      }
+  
+      // Filter out duplicates based on product names
+      const uniqueProducts = approvedApprovals.filter(product => !duplicateNames.includes(product.productName));
+      await axios.post("http://localhost:3000/api/products/bulk", uniqueProducts);
+  
+      message.success("Approved products have been successfully pushed to the database 🎉");
       fetchApprovals();
     } catch (error) {
       message.error("Failed to push approved products to the database");
     }
   };
+  
+  
+  
 
   const handleSearch = debounce((value) => {
     if (value.length >= 3) {

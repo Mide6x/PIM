@@ -10,6 +10,7 @@ const productSchema = new mongoose.Schema({
   weight: { type: Number, required: true },
   imageUrl: { type: String, required: true },
 });
+productSchema.index({ productName: 1, manufacturerName: 1, variant: 1 }, { unique: true });
 
 const Product = mongoose.model("Product", productSchema);
 

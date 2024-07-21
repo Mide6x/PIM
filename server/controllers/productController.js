@@ -10,11 +10,11 @@ exports.getAllProducts = async (req, res, next) => {
   }
 };
 
+//Bulk creeation
 exports.bulkCreateProducts = async (req, res, next) => {
   try {
     const products = req.body;
 
-    // Validate the data
     if (!Array.isArray(products)) {
       return res.status(400).json({ error: "Invalid data format" });
     }
@@ -43,6 +43,30 @@ exports.bulkCreateProducts = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+exports.checkForDuplicates = async (req, res) => {
+  try {
+    const products = req.body;
+
+    const duplicateNames = new Set();
+    for (const productData of products) {
+      const existingProduct = await Product.findOne({
+        productName: productData.productName,
+        manufacturerName: productData.manufacturerName,
+        variant: productData.variant
+      });
+
+      if (existingProduct) {
+        duplicateNames.add(productData.productName);
+      }
+    }
+
+    res.status(200).json(Array.from(duplicateNames));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to check for duplicates' });
+  }
+};
+
+
 
 // Get a single product by ID
 exports.getProductById = async (req, res, next) => {
