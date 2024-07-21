@@ -19,23 +19,19 @@ exports.bulkCreateProducts = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
-    // Create products
-    const createdProducts = [];
-    for (const productData of products) {
-      const product = new Product({
-        manufacturerName: productData.manufacturerName,
-        brand: productData.brand,
-        productCategory: productData.productCategory,
-        productName: productData.productName,
-        variantType: productData.variantType,
-        variant: productData.variant,
-        weight: productData.weightInKg,
-        imageUrl: productData.imageUrl,
-      });
+    const validProducts = products.filter(productData => productData.productCategory.toLowerCase() !== 'unknown');
 
-      const savedProduct = await product.save();
-      createdProducts.push(savedProduct);
-    }
+    const createdProducts = await Product.insertMany(validProducts.map(productData => ({
+      manufacturerName: productData.manufacturerName,
+      brand: productData.brand,
+      productCategory: productData.productCategory,
+      productSubcategory: productData.productSubcategory,
+      productName: productData.productName,
+      variantType: productData.variantType,
+      variant: productData.variant,
+      weight: productData.weightInKg,
+      imageUrl: productData.imageUrl,
+    })));
 
     res.status(201).json(createdProducts);
   } catch (error) {
@@ -43,6 +39,7 @@ exports.bulkCreateProducts = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 exports.checkForDuplicates = async (req, res) => {
   try {
     const products = req.body;
@@ -65,8 +62,6 @@ exports.checkForDuplicates = async (req, res) => {
     res.status(500).json({ error: 'Failed to check for duplicates' });
   }
 };
-
-
 
 // Get a single product by ID
 exports.getProductById = async (req, res, next) => {

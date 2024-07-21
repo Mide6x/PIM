@@ -145,7 +145,7 @@ const Categories = () => {
    
       <Modal
         title={editingCategory ? "Edit Category" : "Create Category"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
