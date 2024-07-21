@@ -12,6 +12,7 @@ import useAuth from "./contexts/useAuth";
 import UploadTab from "./pages/UploadTab";
 import Categories from "./pages/Categories";
 import MngManufacturers from "./pages/subpages/MngManufacturers";
+import Images from "./pages/subpages/Images";
 import Approval from "./pages/Approval";
 
 const App = () => {
@@ -49,6 +50,10 @@ const App = () => {
         <Route
           path="/mngmanufacturers/*"
           element={isAuthenticated ? <MngManufacturers /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/images/*"
+          element={isAuthenticated ? <Images /> : <Navigate to="/" />}
         />
       </Routes>
     </Router>

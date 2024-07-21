@@ -2,12 +2,13 @@ import PropTypes from "prop-types";
 import { Menu, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import {
-  AppstoreOutlined,
+  ProductOutlined ,
   ContainerOutlined,
   UploadOutlined,
   PieChartOutlined,
   MacCommandOutlined,
   CheckSquareOutlined,
+  FileImageOutlined
 } from "@ant-design/icons";
 import useAuth from "../../contexts/useAuth";
 import "./Sidebar.css";
@@ -41,7 +42,7 @@ const items = [
   {
     key: "sub1",
     label: "Product Details",
-    icon: <AppstoreOutlined />,
+    icon: <ProductOutlined />,
     children: [
       {
         key: "4",
@@ -51,25 +52,13 @@ const items = [
       },
       {
         key: "5",
-        label: "Manage Categories",
-      },
-    ],
-  },
-  {
-    key: "sub2",
-    label: "More Details",
-    icon: <AppstoreOutlined />,
-    children: [
-      {
-        key: "6",
         label: "Image Catalogue",
-      },
-      {
-        key: "7",
-        label: "Report Error",
+        icon: <FileImageOutlined />,
+        to: "/images"
       },
     ],
   },
+  
 ];
 
 const MenuItem = ({ item }) => (
