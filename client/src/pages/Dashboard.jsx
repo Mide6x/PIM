@@ -36,7 +36,7 @@ const Dashboard = () => {
         message.error("Invalid data format received from server");
       }
     } catch (error) {
-      message.error("Failed to fetch products");
+      message.error("Failed 😔 to fetch products");
     } finally {
       setLoading(false); 
     }
@@ -54,10 +54,10 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/products/${id}`);
-      message.success("Product deleted successfully 🎉");
+      message.success("Product deleted successfully 🎉 🎉");
       fetchProducts();
     } catch (error) {
-      message.error("Failed to delete product");
+      message.error("Failed 😔 to delete product");
     }
   };
 
@@ -73,15 +73,15 @@ const Dashboard = () => {
           `http://localhost:3000/api/products/${editingProduct._id}`,
           values
         );
-        message.success("Product updated successfully 🎉");
+        message.success("Product updated successfully 🎉 🎉");
       } else {
         await axios.post("http://localhost:3000/api/products", values);
-        message.success("Product created successfully 🎉");
+        message.success("Product created successfully 🎉 🎉");
       }
       fetchProducts();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed to save product");
+      message.error("Failed 😔 to save product");
     }
   };
 
@@ -223,7 +223,7 @@ useEffect(() => {
         );
         setManufacturers(response.data);
       } catch (error) {
-        message.error("Failed to fetch manufacturers");
+        message.error("Failed 😔 to fetch manufacturers");
       }
     };
 
@@ -249,7 +249,7 @@ useEffect(() => {
         message.error("Invalid data received from server")
       }
     } catch (error) {
-      message.error("Failed to fetch categories")
+      message.error("Failed 😔 to fetch categories")
     }
   }
 

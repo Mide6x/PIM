@@ -33,11 +33,21 @@ const Images = () => {
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         const parsedData = XLSX.utils.sheet_to_json(ws);
-        console.log("Parsed data:", parsedData); // Log data to verify
+
+  
+        const hasEmptyVariants = parsedData.some((item) => !item["Variant"]);
+        if (hasEmptyVariants) {
+          message.error(
+            "Some rows have empty Variant values. Please check your file."
+          );
+          return;
+        }
+
+        console.log("Parsed data:", parsedData);
         setData(parsedData);
       } catch (error) {
         message.error(
-          "Failed to read the file. Ensure it is a valid Excel file. 😔"
+          "Failed 😔 to read the file. Ensure it is a valid Excel file. 😔"
         );
         console.error("Error reading file:", error);
       }
@@ -51,29 +61,29 @@ const Images = () => {
       const response = await axios.post(
         "http://localhost:3000/api/images/process",
         {
-          images: data,
+          images:processedData,  // This should include Amount
         }
       );
-
+  
       const transformedImages = response.data.results;
-
+  
       console.log("Transformed Images:", transformedImages);
-
+  
       if (!Array.isArray(transformedImages) || !transformedImages.length) {
         throw new Error("No valid image data received from the server.");
       }
-
+  
       const ws = XLSX.utils.json_to_sheet(transformedImages);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Transformed Images");
-
+  
       const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-
+  
       saveAs(
         new Blob([wbout], { type: "application/octet-stream" }),
         "transformed_images.xlsx"
       );
-
+  
       message.success("Images processed and file downloaded successfully");
     } catch (error) {
       console.error("Error processing images:", error);
@@ -82,6 +92,7 @@ const Images = () => {
       setLoading(false);
     }
   };
+  
 
   const convertVariantFormat = (variant) => {
     variant = String(variant);
@@ -93,7 +104,7 @@ const Images = () => {
 
     const match1 = variant.match(pattern1);
     if (match1) {
-      const [, size, unit, count] = match1; 
+      const [, size, unit, count] = match1;
       return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
     }
 
@@ -127,14 +138,13 @@ const Images = () => {
   const processedData = data.map((item) => {
     const formattedVariant = convertVariantFormat(item["Variant"]);
     const amount = extractAmount(formattedVariant);
-  
+
     return {
       ...item,
       Variant: formattedVariant,
       Amount: amount,
     };
   });
-  
 
   const columns = [
     {
@@ -194,7 +204,7 @@ const Images = () => {
 
           <Table
             columns={columns}
-            dataSource={processedData} 
+            dataSource={processedData}
             rowKey={(record) => record["Image Name"] || record.index}
             className="spaced"
           />

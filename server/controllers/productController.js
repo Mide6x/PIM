@@ -62,7 +62,7 @@ exports.checkForDuplicates = async (req, res) => {
 
     res.status(200).json(Array.from(duplicateNames));
   } catch (error) {
-    res.status(500).json({ error: 'Failed to check for duplicates' });
+    res.status(500).json({ error: 'Failed 😔 to check for duplicates' });
   }
 };
 

@@ -24,7 +24,7 @@ const MngManufacturers = () => {
         message.error("Invalid data format received from server");
       }
     } catch (error) {
-      message.error("Failed to fetch manufacturers");
+      message.error("Failed 😔 to fetch manufacturers");
     } finally {
       setLoading(false);
     }
@@ -42,10 +42,10 @@ const MngManufacturers = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/manufacturer/${id}`);
-      message.success("Manufacturer deleted successfully 🎉");
+      message.success("Manufacturer deleted successfully 🎉 🎉");
       fetchManufacturers();
     } catch (error) {
-      message.error("Failed to delete manufacturer");
+      message.error("Failed 😔 to delete manufacturer");
     }
   };
 
@@ -61,15 +61,15 @@ const MngManufacturers = () => {
           `http://localhost:3000/api/manufacturer/${editingManufacturer._id}`,
           values
         );
-        message.success("Manufacturer updated successfully 🎉");
+        message.success("Manufacturer updated successfully 🎉 🎉");
       } else {
         await axios.post("http://localhost:3000/api/manufacturer", values);
-        message.success("Manufacturer created successfully 🎉");
+        message.success("Manufacturer created successfully 🎉 🎉");
       }
       fetchManufacturers();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed to save manufacturer");
+      message.error("Failed 😔 to save manufacturer");
     }
   };
 

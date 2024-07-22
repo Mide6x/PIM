@@ -21,14 +21,14 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/manufacturer", manufacturerRoutes);
 app.use("/api/images", imageRoutes);
-app.use("/api/approvals", approvalRoutes); // Add this line
+app.use("/api/approvals", approvalRoutes); 
 
 // MongoDB connect
 mongoose
   .connect("mongodb://localhost:27017/")
   .then(() => console.log("Connection With Database Established."))
   .catch((error) =>
-    console.error("Failed to Establish Connection With Database:", error)
+    console.error("Failed 😔 to Establish Connection With Database:", error)
   );
 
 // Global error handling

@@ -24,7 +24,7 @@ const Categories = () => {
         message.error("Invalid data format received from server");
       }
     } catch (error) {
-      message.error("Failed to fetch categories");
+      message.error("Failed 😔 to fetch categories");
     } finally {
       setLoading(false); // Set loading false when fetching is done
     }
@@ -42,10 +42,10 @@ const Categories = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/categories/${id}`);
-      message.success("Category deleted successfully 🎉");
+      message.success("Category deleted successfully 🎉 🎉");
       fetchCategories();
     } catch (error) {
-      message.error("Failed to delete category 😔");
+      message.error("Failed 😔 to delete category 😔");
     }
   };
 
@@ -61,15 +61,15 @@ const Categories = () => {
           `http://localhost:3000/api/categories/${editingCategory._id}`,
           values
         );
-        message.success("Category updated successfully 🎉");
+        message.success("Category updated successfully 🎉 🎉");
       } else {
         await axios.post("http://localhost:3000/api/categories", values);
-        message.success("Category created successfully 🎉");
+        message.success("Category created successfully 🎉 🎉");
       }
       fetchCategories();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed to save category");
+      message.error("Failed 😔 to save category");
     }
   };
 

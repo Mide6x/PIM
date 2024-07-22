@@ -28,7 +28,7 @@ const Approval = () => {
       setRejectedApprovals(response.data.filter((item) => item.status === "rejected"));
       setApprovedApprovals(response.data.filter((item) => item.status === "approved"));
     } catch (error) {
-      message.error("Failed to fetch approvals");
+      message.error("Failed 😔 to fetch approvals");
     } finally {
       setLoading(false);
     }
@@ -42,10 +42,10 @@ const Approval = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/approvals/${id}`);
-      message.success("Approval entry deleted successfully 🎉");
+      message.success("Approval entry deleted successfully 🎉 🎉");
       fetchApprovals();
     } catch (error) {
-      message.error("Failed to delete approval entry");
+      message.error("Failed 😔 to delete approval entry");
     }
   };
 
@@ -55,15 +55,15 @@ const Approval = () => {
     try {
       if (editingItem) {
         await axios.put(`http://localhost:3000/api/approvals/${editingItem._id}`, values);
-        message.success("Approval entry updated successfully 🎉");
+        message.success("Approval entry updated successfully 🎉 🎉");
       } else {
         await axios.post("http://localhost:3000/api/approvals", values);
-        message.success("Approval entry created successfully 🎉");
+        message.success("Approval entry created successfully 🎉 🎉");
       }
       fetchApprovals();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed to save approval entry");
+      message.error("Failed 😔 to save approval entry");
     }
   };
 
@@ -72,7 +72,7 @@ const Approval = () => {
       const response = await axios.post("http://localhost:3000/api/products/check-duplicates", products);
       return response.data;
     } catch (error) {
-      message.error("Failed to check for duplicates");
+      message.error("Failed 😔 to check for duplicates");
       return [];
     }
   };
@@ -88,10 +88,10 @@ const Approval = () => {
       const uniqueProducts = approvedApprovals.filter(product => !duplicateNames.includes(product.productName));
       await axios.post("http://localhost:3000/api/products/bulk", uniqueProducts);
 
-      message.success("Approved products have been successfully pushed to the database 🎉");
+      message.success("Approved products have been successfully 🎉 pushed to the database 🎉");
       fetchApprovals();
     } catch (error) {
-      message.error("Failed to push approved products to the database");
+      message.error("Failed 😔 to push approved products to the database");
     }
   };
 
@@ -255,7 +255,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
         message.error("Invalid data format received from server");
       }
     } catch (error) {
-      message.error("Failed to fetch categories");
+      message.error("Failed 😔 to fetch categories");
     }
   };
 
@@ -270,7 +270,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
         message.error("Invalid data format received from server");
       }
     } catch (error) {
-      message.error("Failed to fetch subcategories");
+      message.error("Failed 😔 to fetch subcategories");
     }
   };
 

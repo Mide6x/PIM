@@ -15,43 +15,32 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-//download image
 const downloadImage = async (url, savePath) => {
   try {
     const response = await axios({ url, responseType: 'stream' });
     await pipeline(response.data, fs.createWriteStream(savePath));
-    console.log(`Image successfully downloaded and saved to ${savePath}`);
+    console.log(`Image successfully 🎉 downloaded and saved to ${savePath}`);
   } catch (error) {
-    console.error(`Failed to download image. URL: ${url}, Path: ${savePath}, Error: ${error.message}`);
+    console.error(`Failed 😔 to download image. URL: ${url}, Path: ${savePath}, Error: ${error.message}`);
     throw error;
   }
 };
 
-//upload and transform image
-const uploadAndTransformImage = async (filePath, quantity) => {
+const uploadAndTransformImage = async (filePath, amount) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       transformation: [
-        { background: "#FFFFFF", gravity: "center", height: 700, width: 1370, crop: "pad" },
-        { color: "#FFFFFF", overlay: { font_family: "georgia", font_size: 71, font_weight: "bold", text_align: "left", text: `X${quantity}` } },
+        { background: "#FFFFFF", gravity: "center", height: 500, width: 1170, crop: "pad" },
+        { color: "#FFFFFF", overlay: { font_family: "georgia", font_size: 71, font_weight: "bold", text_align: "left", text: `X${amount}` } },
         { background: "#00350C" },
         { flags: "layer_apply", gravity: "east", x: "0.2" }
       ],
     });
     return result.secure_url;
   } catch (error) {
-    console.error(`Failed to upload and transform image. Error: ${error.message}`);
+    console.error(`Failed 😔 to upload and transform image. Error: ${error.message}`);
     throw error;
   }
-};
-
-//generate Excel file to download
-const generateExcel = (data) => {
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Processed Images");
-  const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
-  return buffer;
 };
 
 // Endpoint to process images
@@ -70,9 +59,10 @@ exports.processImages = async (req, res) => {
     for (const image of images) {
       const imageName = image['Image Name'];
       const imageUrl = image['Image Url'];
+      const amount = image['Amount']; 
 
-      console.log(`Processing image: ${imageName}, URL: ${imageUrl}`);
-      if (!imageName || !imageUrl) {
+      console.log(`Processing image: ${imageName}, URL: ${imageUrl}, Amount: ${amount}`);
+      if (!imageName || !imageUrl || amount === undefined) {
         console.error(`Invalid image data: ${JSON.stringify(image)}`);
         continue; 
       }
@@ -80,19 +70,17 @@ exports.processImages = async (req, res) => {
       const filePath = path.join(__dirname, 'temp', `${imageName.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`);
       await downloadImage(imageUrl, filePath);
 
-      const quantity = 56; 
-      const transformedUrl = await uploadAndTransformImage(filePath, quantity);
+      const transformedUrl = await uploadAndTransformImage(filePath, amount);
 
       results.push({ imageName, transformedUrl });
       fs.unlinkSync(filePath); 
     }
 
-    // Log results to verify
     console.log('Results:', results);
 
     res.status(200).json({ results });
   } catch (error) {
-    console.error(`Failed to process images: ${error.message}`);
-    res.status(500).json({ message: "Failed to process images", error: error.message });
+    console.error(`Failed 😔 to process images: ${error.message}`);
+    res.status(500).json({ message: "Failed 😔 to process images", error: error.message });
   }
 };

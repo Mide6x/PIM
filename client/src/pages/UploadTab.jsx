@@ -20,7 +20,7 @@ const UploadTab = () => {
       const response = await axios.get("http://localhost:3000/api/categories");
       setCategoryData(response.data);
     } catch (error) {
-      message.error("Failed to fetch categories");
+      message.error("Failed 😔 to fetch categories");
     }
   };
 
@@ -50,7 +50,7 @@ const UploadTab = () => {
         setData(data);
       } catch (error) {
         message.error(
-          "Failed to read the file. Ensure it is a valid Excel file. 😔"
+          "Failed 😔 to read the file. Ensure it is a valid Excel file. 😔"
         );
         console.error("Error reading file:", error);
       }
@@ -204,9 +204,9 @@ const UploadTab = () => {
   const handlePushToApproval = async () => {
     try {
       await axios.post("http://localhost:3000/api/approvals", data);
-      message.success("Data successfully sent for approval.");
+      message.success("Data successfully 🎉 sent for approval.");
     } catch (error) {
-      message.error("Failed to send data for approval.");
+      message.error("Failed 😔 to send data for approval.");
       console.error("Error sending data for approval:", error);
     }
   };
