@@ -202,8 +202,14 @@ const Dashboard = () => {
 const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
   const [manufacturers, setManufacturers] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
+ 
+
+useEffect(() => {
+  fetchCategories();
+}, []);
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
@@ -232,6 +238,22 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     setBrands(selectedManu ? selectedManu.brands : []);
     form.setFieldsValue({ brand: null }); 
   };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/categories");
+      if (Array.isArray(response.data)) {
+        setCategories(response.data);
+      } else {
+        setCategories([]);
+        message.error("Invalid data received from server")
+      }
+    } catch (error) {
+      message.error("Failed to fetch categories")
+    }
+  }
+
+ 
 
   const onFinish = (values) => {
     onOk(values);
@@ -274,7 +296,14 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           { required: true, message: "Please enter the product category" },
         ]}
       >
-        <Input />
+        <Select>
+          {categories.map((category)=> (
+            <Option key={category._id} value={category.name}>
+              {category.name}
+            </Option>
+          ))}
+        </Select>
+        
       </Form.Item>
       <Form.Item
         name="productName"
