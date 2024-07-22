@@ -51,7 +51,7 @@ const Images = () => {
       const response = await axios.post(
         "http://localhost:3000/api/images/process",
         {
-          images: data, //
+          images: data,
         }
       );
 
@@ -83,11 +83,74 @@ const Images = () => {
     }
   };
 
+  const convertVariantFormat = (variant) => {
+    variant = String(variant);
+    variant = variant.replace(/\s*[xX×]\s*/g, "x").replace("ltr", "L");
+
+    const pattern1 = /(\d+)\s*([a-zA-Z]+)\s*x\s*(\d+)/i;
+    const pattern2 = /(\d+)\s*x\s*(\d+)\s*([a-zA-Z]+)/i;
+    const pattern3 = /(\d+)x(\d+)([a-zA-Z]+)/i;
+
+    const match1 = variant.match(pattern1);
+    if (match1) {
+      const [, size, unit, count] = match1; 
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    const match2 = variant.match(pattern2);
+    if (match2) {
+      const [, count, size, unit] = match2;
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    const match3 = variant.match(pattern3);
+    if (match3) {
+      const [, count, size, unit] = match3;
+      return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
+    }
+
+    return variant;
+  };
+
+  const extractAmount = (weightStr) => {
+    try {
+      let amount_start = weightStr.indexOf("x");
+      if (amount_start === -1) amount_start = weightStr.indexOf("×");
+      if (amount_start === -1) amount_start = weightStr.indexOf("X");
+      if (amount_start === -1) return null;
+      return parseInt(weightStr.slice(amount_start + 1).trim(), 10);
+    } catch {
+      return null;
+    }
+  };
+
+  const processedData = data.map((item) => {
+    const formattedVariant = convertVariantFormat(item["Variant"]);
+    const amount = extractAmount(formattedVariant);
+  
+    return {
+      ...item,
+      Variant: formattedVariant,
+      Amount: amount,
+    };
+  });
+  
+
   const columns = [
     {
       title: "Image Name",
       dataIndex: "Image Name",
       key: "image_name",
+    },
+    {
+      title: "Variant",
+      dataIndex: "Variant",
+      key: "variant",
+    },
+    {
+      title: "Amount",
+      dataIndex: "Amount",
+      key: "amount",
     },
     {
       title: "Image Url",
@@ -129,14 +192,12 @@ const Images = () => {
             Process Data
           </Button>
 
-      
-            <Table
-              columns={columns}
-              dataSource={data}
-              rowKey="Image Name"
-              className="spaced"
-            />
-          
+          <Table
+            columns={columns}
+            dataSource={processedData} 
+            rowKey={(record) => record["Image Name"] || record.index}
+            className="spaced"
+          />
         </div>
       </Flex>
     </div>
