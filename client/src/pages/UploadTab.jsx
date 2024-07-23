@@ -45,6 +45,26 @@ const UploadTab = () => {
     reader.readAsArrayBuffer(file);
   };
 
+
+  const extractSize = (weightStr) => {
+    try {
+      const pattern = /(\d+\.?\d*)(KG|G|ML|L|CL)/i;
+      const match = weightStr.match(pattern);
+      if (match) {
+        const value = parseFloat(match[1]);
+        const unit = match[2].toUpperCase();
+        if (unit === "KG") return value * 1000;
+        if (unit === "G") return value;
+        if (unit === "ML") return value * 1;
+        if (unit === "L") return value * 1000;
+        if (unit === "CL") return value * 10;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const convertVariantFormat = (variant) => {
     variant = String(variant);
     variant = variant.replace(/\s*[xX×]\s*/g, "x").replace("ltr", "L");
@@ -74,37 +94,17 @@ const UploadTab = () => {
     return variant;
   };
 
-  const extractSize = (weightStr) => {
-    try {
-      const pattern = /(\d+\.?\d*)(KG|G|ML|L|CL)/i;
-      const match = weightStr.match(pattern);
-      if (match) {
-        const value = parseFloat(match[1]);
-        const unit = match[2].toUpperCase();
-        if (unit === "KG") return value * 1000;
-        if (unit === "G") return value;
-        if (unit === "ML") return value * 1;
-        if (unit === "L") return value * 1000;
-        if (unit === "CL") return value * 10;
-      }
-      return null;
-    } catch {
-      return null;
-    }
-  };
-
   const extractAmount = (weightStr) => {
     try {
       let amount_start = weightStr.indexOf("x");
       if (amount_start === -1) amount_start = weightStr.indexOf("×");
       if (amount_start === -1) amount_start = weightStr.indexOf("X");
       if (amount_start === -1) return null;
-      return parseInt(weightStr.slice(amount_start + 1));
+      return parseInt(weightStr.slice(amount_start + 1).trim(), 10);
     } catch {
       return null;
     }
   };
-
   const categorizeProduct = async (productName) => {
     return await categorizeProductWithOpenAI(productName);
   };
