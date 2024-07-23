@@ -56,6 +56,37 @@ exports.deleteCategory = async (req, res) => {
   }
 };
 
+exports.archiveCategory = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!manufacturer) {
+      return res.status(404).json({ message: "Category not found 😔" });
+    }
+
+    category.isArchived = true;
+    const updatedCategory = await category.save();
+    res.json(updatedCategory);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+exports.unarchiveCategory = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!manufacturer) {
+      return res.status(404).json({ message: "Category not found 😔" });
+    }
+
+    category.isArchived = false; 
+    constupdatedCategory = await category.save();
+    res.json(updatedCategory);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getSubcategories = async (req, res) => {
   try {
     const category = await Category.findOne({ name: req.params.categoryName });
@@ -67,3 +98,4 @@ exports.getSubcategories = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
