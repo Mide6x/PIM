@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Flex, Input, message, Space, List } from "antd";
+import { Button, Table, Modal, Form, Flex, Input, message, Space, List, Tabs } from "antd";
 import axios from "axios";
 import Sidebar from "../sidebar/Sidebar";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
 
+const { TabPane } = Tabs;
+
 const MngManufacturers = () => {
   const [manufacturers, setManufacturers] = useState([]);
+  const [archivedManufacturers, setArchivedManufacturers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingManufacturer, setEditingManufacturer] = useState(null);
+  const [activeTab, setActiveTab] = useState("live");
 
   const fetchManufacturers = async (search = "") => {
     setLoading(true);
@@ -18,9 +22,12 @@ const MngManufacturers = () => {
         params: { search }
       });
       if (Array.isArray(response.data)) {
-        setManufacturers(response.data);
+        // Assuming the API provides a way to distinguish between live and archived manufacturers
+        setManufacturers(response.data.filter(m => !m.isArchived));
+        setArchivedManufacturers(response.data.filter(m => m.isArchived));
       } else {
         setManufacturers([]);
+        setArchivedManufacturers([]);
         message.error("Invalid data format received from server 🤔");
       }
     } catch (error) {
@@ -73,6 +80,17 @@ const MngManufacturers = () => {
     }
   };
 
+  const handleArchive = async (manufacturer) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/manufacturer/${manufacturer._id}/archive`);
+      message.success("Manufacturer archived successfully 🎉");
+      fetchManufacturers();
+    } catch (error) {
+      message.error("Failed to archive manufacturer 😔");
+    }
+  };
+  
+
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -108,6 +126,7 @@ const MngManufacturers = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
+          <Button onClick={() => handleArchive(record)}>Archive</Button>
           <Button danger onClick={() => handleDelete(record._id)}>
             Delete
           </Button>
@@ -136,12 +155,24 @@ const MngManufacturers = () => {
           <Button type="primary" className="spaced" onClick={handleCreate}>
             Add New Manufacturer
           </Button>
-          <Table
-            columns={columns}
-            dataSource={manufacturers}
-            loading={loading}
-            rowKey="_id"
-          />
+          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+            <TabPane tab="Live Manufacturers" key="live">
+              <Table
+                columns={columns}
+                dataSource={manufacturers}
+                loading={loading}
+                rowKey="_id"
+              />
+            </TabPane>
+            <TabPane tab="Archived Manufacturers" key="archived">
+              <Table
+                columns={columns}
+                dataSource={archivedManufacturers}
+                loading={loading}
+                rowKey="_id"
+              />
+            </TabPane>
+          </Tabs>
           <Modal
             title={
               editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
