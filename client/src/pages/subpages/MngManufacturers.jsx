@@ -89,6 +89,17 @@ const MngManufacturers = () => {
       message.error("Failed to archive manufacturer 😔");
     }
   };
+
+  const handleUnarchive = async (manufacturer) => {
+    try {
+      await axios.patch(`http://localhost:3000/api/manufacturer/${manufacturer._id}/unarchive`);
+      message.success("Manufacturer unarchived successfully 🎉");
+      fetchManufacturers(); // Refresh the list of manufacturers
+    } catch (error) {
+      message.error("Failed to unarchive manufacturer 😔");
+    }
+  };
+  
   
 
   const handleCancel = () => {
@@ -135,6 +146,38 @@ const MngManufacturers = () => {
     },
   ];
 
+  const archivedColumns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Brands",
+      dataIndex: "brands",
+      key: "brands",
+      render: (brands) => (
+        <List
+          dataSource={brands}
+          renderItem={(brand) => <List.Item>{brand}</List.Item>}
+        />
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onClick={() => handleUnarchive(record)}>Unarchive</Button>
+          <Button danger onClick={() => handleDelete(record._id)}>
+            Delete
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+  
+
   return (
     <div className="container">
       <div className="sidebar">
@@ -166,7 +209,7 @@ const MngManufacturers = () => {
             </TabPane>
             <TabPane tab="Archived Manufacturers" key="archived">
               <Table
-                columns={columns}
+                columns={archivedColumns}
                 dataSource={archivedManufacturers}
                 loading={loading}
                 rowKey="_id"

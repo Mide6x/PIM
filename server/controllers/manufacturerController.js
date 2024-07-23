@@ -63,6 +63,22 @@ exports.archiveManufacturer = async (req, res) => {
   }
 };
 
+// Unarchive a manufacturer
+exports.unarchiveManufacturer = async (req, res) => {
+  try {
+    const manufacturer = await Manufacturer.findById(req.params.id);
+    if (!manufacturer) {
+      return res.status(404).json({ message: "Manufacturer not found 😔" });
+    }
+
+    manufacturer.isArchived = false; // Set the manufacturer as not archived
+    const updatedManufacturer = await manufacturer.save();
+    res.json(updatedManufacturer);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 // Delete a manufacturer
 exports.deleteManufacturer = async (req, res) => {
