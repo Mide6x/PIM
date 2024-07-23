@@ -11,6 +11,7 @@ const categorySchema = new mongoose.Schema({
       required: true,
     },
   ],
+  isArchived: { type: Boolean, default: false }, 
 });
 
 module.exports = mongoose.model("Category", categorySchema);
