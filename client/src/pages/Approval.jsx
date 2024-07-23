@@ -12,6 +12,7 @@ const Approval = () => {
   const [approvals, setApprovals] = useState([]);
   const [rejectedApprovals, setRejectedApprovals] = useState([]);
   const [approvedApprovals, setApprovedApprovals] = useState([]);
+  const [duplicateApprovals, setDuplicateApprovals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -83,12 +84,19 @@ const Approval = () => {
 
       if (duplicateNames.length > 0) {
         message.warning(`Some products are already in the database: ${duplicateNames.join(', ')}`);
+        
+       
+        const duplicateProducts = approvedApprovals.filter(product => duplicateNames.includes(product.productName));
+        const uniqueProducts = approvedApprovals.filter(product => !duplicateNames.includes(product.productName));
+
+        setDuplicateApprovals(duplicateProducts);
+        await axios.post("http://localhost:3000/api/products/bulk", uniqueProducts);
+        message.success("Approved products have been successfully pushed to the database 🎉");
+      } else {
+        await axios.post("http://localhost:3000/api/products/bulk", approvedApprovals);
+        message.success("Approved products have been successfully pushed to the database 🎉");
       }
 
-      const uniqueProducts = approvedApprovals.filter(product => !duplicateNames.includes(product.productName));
-      await axios.post("http://localhost:3000/api/products/bulk", uniqueProducts);
-
-      message.success("Approved products have been successfully pushed to the database 🎉");
       fetchApprovals();
     } catch (error) {
       message.error("Failed to push approved products to the database 😔 ");
@@ -172,6 +180,16 @@ const Approval = () => {
     },
   ];
 
+  const duplicateColumns = [
+    ...columns,
+    {
+      title: "Duplicate Status",
+      dataIndex: "status",
+      key: "status",
+      render: () => "Duplicate", 
+    },
+  ];
+
   return (
     <div className="container">
       <div className="sidebar">
@@ -205,6 +223,18 @@ const Approval = () => {
             </TabPane>
             <TabPane tab="Rejected Products" key="rejected">
               <Table columns={rejectedColumns} dataSource={rejectedApprovals} loading={loading} rowKey="_id" />
+            </TabPane>
+            <TabPane tab="Duplicate Products" key="duplicateNames">
+              <Table columns={duplicateColumns} dataSource={duplicateApprovals} loading={loading} rowKey="_id" />
+              <Button
+                type="primary"
+                onClick={handleConfirm}
+                style={{ marginBottom: "20px" }}
+                danger 
+                //onClick={() => handleDelete(record._id)}
+              >
+                Delete Duplicates
+              </Button>
             </TabPane>
           </Tabs>
         </div>

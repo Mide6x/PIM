@@ -136,7 +136,7 @@ const Dashboard = () => {
       key: "variant",
     },
     {
-      title: "Weight",
+      title: "Weight (Kg)",
       dataIndex: "weight",
       key: "weight",
     },
