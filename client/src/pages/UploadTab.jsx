@@ -5,6 +5,7 @@ import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
+import { saveAs } from "file-saver";
 
 const UploadTab = () => {
   const [data, setData] = useState([]);
@@ -15,7 +16,7 @@ const UploadTab = () => {
     const file = info.file;
 
     if (!file) {
-      message.error("No file selected.");
+      message.error("No file selected. 🫢");
       return;
     }
 
@@ -23,7 +24,7 @@ const UploadTab = () => {
       !file.type.includes("spreadsheetml.sheet") &&
       !file.type.includes("excel")
     ) {
-      message.error("Invalid file type. Please upload an Excel file.");
+      message.error("Invalid file type. Please upload an Excel file 👋");
       return;
     }
 
@@ -37,14 +38,24 @@ const UploadTab = () => {
         setData(jsonData);
       } catch (error) {
         message.error(
-          "Failed to read the file. Ensure it is a valid Excel file."
+          "Failed to read the file. Ensure it is a valid Excel file 🫢"
         );
         console.error("Error reading file:", error);
       }
     };
     reader.readAsArrayBuffer(file);
   };
-
+  const handleDownload = async () => {
+    try {
+      const response = await fetch("/FinalUpload.xlsx");
+      if (!response.ok) throw new Error("File not found");
+      
+      const blob = await response.blob();
+      saveAs(blob, "FinalUpload.xlsx");
+    } catch (error) {
+      message.error(`Failed to download template: ${error.message} 😔`);
+    }
+  };
 
   const extractSize = (weightStr) => {
     try {
@@ -140,7 +151,7 @@ const UploadTab = () => {
       setData(cleanedData);
       message.success("Data processing completed.");
     } catch (error) {
-      message.error("Failed to process data.");
+      message.error("Failed to process data 😔");
       console.error("Error processing data:", error);
     }
     setLoading(false);
@@ -149,9 +160,9 @@ const UploadTab = () => {
   const handlePushToApproval = async () => {
     try {
       await axios.post("http://localhost:3000/api/approvals", data);
-      message.success("Data successfully 🎉 sent for approval.");
+      message.success("Data successfully sent for approval 🎉");
     } catch (error) {
-      message.error("Failed 😔 to send data for approval.");
+      message.error("Failed to send data for approval 😔");
       console.error("Error sending data for approval:", error);
     }
   };
@@ -227,6 +238,14 @@ const UploadTab = () => {
           <p className="spaced">
             From here, you can upload your product sheet.
           </p>
+          <Button
+            type="primary"
+            className="spaced"
+            onClick={handleDownload}
+          >
+            Download Excel Template
+          </Button>
+          <span style={{ margin: "0 8px" }} />
           <Upload
             name="file"
             accept=".xlsx, .xls"

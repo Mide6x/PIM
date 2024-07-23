@@ -22,15 +22,15 @@ app.use("/api/manufacturer", manufacturerRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/approvals", approvalRoutes); 
 
-// MongoDB connect
+//MongoDB connect
 mongoose
   .connect("mongodb://localhost:27017/")
-  .then(() => console.log("Connection With Database Established."))
+  .then(() => console.log("Connection With Database Established. 🎉"))
   .catch((error) =>
     console.error("Failed 😔 to Establish Connection With Database:", error)
   );
 
-// Global error handling
+//error handling - Global
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Server
+//Server
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is Running on Port: ${PORT}`);

@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
 
   const fetchProducts = async (search = "") => {
-    setLoading(true); // Set loading true when fetching
+    setLoading(true);
     try {
       const response = await axios.get("http://localhost:3000/api/products", {
         params: { search },
@@ -33,12 +33,12 @@ const Dashboard = () => {
         setProducts(response.data);
       } else {
         setProducts([]);
-        message.error("Invalid data format received from server");
+        message.error("Invalid data format received from server 🤔");
       }
     } catch (error) {
-      message.error("Failed 😔 to fetch products");
+      message.error("Failed to fetch products 😔");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -57,7 +57,7 @@ const Dashboard = () => {
       message.success("Product deleted successfully 🎉 🎉");
       fetchProducts();
     } catch (error) {
-      message.error("Failed 😔 to delete product");
+      message.error("Failed to delete product 😔");
     }
   };
 
@@ -73,15 +73,15 @@ const Dashboard = () => {
           `http://localhost:3000/api/products/${editingProduct._id}`,
           values
         );
-        message.success("Product updated successfully 🎉 🎉");
+        message.success("Product updated successfully 🎉");
       } else {
         await axios.post("http://localhost:3000/api/products", values);
-        message.success("Product created successfully 🎉 🎉");
+        message.success("Product created successfully 🎉");
       }
       fetchProducts();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed 😔 to save product");
+      message.error("Failed to save product 😔");
     }
   };
 
@@ -93,7 +93,7 @@ const Dashboard = () => {
     if (value.length >= 3) {
       fetchProducts(value);
     } else {
-      fetchProducts(); 
+      fetchProducts();
     }
   }, 300);
 
@@ -205,11 +205,10 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
- 
 
-useEffect(() => {
-  fetchCategories();
-}, []);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
@@ -223,7 +222,7 @@ useEffect(() => {
         );
         setManufacturers(response.data);
       } catch (error) {
-        message.error("Failed 😔 to fetch manufacturers");
+        message.error("Failed to fetch manufacturers 😔");
       }
     };
 
@@ -236,7 +235,7 @@ useEffect(() => {
     );
     setSelectedManufacturer(selectedManu);
     setBrands(selectedManu ? selectedManu.brands : []);
-    form.setFieldsValue({ brand: null }); 
+    form.setFieldsValue({ brand: null });
   };
 
   const fetchCategories = async () => {
@@ -246,14 +245,12 @@ useEffect(() => {
         setCategories(response.data);
       } else {
         setCategories([]);
-        message.error("Invalid data received from server")
+        message.error("Invalid data received from server");
       }
     } catch (error) {
-      message.error("Failed 😔 to fetch categories")
+      message.error("Failed to fetch categories 😔");
     }
-  }
-
- 
+  };
 
   const onFinish = (values) => {
     onOk(values);
@@ -297,13 +294,12 @@ useEffect(() => {
         ]}
       >
         <Select>
-          {categories.map((category)=> (
+          {categories.map((category) => (
             <Option key={category._id} value={category.name}>
               {category.name}
             </Option>
           ))}
         </Select>
-        
       </Form.Item>
       <Form.Item
         name="productName"

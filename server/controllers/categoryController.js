@@ -30,7 +30,7 @@ exports.updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+      return res.status(404).json({ message: "Category not found 😔" });
     }
 
     category.name = req.body.name;
@@ -46,11 +46,11 @@ exports.deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+      return res.status(404).json({ message: "Category not found 😔" });
     }
 
     await Category.deleteOne({ _id: req.params.id });
-    res.json({ message: "Category deleted" });
+    res.json({ message: "Category deleted 🫢" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -60,7 +60,7 @@ exports.getSubcategories = async (req, res) => {
   try {
     const category = await Category.findOne({ name: req.params.categoryName });
     if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+      return res.status(404).json({ message: "Category not found 😔" });
     }
     res.json(category.subcategories);
   } catch (error) {

@@ -35,7 +35,7 @@ exports.updateManufacturer = async (req, res) => {
   try {
     const manufacturer = await Manufacturer.findById(req.params.id);
     if (!manufacturer) {
-      return res.status(404).json({ message: "Manufacturer not found" });
+      return res.status(404).json({ message: "Manufacturer not found 😔" });
     }
 
     manufacturer.name = req.body.name;
@@ -52,11 +52,11 @@ exports.deleteManufacturer = async (req, res) => {
   try {
     const manufacturer = await Manufacturer.findById(req.params.id);
     if (!manufacturer) {
-      return res.status(404).json({ message: "Manufacturer not found" });
+      return res.status(404).json({ message: "Manufacturer not found 😔" });
     }
 
     await manufacturer.deleteOne();
-    res.json({ message: "Manufacturer deleted" });
+    res.json({ message: "Manufacturer deleted 🫢" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

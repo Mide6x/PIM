@@ -21,7 +21,7 @@ const Images = () => {
       !file.type.includes("spreadsheetml.sheet") &&
       !file.type.includes("excel")
     ) {
-      message.error("Invalid file type. Please upload an Excel file.");
+      message.error("Invalid file type. Please upload an Excel file. 🤔");
       return;
     }
 
@@ -38,7 +38,7 @@ const Images = () => {
         const hasEmptyVariants = parsedData.some((item) => !item["Variant"]);
         if (hasEmptyVariants) {
           message.error(
-            "Some rows have empty Variant values. Please check your file."
+            "Some rows have empty Variant values. Please check your file. 🤔" 
           );
           return;
         }
@@ -47,7 +47,7 @@ const Images = () => {
         setData(parsedData);
       } catch (error) {
         message.error(
-          "Failed 😔 to read the file. Ensure it is a valid Excel file. 😔"
+          "Failed to read the file. Ensure it is a valid Excel file. 😔"
         );
         console.error("Error reading file:", error);
       }
@@ -55,13 +55,26 @@ const Images = () => {
     reader.readAsArrayBuffer(file);
   };
 
+  const handleDownload = async () => {
+    try {
+      const response = await fetch("/ImageUpload.xlsx");
+      if (!response.ok) throw new Error("File not found");
+      
+      const blob = await response.blob();
+      saveAs(blob, "ImageUpload.xlsx");
+    } catch (error) {
+      message.error(`Failed to download template: ${error.message} 😔`);
+    }
+  };
+  
+
   const processImages = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:3000/api/images/process",
         {
-          images:processedData,  // This should include Amount
+          images:processedData,
         }
       );
   
@@ -84,7 +97,7 @@ const Images = () => {
         "transformed_images.xlsx"
       );
   
-      message.success("Images processed and file downloaded successfully");
+      message.success("Images processed and file downloaded successfully 🎉");
     } catch (error) {
       console.error("Error processing images:", error);
       message.error(`Error processing images: ${error.message}`);
@@ -181,6 +194,14 @@ const Images = () => {
             From here, you can upload your image sheet. Kindly ensure that the
             Image URL is in the correct format.
           </p>
+          <Button
+            type="primary"
+            className="spaced"
+            onClick={handleDownload}
+          >
+            Download Excel Template
+          </Button>
+          <span style={{ margin: "0 8px" }} />
           <Upload
             name="file"
             accept=".xlsx, .xls"
@@ -201,6 +222,8 @@ const Images = () => {
           >
             Process Data
           </Button>
+      
+       
 
           <Table
             columns={columns}

@@ -62,7 +62,7 @@ exports.checkForDuplicates = async (req, res) => {
 
     res.status(200).json(Array.from(duplicateNames));
   } catch (error) {
-    res.status(500).json({ error: 'Failed 😔 to check for duplicates' });
+    res.status(500).json({ error: 'Failed to check for duplicates 😔' });
   }
 };
 
@@ -71,7 +71,7 @@ exports.getProductById = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Product not found 😔" });
     }
     res.status(200).json(product);
   } catch (error) {
@@ -133,7 +133,7 @@ exports.updateProduct = async (req, res, next) => {
       { new: true, runValidators: true }
     );
     if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Product not found 😔" });
     }
     res.status(200).json(updatedProduct);
   } catch (error) {
@@ -146,9 +146,9 @@ exports.deleteProduct = async (req, res, next) => {
   try {
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Product not found 😔" });
     }
-    res.status(204).json({ message: "Product deleted" });
+    res.status(204).json({ message: "Product deleted 🫢" });
   } catch (error) {
     next(error);
   }

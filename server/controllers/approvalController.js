@@ -26,7 +26,7 @@ exports.createApproval = async (req, res, next) => {
         manufacturerName: productData["Manufacturer Name"],
         brand: productData["Brand"],
         productCategory: productData["Product Category"],
-        productSubcategory: productData["Product Subcategory"],  // Added field
+        productSubcategory: productData["Product Subcategory"],
         productName: productData["Product Name"],
         variantType: productData["Variant Type"],
         variant: productData["Variant"],
@@ -52,7 +52,7 @@ exports.updateApproval = async (req, res, next) => {
     
     // Ensure productSubcategory is included in the update
     if (updateData.productSubcategory === undefined) {
-      updateData.productSubcategory = ""; // or any default value
+      updateData.productSubcategory = "";
     }
 
     const updatedApproval = await Approval.findByIdAndUpdate(
@@ -61,7 +61,7 @@ exports.updateApproval = async (req, res, next) => {
       { new: true, runValidators: true }
     );
     if (!updatedApproval) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Product not found 😔" });
     }
     res.status(200).json(updatedApproval);
   } catch (error) {
@@ -74,9 +74,9 @@ exports.deleteApproval = async (req, res, next) => {
   try {
     const deletedApproval = await Approval.findByIdAndDelete(req.params.id);
     if (!deletedApproval) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ message: "Product not found 😔" });
     }
-    res.status(204).json({ message: "Product deleted" });
+    res.status(204).json({ message: "Product deleted 🫢" });
   } catch (error) {
     next(error);
   }

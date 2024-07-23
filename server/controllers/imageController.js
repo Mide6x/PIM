@@ -50,7 +50,7 @@ exports.processImages = async (req, res) => {
   const { images } = req.body;
 
   if (!Array.isArray(images) || images.length === 0) {
-    return res.status(400).json({ message: "No images provided" });
+    return res.status(400).json({ message: "No images provided 🤔" });
   }
 
   try {

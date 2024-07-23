@@ -12,7 +12,7 @@ const Categories = () => {
   const [editingCategory, setEditingCategory] = useState(null);
 
   const fetchCategories = async (search = "") => {
-    setLoading(true); // Set loading true when fetching
+    setLoading(true);
     try {
       const response = await axios.get("http://localhost:3000/api/categories", {
         params: { search },
@@ -21,12 +21,12 @@ const Categories = () => {
         setCategories(response.data);
       } else {
         setCategories([]);
-        message.error("Invalid data format received from server");
+        message.error("Invalid data format received from server 🤔");
       }
     } catch (error) {
-      message.error("Failed 😔 to fetch categories");
+      message.error("Failed to fetch categories 😔");
     } finally {
-      setLoading(false); // Set loading false when fetching is done
+      setLoading(false);
     }
   };
 
@@ -42,10 +42,10 @@ const Categories = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/categories/${id}`);
-      message.success("Category deleted successfully 🎉 🎉");
+      message.success("Category deleted successfully 🎉");
       fetchCategories();
     } catch (error) {
-      message.error("Failed 😔 to delete category 😔");
+      message.error("Failed to delete category 😔");
     }
   };
 
@@ -61,15 +61,15 @@ const Categories = () => {
           `http://localhost:3000/api/categories/${editingCategory._id}`,
           values
         );
-        message.success("Category updated successfully 🎉 🎉");
+        message.success("Category updated successfully 🎉");
       } else {
         await axios.post("http://localhost:3000/api/categories", values);
-        message.success("Category created successfully 🎉 🎉");
+        message.success("Category created successfully 🎉");
       }
       fetchCategories();
       setIsModalVisible(false);
     } catch (error) {
-      message.error("Failed 😔 to save category");
+      message.error("Failed to save category 😔");
     }
   };
 
@@ -81,7 +81,7 @@ const Categories = () => {
     if (value.length >= 3) {
       fetchCategories(value);
     } else {
-      fetchCategories(); // Fetch all categories if search term is too short
+      fetchCategories();
     }
   }, 300);
 
@@ -174,7 +174,7 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
         name="name"
         label="Category Name"
         rules={[
-          { required: true, message: "Please enter the category name 😤" },
+          { required: true, message: "Please enter the category name" },
         ]}
       >
         <Input />
@@ -183,7 +183,7 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
         name="subcategories"
         label="Subcategories"
         rules={[
-          { required: true, message: "Please enter the subcategories 🫣" },
+          { required: true, message: "Please enter the subcategories" },
         ]}
       >
         <Input />
