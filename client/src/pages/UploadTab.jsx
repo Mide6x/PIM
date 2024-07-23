@@ -1,33 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Flex, Button, message, Upload, Table, Modal } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
 import axios from "axios";
+import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 
 const UploadTab = () => {
   const [data, setData] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    fetchCategoryData();
-  }, []);
-
-  const fetchCategoryData = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/api/categories");
-      setCategoryData(response.data);
-    } catch (error) {
-      message.error("Failed 😔 to fetch categories");
-    }
-  };
-
   const handleUpload = (info) => {
     const file = info.file;
+
     if (!file) {
-      message.error("No file selected");
+      message.error("No file selected.");
       return;
     }
 
@@ -43,72 +31,19 @@ const UploadTab = () => {
     reader.onload = (e) => {
       const arrayBuffer = e.target.result;
       try {
-        const wb = XLSX.read(arrayBuffer, { type: "array" });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
-        const data = XLSX.utils.sheet_to_json(ws);
-        setData(data);
+        const workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        setData(jsonData);
       } catch (error) {
         message.error(
-          "Failed 😔 to read the file. Ensure it is a valid Excel file. 😔"
+          "Failed to read the file. Ensure it is a valid Excel file."
         );
         console.error("Error reading file:", error);
       }
     };
     reader.readAsArrayBuffer(file);
   };
-
-  const preprocessCategories = (categories) => {
-    const categoryMap = {};
-    categories.forEach((category) => {
-      categoryMap[category.name.toLowerCase()] = category.name;
-      category.subcategories.forEach((subcategory) => {
-        categoryMap[
-          subcategory.toLowerCase()
-        ] = `${category.name} > ${subcategory}`;
-      });
-    });
-    return categoryMap;
-  };
-
-  const categoryMap = preprocessCategories(categoryData);
-
-  const categorizeProduct = (productName, manufacturer) => {
-    const tokens = new Set(productName.toLowerCase().split());
-    const lowerCaseManufacturer = manufacturer.toLowerCase();
-
-    // Check specific keywords and manufacturers
-    for (const token of tokens) {
-      if (token.includes("poundo") || token.includes("iyan")) {
-        return "Poundo, Wheat & Semolina";
-      } else if (token.includes("rum") || token.includes("liqueur")) {
-        return "Liquers & Creams";
-      } else if (token.includes("soda") || token.includes("bicarbonate")) {
-        return "Baking Tools & Accessories";
-      } else if (token.includes("custard")) {
-        return "Oats & Instant Cereals";
-      } else if (token.includes("sauce")) {
-        return "Cooking Oils";
-      }
-    }
-
-    if (lowerCaseManufacturer.includes("the coca-cola company")) {
-      return "Fizzy Drinks & Malt";
-    } else if (lowerCaseManufacturer.includes("mount gay barbados")) {
-      return "Liquers & Creams";
-    }
-
-    // Check category map for classification
-    for (const token of tokens) {
-      if (categoryMap[token]) {
-        return categoryMap[token];
-      }
-    }
-
-    // Default return value when classification is unknown
-    return "unknown";
-  };
-
 
   const convertVariantFormat = (variant) => {
     variant = String(variant);
@@ -120,7 +55,7 @@ const UploadTab = () => {
 
     const match1 = variant.match(pattern1);
     if (match1) {
-      const [, size, unit, count] = match1; 
+      const [, size, unit, count] = match1;
       return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
     }
 
@@ -170,35 +105,41 @@ const UploadTab = () => {
     }
   };
 
-  const cleanData = (df) => {
-    df = df.map((row) => {
-      const variant = convertVariantFormat(row["Variant"]);
-      const weight = extractSize(variant);
-      const amount = extractAmount(variant);
-      const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
-
-      return {
-        ...row,
-        "Product Category": categorizeProduct(
-          row["Product Name"],
-          row["Manufacturer Name"]
-        ),
-        Variant: variant,
-        "Variant Type": "Size",
-        Weight: weight,
-        Amount: amount,
-        "Weight (in Kg)": weightInKg ? Math.round(weightInKg) : null,
-      };
-    });
-    return df;
+  const categorizeProduct = async (productName) => {
+    return await categorizeProductWithOpenAI(productName);
   };
 
-  const handleProcess = () => {
+  const cleanData = async (df) => {
+    return await Promise.all(
+      df.map(async (row) => {
+        const variant = convertVariantFormat(row["Variant"]);
+        const weight = extractSize(variant);
+        const amount = extractAmount(variant);
+        const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
+
+        return {
+          ...row,
+          "Product Category": await categorizeProduct(row["Product Name"]),
+          Variant: variant,
+          "Variant Type": "Size",
+          Weight: weight,
+          Amount: amount,
+          "Weight (in Kg)": weightInKg ? Math.round(weightInKg) : null,
+        };
+      })
+    );
+  };
+  const handleProcess = async () => {
     setLoading(true);
-    let cleanedData = cleanData(data);
-    setData(cleanedData);
+    try {
+      const cleanedData = await cleanData(data);
+      setData(cleanedData);
+      message.success("Data processing completed.");
+    } catch (error) {
+      message.error("Failed to process data.");
+      console.error("Error processing data:", error);
+    }
     setLoading(false);
-    message.success("Data processing completed 🎉.");
   };
 
   const handlePushToApproval = async () => {
@@ -210,21 +151,17 @@ const UploadTab = () => {
       console.error("Error sending data for approval:", error);
     }
   };
-  
 
   const handleModalOk = async () => {
     setIsModalVisible(false);
     await handlePushToApproval();
   };
-  
-  const handleConfirm = () => {
-    setIsModalVisible(true);
-  };
-
- 
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
+  };
+  const handleConfirm = () => {
+    setIsModalVisible(true);
   };
 
   const columns = [
@@ -300,31 +237,26 @@ const UploadTab = () => {
           >
             Process Data
           </Button>
-
-      
-            <>
-              <Table
-                columns={columns}
-                dataSource={data}
-                rowKey="Product Name"
-                className="spaced"
-              />
-              <Button
-                type="primary"
-                className="spaced"
-                onClick={handleConfirm}
-              >
-                Confirm & Send to Approval Page
-              </Button>
-            </>
-          
+          <>
+            <Table
+              columns={columns}
+              dataSource={data}
+              rowKey="Product Name"
+              className="spaced"
+            />
+            <Button type="primary" className="spaced" onClick={handleConfirm}>
+              Confirm & Send to Approval Page
+            </Button>
+          </>
           <Modal
             title="Confirm Data"
-           open={isModalVisible}
+            open={isModalVisible}
             onOk={handleModalOk}
             onCancel={handleModalCancel}
           >
-            <p>Are you sure you want to send this products to the Approval Page?</p>
+            <p>
+              Are you sure you want to send this products to the Approval Page?
+            </p>
           </Modal>
         </div>
       </Flex>

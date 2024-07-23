@@ -7,8 +7,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const productRoutes = require("./routes/productRoute");
 const manufacturerRoutes = require("./routes/manufacturerRoutes");
 const imageRoutes = require("./routes/imageRoutes");
-const approvalRoutes = require("./routes/approvalRoutes"); // Add this line
-
+const approvalRoutes = require("./routes/approvalRoutes");
 const app = express();
 
 // Middleware
