@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: false
+  dangerouslyAllowBrowser: true
 });
 
 export const categorizeProductWithOpenAI = async (productName) => {
@@ -93,7 +93,10 @@ export const categorizeProductWithOpenAI = async (productName) => {
         - Female Shoe
 
     Product: "${productName}"
-    Subcategory:
+    Format: productCategory -> productSubcategory
+    Provide the result in the following format:
+    productCategory: [Category]
+    productSubcategory: [Subcategory]
     `;
 
     const response = await openai.chat.completions.create({
@@ -105,9 +108,25 @@ export const categorizeProductWithOpenAI = async (productName) => {
       temperature: 0.5,
     });
 
-    return response.choices[0].message.content.trim();
+    const result = response.choices[0].message.content.trim();
+    
+    //parse the result to extract category and subcategory
+    const lines = result.split('\n');
+    let productCategory = 'unknown';
+    let productSubcategory = 'unknown';
+
+    lines.forEach(line => {
+      if (line.startsWith('productCategory:')) {
+        productCategory = line.replace('productCategory:', '').trim();
+      }
+      if (line.startsWith('productSubcategory:')) {
+        productSubcategory = line.replace('productSubcategory:', '').trim();
+      }
+    });
+
+    return { productCategory, productSubcategory };
   } catch (error) {
     console.error("Error categorizing product:", error);
-    return "unknown";
+    return { productCategory: 'unknown', productSubcategory: 'unknown' };
   }
 };

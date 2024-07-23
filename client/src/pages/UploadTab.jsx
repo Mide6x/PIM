@@ -116,10 +116,13 @@ const UploadTab = () => {
         const weight = extractSize(variant);
         const amount = extractAmount(variant);
         const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
-
+  
+        const { productCategory, productSubcategory } = await categorizeProduct(row["Product Name"]);
+  
         return {
           ...row,
-          "Product Category": await categorizeProduct(row["Product Name"]),
+          "Product Category": productCategory,
+          "Product Subcategory": productSubcategory,
           Variant: variant,
           "Variant Type": "Size",
           Weight: weight,
@@ -129,6 +132,7 @@ const UploadTab = () => {
       })
     );
   };
+  
   const handleProcess = async () => {
     setLoading(true);
     try {
@@ -179,6 +183,11 @@ const UploadTab = () => {
       title: "Product Category",
       dataIndex: "Product Category",
       key: "product_category",
+    },
+    {
+      title: "Product Subcategory",
+      dataIndex: "Product Subcategory",
+      key: "product_subcategory",
     },
     {
       title: "Variant",
