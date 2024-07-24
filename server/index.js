@@ -20,9 +20,12 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/manufacturer", manufacturerRoutes);
 app.use("/api/images", imageRoutes);
-app.use("/api/approvals", approvalRoutes); 
+app.use("/api/approvals", approvalRoutes);
 
-//MongoDB connect
+
+app.use("/api/processedimages", require('./routes/processedImageRoutes'));
+
+// MongoDB connect
 mongoose
   .connect("mongodb://localhost:27017/")
   .then(() => console.log("Connection With Database Established. 🎉"))
@@ -30,7 +33,7 @@ mongoose
     console.error("Failed 😔 to Establish Connection With Database:", error)
   );
 
-//error handling - Global
+// Error handling - Global
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
@@ -41,7 +44,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-//Server
+// Server
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is Running on Port: ${PORT}`);

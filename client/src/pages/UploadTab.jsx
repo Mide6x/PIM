@@ -1,61 +1,15 @@
 import { useState } from "react";
-import { Flex, Button, message, Upload, Table, Modal } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Flex, Button, message, Table, Modal } from "antd";
 import Sidebar from "./sidebar/Sidebar";
-import * as XLSX from "xlsx";
 import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
-import { saveAs } from "file-saver";
 
 const UploadTab = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleUpload = (info) => {
-    const file = info.file;
-
-    if (!file) {
-      message.error("No file selected. 🫢");
-      return;
-    }
-
-    if (
-      !file.type.includes("spreadsheetml.sheet") &&
-      !file.type.includes("excel")
-    ) {
-      message.error("Invalid file type. Please upload an Excel file 👋");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const arrayBuffer = e.target.result;
-      try {
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-        setData(jsonData);
-      } catch (error) {
-        message.error(
-          "Failed to read the file. Ensure it is a valid Excel file 🫢"
-        );
-        console.error("Error reading file:", error);
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  };
-  const handleDownload = async () => {
-    try {
-      const response = await fetch("/FinalUpload.xlsx");
-      if (!response.ok) throw new Error("File not found");
-      
-      const blob = await response.blob();
-      saveAs(blob, "FinalUpload.xlsx");
-    } catch (error) {
-      message.error(`Failed to download template: ${error.message} 😔`);
-    }
-  };
+ 
 
   const extractSize = (weightStr) => {
     try {
@@ -234,29 +188,10 @@ const UploadTab = () => {
       </div>
       <Flex vertical flex={1} className="content">
         <div>
-          <h2>Upload Excel Sheet Here 📂</h2>
+          <h2>Data Cleaning 🧼</h2>
           <p className="spaced">
-            From here, you can upload your product sheet.
+            From here, you will perform AI-assited data cleaning.
           </p>
-          <Button
-            type="primary"
-            className="spaced"
-            onClick={handleDownload}
-          >
-            Download Excel Template
-          </Button>
-          <span style={{ margin: "0 8px" }} />
-          <Upload
-            name="file"
-            accept=".xlsx, .xls"
-            beforeUpload={() => false}
-            onChange={handleUpload}
-            showUploadList={false}
-            className="spaced"
-          >
-            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-          </Upload>
-          <span style={{ margin: "0 8px" }} />
           <Button
             type="primary"
             className="spaced"

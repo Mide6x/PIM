@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   ProductOutlined ,
   ContainerOutlined,
-  UploadOutlined,
+  DatabaseOutlined ,
   PieChartOutlined,
   MacCommandOutlined,
   CheckSquareOutlined,
@@ -16,23 +16,23 @@ import "./Sidebar.css";
 const items = [
   {
     key: "1",
-    icon: <PieChartOutlined />,
-    label: "Dashboard",
+    icon: <DatabaseOutlined />,
+    label: "Product Catalogue",
     to: "/dashboard",
   },
   {
     key: "2",
-    icon: <UploadOutlined />,
-    label: "Product Upload",
-    to: "/uploadtab",
+    label: "Image Transformation",
+    icon: <FileImageOutlined />,
+    to: "/images"
   },
-
   {
     key: "3",
-    icon: <ContainerOutlined />,
-    label: "Categories",
-    to: "/categories",
+    icon: < PieChartOutlined />,
+    label: "Data Cleaning",
+    to: "/uploadtab",
   },
+  
   {
     key: "4",
     icon: <CheckSquareOutlined />,
@@ -45,17 +45,17 @@ const items = [
     icon: <ProductOutlined />,
     children: [
       {
-        key: "4",
+        key: "5",
+        icon: <ContainerOutlined />,
+        label: "Manage Categories",
+        to: "/categories",
+      },
+      {
+        key: "6",
         label: "Manage Manufacturers",
         icon: <MacCommandOutlined />,
         to: "/mngmanufacturers",
-      },
-      {
-        key: "5",
-        label: "Image Catalogue",
-        icon: <FileImageOutlined />,
-        to: "/images"
-      },
+      }
     ],
   },
   

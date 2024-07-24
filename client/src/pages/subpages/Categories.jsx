@@ -10,7 +10,7 @@ import {
   Space,
   Tabs,
 } from "antd";
-import Sidebar from "./sidebar/Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";

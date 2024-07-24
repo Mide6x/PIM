@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { Flex, Button, message, Upload, Table } from "antd";
+import { Flex, Button, message, Upload, Table, Tabs} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import Sidebar from "../sidebar/Sidebar";
+import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
 
+const { TabPane } = Tabs;
+
 const Images = () => {
   const [data, setData] = useState([]);
+  const [processedImages, setProcessedImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("1");
 
   const handleUpload = (info) => {
     const file = info.file;
@@ -16,7 +20,7 @@ const Images = () => {
       message.error("No file selected");
       return;
     }
-
+  
     if (
       !file.type.includes("spreadsheetml.sheet") &&
       !file.type.includes("excel")
@@ -24,7 +28,7 @@ const Images = () => {
       message.error("Invalid file type. Please upload an Excel file. 🤔");
       return;
     }
-
+  
     const reader = new FileReader();
     reader.onload = (e) => {
       const arrayBuffer = e.target.result;
@@ -33,16 +37,15 @@ const Images = () => {
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         const parsedData = XLSX.utils.sheet_to_json(ws);
-
   
         const hasEmptyVariants = parsedData.some((item) => !item["Variant"]);
         if (hasEmptyVariants) {
           message.error(
-            "Some rows have empty Variant values. Please check your file. 🤔" 
+            "Some rows have empty Variant values. Please check your file. 🤔"
           );
           return;
         }
-
+  
         console.log("Parsed data:", parsedData);
         setData(parsedData);
       } catch (error) {
@@ -54,50 +57,34 @@ const Images = () => {
     };
     reader.readAsArrayBuffer(file);
   };
+  
 
   const handleDownload = async () => {
     try {
-      const response = await fetch("/ImageUpload.xlsx");
+      const response = await fetch("/FinalUpload.xlsx");
       if (!response.ok) throw new Error("File not found");
-      
+
       const blob = await response.blob();
-      saveAs(blob, "ImageUpload.xlsx");
+      saveAs(blob, "FinalUpload.xlsx");
     } catch (error) {
       message.error(`Failed to download template: ${error.message} 😔`);
     }
   };
-  
 
   const processImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:3000/api/images/process",
         {
-          images:processedData,
+          images: processedData,
         }
       );
+      const response = await axios.get("http://localhost:3000/api/processedimages");
+      console.log("Fetched processed images:", response.data);
+      setProcessedImages(response.data);
   
-      const transformedImages = response.data.results;
-  
-      console.log("Transformed Images:", transformedImages);
-  
-      if (!Array.isArray(transformedImages) || !transformedImages.length) {
-        throw new Error("No valid image data received from the server.");
-      }
-  
-      const ws = XLSX.utils.json_to_sheet(transformedImages);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Transformed Images");
-  
-      const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  
-      saveAs(
-        new Blob([wbout], { type: "application/octet-stream" }),
-        "transformed_images.xlsx"
-      );
-  
-      message.success("Images processed and file downloaded successfully 🎉");
+      message.success("Images processed successfully 🎉");
     } catch (error) {
       console.error("Error processing images:", error);
       message.error(`Error processing images: ${error.message}`);
@@ -105,6 +92,9 @@ const Images = () => {
       setLoading(false);
     }
   };
+  
+  
+  
   
 
   const convertVariantFormat = (variant) => {
@@ -161,9 +151,24 @@ const Images = () => {
 
   const columns = [
     {
-      title: "Image Name",
-      dataIndex: "Image Name",
-      key: "image_name",
+      title: "Product Name",
+      dataIndex: "Product Name",
+      key: "product_name",
+    },
+    {
+      title: "Manufacturer Name",
+      dataIndex: "Manufacturer Name",
+      key: "manufacturer_name",
+    },
+    {
+      title: "Product Category",
+      dataIndex: "Product Category",
+      key: "product_category",
+    },
+    {
+      title: "Product Subcategory",
+      dataIndex: "Product Subcategory",
+      key: "product_subcategory",
     },
     {
       title: "Variant",
@@ -171,16 +176,75 @@ const Images = () => {
       key: "variant",
     },
     {
-      title: "Amount",
+      title: "Variant Type",
+      dataIndex: "Variant Type",
+      key: "variant_type",
+    },
+    {
+      title: "Quantity",
       dataIndex: "Amount",
       key: "amount",
     },
     {
-      title: "Image Url",
-      dataIndex: "Image Url",
+      title: "Weight (Kg)",
+      dataIndex: "Weight (in Kg)",
+      key: "weight_in_kg",
+    },
+    {
+      title: "Image URL",
+      dataIndex: "Image URL",
       key: "image_url",
     },
   ];
+
+  const processedColumns = [
+    {
+      title: "Product Name",
+      dataIndex: "productName",
+      key: "product_name",
+    },
+    {
+      title: "Manufacturer Name",
+      dataIndex: "manufacturerName",
+      key: "manufacturer_name",
+    },
+    {
+      title: "Product Category",
+      dataIndex: "productCategory",
+      key: "product_category",
+    },
+    {
+      title: "Product Subcategory",
+      dataIndex: "productSubcategory", 
+      key: "product_subcategory",
+    },
+    {
+      title: "Variant",
+      dataIndex: "variant",
+      key: "variant",
+    },
+    {
+      title: "Variant Type",
+      dataIndex: "variantType",
+      key: "variant_type",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "Weight (Kg)",
+      dataIndex: "weight", 
+      key: "weight_in_kg",
+    },
+    {
+      title: "Image URL",
+      dataIndex: "imageUrl",
+      key: "imageUrl",
+    },
+  ];
+  
 
   return (
     <div className="container">
@@ -189,16 +253,13 @@ const Images = () => {
       </div>
       <Flex vertical flex={1} className="content">
         <div>
-          <h2>Upload Image Excel Sheet Here 📂</h2>
+          <h2>Upload Excel Sheet Here 📂</h2>
           <p className="spaced">
-            From here, you can upload your image sheet. Kindly ensure that the
-            Image URL is in the correct format.
+            Download the template and insert your data so that we begin! Most
+            processes are AI-assisted but ensure a level of data accuracy, and
+            verify results before moving on to the next step.
           </p>
-          <Button
-            type="primary"
-            className="spaced"
-            onClick={handleDownload}
-          >
+          <Button type="primary" className="spaced" onClick={handleDownload}>
             Download Excel Template
           </Button>
           <span style={{ margin: "0 8px" }} />
@@ -222,16 +283,28 @@ const Images = () => {
           >
             Process Data
           </Button>
-      
-       
+          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+  <TabPane tab="Uploaded Sheet" key="1">
+    <Table
+      columns={columns}
+      dataSource={processedData}
+      rowKey={(record) => record["Product Name"] || record.index}
+      className="spaced"
+    />
+  </TabPane>
+  <TabPane tab="Processed Images" key="2">
+              <Table
+                columns={processedColumns}
+                dataSource={processedImages}
+                rowKey={(record) => record["Product Name"] || record.index}
+                className="spaced"
+              />
+            </TabPane>
+</Tabs>
 
-          <Table
-            columns={columns}
-            dataSource={processedData}
-            rowKey={(record) => record["Image Name"] || record.index}
-            className="spaced"
-          />
         </div>
+
+
       </Flex>
     </div>
   );

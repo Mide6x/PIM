@@ -5,8 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 const pipeline = promisify(require("stream").pipeline);
-const XLSX = require("xlsx");
-const { Readable } = require("stream");
+const ProcessedImage = require('../models/processedImageModel');
 
 // Cloudinary configuration
 cloudinary.config({
@@ -80,13 +79,14 @@ exports.processImages = async (req, res) => {
     const results = [];
 
     for (const image of images) {
-      const imageName = image["Image Name"];
-      const imageUrl = image["Image Url"];
-      const amount = image["Amount"];
+      const imageName = image['Product Name']; // Update to match the request body
+      const imageUrl = image['Image URL'];    // Update to match the request body
+      const amount = image['Amount'];
 
       console.log(
         `Processing image: ${imageName}, URL: ${imageUrl}, Amount: ${amount}`
       );
+
       if (!imageName || !imageUrl || amount === undefined) {
         console.error(`Invalid image data: ${JSON.stringify(image)}`);
         continue;
@@ -101,7 +101,24 @@ exports.processImages = async (req, res) => {
 
       const transformedUrl = await uploadAndTransformImage(filePath, amount);
 
-      results.push({ imageName, transformedUrl });
+      const processedImage = new ProcessedImage({
+        manufacturerName: image['Manufacturer Name'], 
+        brand: image['Brand'],                       
+        productName: image['Product Name'],         
+        productCategory: image['Product Category'],  
+        variantType: image['Variant Type'],         
+        variant: image['Variant'],                 
+        weight: image['Weight'],                     
+        imageUrl: transformedUrl
+      });
+
+      await processedImage.save();
+
+      results.push({
+        ...image,
+        imageUrl: transformedUrl
+      });
+
       fs.unlinkSync(filePath);
     }
 
@@ -113,5 +130,15 @@ exports.processImages = async (req, res) => {
     res
       .status(500)
       .json({ message: "Failed 😔 to process images", error: error.message });
+  }
+};
+
+exports.getProcessedImages = async (req, res) => {
+  try {
+    const images = await ProcessedImage.find();
+    res.json(images);
+  } catch (error) {
+    console.error("Error fetching processed images:", error);
+    res.status(500).json({ message: "Failed to fetch processed images" });
   }
 };
