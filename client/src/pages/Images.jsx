@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flex, Button, message, Upload, Table, Tabs} from "antd";
+import { Flex, Button, message, Upload, Table, Tabs } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
@@ -20,7 +20,7 @@ const Images = () => {
       message.error("No file selected");
       return;
     }
-  
+
     if (
       !file.type.includes("spreadsheetml.sheet") &&
       !file.type.includes("excel")
@@ -28,7 +28,7 @@ const Images = () => {
       message.error("Invalid file type. Please upload an Excel file. 🤔");
       return;
     }
-  
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const arrayBuffer = e.target.result;
@@ -37,7 +37,7 @@ const Images = () => {
         const wsname = wb.SheetNames[0];
         const ws = wb.Sheets[wsname];
         const parsedData = XLSX.utils.sheet_to_json(ws);
-  
+
         const hasEmptyVariants = parsedData.some((item) => !item["Variant"]);
         if (hasEmptyVariants) {
           message.error(
@@ -45,7 +45,7 @@ const Images = () => {
           );
           return;
         }
-  
+
         console.log("Parsed data:", parsedData);
         setData(parsedData);
       } catch (error) {
@@ -57,7 +57,6 @@ const Images = () => {
     };
     reader.readAsArrayBuffer(file);
   };
-  
 
   const handleDownload = async () => {
     try {
@@ -74,16 +73,15 @@ const Images = () => {
   const processImages = async () => {
     setLoading(true);
     try {
-      await axios.post(
-        "http://localhost:3000/api/images/process",
-        {
-          images: processedData,
-        }
+      await axios.post("http://localhost:3000/api/images/process", {
+        images: processedData,
+      });
+      const response = await axios.get(
+        "http://localhost:3000/api/processedimages"
       );
-      const response = await axios.get("http://localhost:3000/api/processedimages");
       console.log("Fetched processed images:", response.data);
       setProcessedImages(response.data);
-  
+
       message.success("Images processed successfully 🎉");
     } catch (error) {
       console.error("Error processing images:", error);
@@ -92,10 +90,6 @@ const Images = () => {
       setLoading(false);
     }
   };
-  
-  
-  
-  
 
   const convertVariantFormat = (variant) => {
     variant = String(variant);
@@ -215,7 +209,7 @@ const Images = () => {
     },
     {
       title: "Product Subcategory",
-      dataIndex: "productSubcategory", 
+      dataIndex: "productSubcategory",
       key: "product_subcategory",
     },
     {
@@ -235,7 +229,7 @@ const Images = () => {
     },
     {
       title: "Weight (Kg)",
-      dataIndex: "weight", 
+      dataIndex: "weight",
       key: "weight_in_kg",
     },
     {
@@ -244,7 +238,6 @@ const Images = () => {
       key: "imageUrl",
     },
   ];
-  
 
   return (
     <div className="container">
@@ -284,15 +277,15 @@ const Images = () => {
             Process Data
           </Button>
           <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
-  <TabPane tab="Uploaded Sheet" key="1">
-    <Table
-      columns={columns}
-      dataSource={processedData}
-      rowKey={(record) => record["Product Name"] || record.index}
-      className="spaced"
-    />
-  </TabPane>
-  <TabPane tab="Processed Images" key="2">
+            <TabPane tab="Uploaded Sheet" key="1">
+              <Table
+                columns={columns}
+                dataSource={processedData}
+                rowKey={(record) => record["Product Name"] || record.index}
+                className="spaced"
+              />
+            </TabPane>
+            <TabPane tab="Processed Images" key="2">
               <Table
                 columns={processedColumns}
                 dataSource={processedImages}
@@ -300,11 +293,8 @@ const Images = () => {
                 className="spaced"
               />
             </TabPane>
-</Tabs>
-
+          </Tabs>
         </div>
-
-
       </Flex>
     </div>
   );

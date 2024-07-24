@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { promisify } = require("util");
 const pipeline = promisify(require("stream").pipeline);
-const ProcessedImage = require('../models/processedImageModel');
+const ProcessedImage = require("../models/processedImageModel");
 
 // Cloudinary configuration
 cloudinary.config({
@@ -52,7 +52,7 @@ const uploadAndTransformImage = async (filePath, amount) => {
         { background: "#040057" },
         { quality: "auto:best" },
         { fetch_format: "auto" },
-        {effect: "sharpen:90"},
+        { effect: "sharpen:90" },
         { flags: "layer_apply", gravity: "east", x: "0.2" },
       ],
     });
@@ -79,9 +79,9 @@ exports.processImages = async (req, res) => {
     const results = [];
 
     for (const image of images) {
-      const imageName = image['Product Name']; // Update to match the request body
-      const imageUrl = image['Image URL'];    // Update to match the request body
-      const amount = image['Amount'];
+      const imageName = image["Product Name"];
+      const imageUrl = image["Image URL"];
+      const amount = image["Amount"];
 
       console.log(
         `Processing image: ${imageName}, URL: ${imageUrl}, Amount: ${amount}`
@@ -102,21 +102,21 @@ exports.processImages = async (req, res) => {
       const transformedUrl = await uploadAndTransformImage(filePath, amount);
 
       const processedImage = new ProcessedImage({
-        manufacturerName: image['Manufacturer Name'], 
-        brand: image['Brand'],                       
-        productName: image['Product Name'],         
-        productCategory: image['Product Category'],  
-        variantType: image['Variant Type'],         
-        variant: image['Variant'],                 
-        weight: image['Weight'],                     
-        imageUrl: transformedUrl
+        manufacturerName: image["Manufacturer Name"],
+        brand: image["Brand"],
+        productName: image["Product Name"],
+        productCategory: image["Product Category"],
+        variantType: image["Variant Type"],
+        variant: image["Variant"],
+        weight: image["Weight"],
+        imageUrl: transformedUrl,
       });
 
       await processedImage.save();
 
       results.push({
         ...image,
-        imageUrl: transformedUrl
+        imageUrl: transformedUrl,
       });
 
       fs.unlinkSync(filePath);

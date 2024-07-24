@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Flex, Button, message, Table, Modal } from "antd";
 import Sidebar from "./sidebar/Sidebar";
 import axios from "axios";
@@ -9,7 +9,21 @@ const UploadTab = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
- 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/processedimages"
+        );
+        setData(response.data);
+      } catch (error) {
+        message.error("Failed to fetch data 😔");
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const extractSize = (weightStr) => {
     try {
@@ -70,34 +84,37 @@ const UploadTab = () => {
       return null;
     }
   };
+
   const categorizeProduct = async (productName) => {
-    return await categorizeProductWithOpenAI(productName);
+    const result = await categorizeProductWithOpenAI(productName);
+    return result;
   };
 
   const cleanData = async (df) => {
     return await Promise.all(
       df.map(async (row) => {
-        const variant = convertVariantFormat(row["Variant"]);
+        const variant = convertVariantFormat(row.variant);
         const weight = extractSize(variant);
         const amount = extractAmount(variant);
         const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
-  
-        const { productCategory, productSubcategory } = await categorizeProduct(row["Product Name"]);
-  
+
+        const { productCategory, productSubcategory } = await categorizeProduct(
+          row.productName
+        );
+
         return {
           ...row,
-          "Product Category": productCategory,
-          "Product Subcategory": productSubcategory,
-          Variant: variant,
-          "Variant Type": "Size",
-          Weight: weight,
-          Amount: amount,
-          "Weight (in Kg)": weightInKg ? Math.round(weightInKg) : null,
+          productCategory,
+          productSubcategory,
+          variant,
+          variantType: "Size",
+          amount,
+          weightInKg: weightInKg ? Math.round(weightInKg) : null,
         };
       })
     );
   };
-  
+
   const handleProcess = async () => {
     setLoading(true);
     try {
@@ -129,6 +146,7 @@ const UploadTab = () => {
   const handleModalCancel = () => {
     setIsModalVisible(false);
   };
+
   const handleConfirm = () => {
     setIsModalVisible(true);
   };
@@ -136,47 +154,47 @@ const UploadTab = () => {
   const columns = [
     {
       title: "Product Name",
-      dataIndex: "Product Name",
+      dataIndex: "productName",
       key: "product_name",
     },
     {
       title: "Manufacturer Name",
-      dataIndex: "Manufacturer Name",
+      dataIndex: "manufacturerName",
       key: "manufacturer_name",
     },
     {
       title: "Product Category",
-      dataIndex: "Product Category",
+      dataIndex: "productCategory",
       key: "product_category",
     },
     {
       title: "Product Subcategory",
-      dataIndex: "Product Subcategory",
+      dataIndex: "productSubcategory",
       key: "product_subcategory",
     },
     {
       title: "Variant",
-      dataIndex: "Variant",
+      dataIndex: "variant",
       key: "variant",
     },
     {
       title: "Variant Type",
-      dataIndex: "Variant Type",
+      dataIndex: "variantType",
       key: "variant_type",
     },
     {
       title: "Quantity",
-      dataIndex: "Amount",
+      dataIndex: "amount",
       key: "amount",
     },
     {
       title: "Weight (Kg)",
-      dataIndex: "Weight (in Kg)",
+      dataIndex: "weightInKg",
       key: "weight_in_kg",
     },
     {
       title: "Image URL",
-      dataIndex: "Image URL",
+      dataIndex: "imageUrl",
       key: "image_url",
     },
   ];
@@ -190,7 +208,7 @@ const UploadTab = () => {
         <div>
           <h2>Data Cleaning 🧼</h2>
           <p className="spaced">
-            From here, you will perform AI-assited data cleaning.
+            From here, you will perform AI-assisted data cleaning.
           </p>
           <Button
             type="primary"
@@ -204,7 +222,7 @@ const UploadTab = () => {
             <Table
               columns={columns}
               dataSource={data}
-              rowKey="Product Name"
+              rowKey="productName"
               className="spaced"
             />
             <Button type="primary" className="spaced" onClick={handleConfirm}>
@@ -218,7 +236,7 @@ const UploadTab = () => {
             onCancel={handleModalCancel}
           >
             <p>
-              Are you sure you want to send this products to the Approval Page?
+              Are you sure you want to send these products to the Approval Page?
             </p>
           </Modal>
         </div>
