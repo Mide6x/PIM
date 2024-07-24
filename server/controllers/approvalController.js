@@ -23,15 +23,15 @@ exports.createApproval = async (req, res, next) => {
     const createdApprovals = [];
     for (const productData of products) {
       const approval = new Approval({
-        manufacturerName: productData["Manufacturer Name"],
-        brand: productData["Brand"],
-        productCategory: productData["Product Category"],
-        productSubcategory: productData["Product Subcategory"],
-        productName: productData["Product Name"],
-        variantType: productData["Variant Type"],
-        variant: productData["Variant"],
-        weightInKg: productData["Weight (in Kg)"],
-        imageUrl: productData["Image URL"],
+        manufacturerName: productData.manufacturerName,
+        brand: productData.brand,
+        productCategory: productData.productCategory,
+        productSubcategory: productData.productSubcategory,
+        productName: productData.productName,
+        variantType: productData.variantType,
+        variant: productData.variant,
+        weightInKg: productData.weightInKg,
+        imageUrl: productData.imageUrl,
       });
 
       const savedApproval = await approval.save();
@@ -44,6 +44,7 @@ exports.createApproval = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // Update a product awaiting approval by ID
 exports.updateApproval = async (req, res, next) => {

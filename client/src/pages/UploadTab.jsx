@@ -12,9 +12,7 @@ const UploadTab = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/processedimages"
-        );
+        const response = await axios.get("http://localhost:3000/api/processedimages");
         setData(response.data);
       } catch (error) {
         message.error("Failed to fetch data 😔");
@@ -98,17 +96,15 @@ const UploadTab = () => {
         const amount = extractAmount(variant);
         const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
 
-        const { productCategory, productSubcategory } = await categorizeProduct(
-          row.productName
-        );
+        const { productCategory, productSubcategory } = await categorizeProduct(row.productName);
 
         return {
           ...row,
-          productCategory,
-          productSubcategory,
-          variant,
+          productCategory: productCategory,
+          productSubcategory: productSubcategory,
+          variant: variant,
           variantType: "Size",
-          amount,
+          amount: amount,
           weightInKg: weightInKg ? Math.round(weightInKg) : null,
         };
       })
