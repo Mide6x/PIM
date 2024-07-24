@@ -1,15 +1,29 @@
 import { useState, useEffect } from "react";
-import { Button, Flex, Table, Modal, Form, Input, message, Space } from "antd";
+import {
+  Button,
+  Flex,
+  Table,
+  Modal,
+  Form,
+  Input,
+  message,
+  Space,
+  Tabs,
+} from "antd";
 import Sidebar from "./sidebar/Sidebar";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
 
+const { TabPane } = Tabs;
+
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const [archivedCategories, setArchivedCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+  const [activeTab, setActiveTab] = useState("live");
 
   const fetchCategories = async (search = "") => {
     setLoading(true);
@@ -18,9 +32,11 @@ const Categories = () => {
         params: { search },
       });
       if (Array.isArray(response.data)) {
-        setCategories(response.data);
+        setCategories(response.data.filter((c) => !c.isArchived));
+        setArchivedCategories(response.data.filter((c) => c.isArchived));
       } else {
         setCategories([]);
+        setArchivedCategories([]);
         message.error("Invalid data format received from server 🤔");
       }
     } catch (error) {
@@ -46,6 +62,30 @@ const Categories = () => {
       fetchCategories();
     } catch (error) {
       message.error("Failed to delete category 😔");
+    }
+  };
+
+  const handleArchive = async (category) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/categories/${category._id}/archive`
+      );
+      message.success("Category archived successfully 🎉");
+      fetchCategories();
+    } catch (error) {
+      message.error("Failed to archive category 😔");
+    }
+  };
+
+  const handleUnarchive = async (category) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/categories/${category._id}/unarchive`
+      );
+      message.success("Category unarchived successfully 🎉");
+      fetchCategories();
+    } catch (error) {
+      message.error("Failed to unarchive category 😔");
     }
   };
 
@@ -104,8 +144,41 @@ const Categories = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
+          <Button className="archived" onClick={() => handleArchive(record)}>
+            Archive
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  const archivedColumns = [
+    {
+      title: "Category Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Subcategories",
+      dataIndex: "subcategories",
+      key: "subcategories",
+      render: (subcategories) =>
+        subcategories.map((sub) => <div key={sub}>{sub}</div>),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onClick={() => handleEdit(record)}>Edit</Button>
           <Button danger onClick={() => handleDelete(record._id)}>
             Delete
+          </Button>
+          <Button
+            className="unarchived"
+            onClick={() => handleUnarchive(record)}
+          >
+            Unarchive
           </Button>
         </Space>
       ),
@@ -132,12 +205,24 @@ const Categories = () => {
           <Button className="spaced" type="primary" onClick={handleCreate}>
             Add New Category
           </Button>
-          <Table
-            columns={columns}
-            dataSource={categories}
-            loading={loading}
-            rowKey="_id"
-          />
+          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+            <TabPane tab="Live Categories" key="live">
+              <Table
+                columns={columns}
+                dataSource={categories}
+                loading={loading}
+                rowKey="_id"
+              />
+            </TabPane>
+            <TabPane tab="Archived Categories" key="archived">
+              <Table
+                columns={archivedColumns}
+                dataSource={archivedCategories}
+                loading={loading}
+                rowKey="_id"
+              />
+            </TabPane>
+          </Tabs>
         </div>
         {categories.length === 0 && !loading && <p>No categories found.</p>}
       </Flex>
@@ -173,18 +258,14 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="name"
         label="Category Name"
-        rules={[
-          { required: true, message: "Please enter the category name" },
-        ]}
+        rules={[{ required: true, message: "Please enter the category name" }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="subcategories"
         label="Subcategories"
-        rules={[
-          { required: true, message: "Please enter the subcategories" },
-        ]}
+        rules={[{ required: true, message: "Please enter the subcategories" }]}
       >
         <Input />
       </Form.Item>

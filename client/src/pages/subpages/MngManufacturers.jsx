@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Flex, Input, message, Space, List, Tabs } from "antd";
+import {
+  Button,
+  Table,
+  Modal,
+  Form,
+  Flex,
+  Input,
+  message,
+  Space,
+  List,
+  Tabs,
+} from "antd";
 import axios from "axios";
 import Sidebar from "../sidebar/Sidebar";
 import PropTypes from "prop-types";
@@ -18,13 +29,15 @@ const MngManufacturers = () => {
   const fetchManufacturers = async (search = "") => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/manufacturer", {
-        params: { search }
-      });
+      const response = await axios.get(
+        "http://localhost:3000/api/manufacturer",
+        {
+          params: { search },
+        }
+      );
       if (Array.isArray(response.data)) {
-        // Assuming the API provides a way to distinguish between live and archived manufacturers
-        setManufacturers(response.data.filter(m => !m.isArchived));
-        setArchivedManufacturers(response.data.filter(m => m.isArchived));
+        setManufacturers(response.data.filter((m) => !m.isArchived));
+        setArchivedManufacturers(response.data.filter((m) => m.isArchived));
       } else {
         setManufacturers([]);
         setArchivedManufacturers([]);
@@ -82,7 +95,9 @@ const MngManufacturers = () => {
 
   const handleArchive = async (manufacturer) => {
     try {
-      await axios.patch(`http://localhost:3000/api/manufacturer/${manufacturer._id}/archive`);
+      await axios.patch(
+        `http://localhost:3000/api/manufacturer/${manufacturer._id}/archive`
+      );
       message.success("Manufacturer archived successfully 🎉");
       fetchManufacturers();
     } catch (error) {
@@ -92,15 +107,15 @@ const MngManufacturers = () => {
 
   const handleUnarchive = async (manufacturer) => {
     try {
-      await axios.patch(`http://localhost:3000/api/manufacturer/${manufacturer._id}/unarchive`);
+      await axios.patch(
+        `http://localhost:3000/api/manufacturer/${manufacturer._id}/unarchive`
+      );
       message.success("Manufacturer unarchived successfully 🎉");
-      fetchManufacturers(); // Refresh the list of manufacturers
+      fetchManufacturers();
     } catch (error) {
       message.error("Failed to unarchive manufacturer 😔");
     }
   };
-  
-  
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -137,9 +152,8 @@ const MngManufacturers = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button onClick={() => handleArchive(record)}>Archive</Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
-            Delete
+          <Button className="archived" onClick={() => handleArchive(record)}>
+            Archive
           </Button>
         </Space>
       ),
@@ -168,15 +182,20 @@ const MngManufacturers = () => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleUnarchive(record)}>Unarchive</Button>
+          <Button onClick={() => handleEdit(record)}>Edit</Button>
           <Button danger onClick={() => handleDelete(record._id)}>
             Delete
+          </Button>
+          <Button
+            className="unarchived"
+            onClick={() => handleUnarchive(record)}
+          >
+            Unarchive
           </Button>
         </Space>
       ),
     },
   ];
-  
 
   return (
     <div className="container">

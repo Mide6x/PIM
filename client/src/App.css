@@ -10,7 +10,19 @@ body,
 html {
   height: 100%;
   margin: 0;
-  background: #cbdbff;
+  background: #cbdbff ;
+}
+
+.unarchived{
+  background:#02ad3b;
+  color:white;
+  border-color: #ffffff00;
+}
+
+.archived{
+  background:#ffae00; 
+  color:white;
+  border-color: #ffffff00;
 }
 
 #root {
