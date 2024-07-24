@@ -12,7 +12,7 @@ const approvalSchema = new mongoose.Schema({
   imageUrl: { type: String, required: true },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   rejectionReason: { type: String }
-});
+},{ timestamps: true });
 
 const Approval = mongoose.model("Approval", approvalSchema);
 

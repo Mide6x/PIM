@@ -50,7 +50,6 @@ exports.updateApproval = async (req, res, next) => {
   try {
     const updateData = req.body;
     
-    // Ensure productSubcategory is included in the update
     if (updateData.productSubcategory === undefined) {
       updateData.productSubcategory = "";
     }

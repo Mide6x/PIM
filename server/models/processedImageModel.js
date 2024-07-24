@@ -10,6 +10,8 @@ const processedImageSchema = new mongoose.Schema({
   weight: { type: String },
   imageUrl: { type: String },
 }, { timestamps: true });
+processedImageSchema.index({ productName: 1, variant: 1, weight: 1 }, { unique: true });
+
 
 const ProcessedImage = mongoose.model('ProcessedImage', processedImageSchema);
 

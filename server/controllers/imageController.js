@@ -65,6 +65,7 @@ const uploadAndTransformImage = async (filePath, amount) => {
   }
 };
 
+
 // Endpoint to process images
 exports.processImages = async (req, res) => {
   console.log("Request body:", req.body);
