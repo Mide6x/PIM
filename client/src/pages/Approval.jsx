@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Button, Table, Modal, Flex, Form, Input, Select, message, Space, Tabs } from "antd";
+import { useEffect, useState, useCallback  } from "react";
+import { Button, Table, Modal, Form, Input, Select, message, Space, Tabs } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
@@ -25,9 +25,10 @@ const Approval = () => {
   const fetchApprovals = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/approvals");
-      setApprovals(response.data.filter((item) => item.status === "pending"));
-      setRejectedApprovals(response.data.filter((item) => item.status === "rejected"));
-      setApprovedApprovals(response.data.filter((item) => item.status === "approved"));
+      const data = response.data;
+      setApprovals(data.filter((item) => item.status === "pending"));
+      setRejectedApprovals(data.filter((item) => item.status === "rejected"));
+      setApprovedApprovals(data.filter((item) => item.status === "approved"));
     } catch (error) {
       message.error("Failed to fetch approvals 😔");
     } finally {
@@ -49,8 +50,6 @@ const Approval = () => {
       message.error("Failed to delete approval entry 😔");
     }
   };
-
- 
 
   const handleOk = async (values) => {
     try {
@@ -83,11 +82,13 @@ const Approval = () => {
       const duplicateNames = await checkForDuplicates(approvedApprovals);
 
       if (duplicateNames.length > 0) {
-        message.warning(`Some products are already in the database: ${duplicateNames.join(', ')}`);
-        
-       
-        const duplicateProducts = approvedApprovals.filter(product => duplicateNames.includes(product.productName));
-        const uniqueProducts = approvedApprovals.filter(product => !duplicateNames.includes(product.productName));
+        message.warning(`Some products are already in the database: ${duplicateNames.join(", ")}`);
+        const duplicateProducts = approvedApprovals.filter((product) =>
+          duplicateNames.includes(product.productName)
+        );
+        const uniqueProducts = approvedApprovals.filter(
+          (product) => !duplicateNames.includes(product.productName)
+        );
 
         setDuplicateApprovals(duplicateProducts);
         await axios.post("http://localhost:3000/api/products/bulk", uniqueProducts);
@@ -121,7 +122,11 @@ const Approval = () => {
       dataIndex: "imageUrl",
       key: "imageUrl",
       render: (imageUrl) => (
-        <img src={imageUrl} alt="Product Image" style={{ width: 100, height: 100, objectFit: "cover" }} />
+        <img
+          src={imageUrl}
+          alt="Product Image"
+          style={{ width: 100, height: 100, objectFit: "cover" }}
+        />
       ),
     },
     {
@@ -145,7 +150,7 @@ const Approval = () => {
       key: "variant",
     },
     {
-      title: "Weight (in Kg)",
+      title: "Weight (Kg)",
       dataIndex: "weightInKg",
       key: "weightInKg",
     },
@@ -186,7 +191,7 @@ const Approval = () => {
       title: "Duplicate Status",
       dataIndex: "status",
       key: "status",
-      render: () => "Duplicate", 
+      render: () => "Duplicate",
     },
   ];
 
@@ -195,50 +200,67 @@ const Approval = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <Flex vertical flex={1} className="content">
-        <div>
-          <h2>Product Approval ✅</h2>
-          <p className="spaced">
-            From here, you can approve and edit products before pushing to the database.
-          </p>
-          <Input
-            placeholder="Search products..."
-            onChange={(e) => handleSearch(e.target.value)}
-            style={{ marginBottom: "20px", width: "300px" }}
-          />
-          
-          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
-            <TabPane tab="Pending Approvals" key="pending">
-              <Table columns={columns} dataSource={approvals} loading={loading} rowKey="_id" />
-            </TabPane>
-            <TabPane tab="Approved Products" key="approved">
-              <Table columns={columns} dataSource={approvedApprovals} loading={loading} rowKey="_id" />
-              <Button
-                type="primary"
-                onClick={handleConfirm}
-                style={{ marginBottom: "20px" }}
-              >
-                Confirm and Push to Database
-              </Button>
-            </TabPane>
-            <TabPane tab="Rejected Products" key="rejected">
-              <Table columns={rejectedColumns} dataSource={rejectedApprovals} loading={loading} rowKey="_id" />
-            </TabPane>
-            <TabPane tab="Duplicate Products" key="duplicateNames">
-              <Table columns={duplicateColumns} dataSource={duplicateApprovals} loading={loading} rowKey="_id" />
-              <Button
-                type="primary"
-                onClick={handleConfirm}
-                style={{ marginBottom: "20px" }}
-                danger 
-                //onClick={() => handleDelete(record._id)}
-              >
-                Delete Duplicates
-              </Button>
-            </TabPane>
-          </Tabs>
-        </div>
+      <div className="content" style={{ padding: "20px" }}>
+        <h2>Product Approval ✅</h2>
+        <p className="spaced">
+          From here, you can approve and edit products before pushing to the database.
+        </p>
+        <Input
+          placeholder="Search products..."
+          onChange={(e) => handleSearch(e.target.value)}
+          style={{ marginBottom: "20px", width: "300px" }}
+        />
 
+        <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+          <TabPane tab="Pending Approvals" key="pending">
+            <Table
+              columns={columns}
+              dataSource={approvals}
+              loading={loading}
+              rowKey="_id"
+            />
+          </TabPane>
+          <TabPane tab="Approved Products" key="approved">
+            <Table
+              columns={columns}
+              dataSource={approvedApprovals}
+              loading={loading}
+              rowKey="_id"
+            />
+            <Button
+              type="primary"
+              onClick={handleConfirm}
+              style={{ marginBottom: "20px" }}
+            >
+              Confirm and Push to Database
+            </Button>
+          </TabPane>
+          <TabPane tab="Rejected Products" key="rejected">
+            <Table
+              columns={rejectedColumns}
+              dataSource={rejectedApprovals}
+              loading={loading}
+              rowKey="_id"
+            />
+          </TabPane>
+          <TabPane tab="Duplicate Products" key="duplicates">
+            <Table
+              columns={duplicateColumns}
+              dataSource={duplicateApprovals}
+              loading={loading}
+              rowKey="_id"
+            />
+            <Button
+              type="primary"
+              onClick={handleConfirm}
+              style={{ marginBottom: "20px" }}
+              danger
+            >
+              Delete Duplicates
+            </Button>
+          </TabPane>
+        </Tabs>
+        
         <Modal
           title={editingItem ? "Edit Approval Entry" : "Create Approval Entry"}
           open={isModalVisible}
@@ -251,7 +273,7 @@ const Approval = () => {
             onOk={handleOk}
           />
         </Modal>
-      </Flex>
+      </div>
     </div>
   );
 };
@@ -259,106 +281,126 @@ const Approval = () => {
 const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
+  const [manufacturers, setManufacturers] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [status, setStatus] = useState(initialValues?.status || "pending");
 
-  useEffect(() => {
-    fetchCategories();
+  const fetchManufacturers = useCallback(async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/manufacturer");
+      if (Array.isArray(response.data)) {
+        setManufacturers(response.data);
+      } else {
+        console.error("Unexpected response format for manufacturers");
+      }
+    } catch (error) {
+      message.error("Failed to fetch manufacturers 😔");
+    }
   }, []);
 
-  useEffect(() => {
-    if (initialValues) {
-      form.setFieldsValue(initialValues);
-      setSelectedCategory(initialValues.productCategory);
-      fetchSubcategories(initialValues.productCategory);
+  const fetchBrands = useCallback(async (manufacturerName) => {
+    try {
+      const manufacturer = manufacturers.find(m => m.name === manufacturerName);
+      if (manufacturer) {
+        setBrands(manufacturer.brands);
+      } else {
+        setBrands([]);
+      }
+    } catch (error) {
+      message.error("Failed to fetch brands 😔");
     }
-  }, [initialValues, form]);
+  }, [manufacturers]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/categories");
       if (Array.isArray(response.data)) {
         setCategories(response.data);
       } else {
-        setCategories([]);
-        message.error("Invalid data format received from server");
+        console.error("Unexpected response format for categories");
       }
     } catch (error) {
-      message.error("Failed 😔 to fetch categories");
+      message.error("Failed to fetch categories 😔");
     }
-  };
+  }, []);
 
-  const fetchSubcategories = async (categoryName) => {
+  const fetchSubcategories = useCallback(async (categoryName) => {
     try {
-      if (!categoryName) return;
       const response = await axios.get(`http://localhost:3000/api/categories/${categoryName}/subcategories`);
-      if (Array.isArray(response.data)) {
-        setSubcategories(response.data);
+      if (Array.isArray(response.data.subcategories)) {
+        setSubcategories(response.data.subcategories);
       } else {
-        setSubcategories([]);
-        message.error("Invalid data format received from server 🤔");
+        console.error("Unexpected response format for subcategories");
       }
     } catch (error) {
-      message.error("Failed to fetch subcategories 😔 ");
+      message.error("Failed to fetch subcategories 😔");
     }
+  }, []);
+
+  useEffect(() => {
+    fetchManufacturers();
+    fetchCategories();
+  }, [fetchManufacturers, fetchCategories]);
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+      if (initialValues.productCategory) {
+        fetchSubcategories(initialValues.productCategory);
+      }
+      if (initialValues.manufacturerName) {
+        fetchBrands(initialValues.manufacturerName);
+      }
+    }
+  }, [initialValues, form, fetchBrands, fetchSubcategories]);
+
+  const handleManufacturerChange = (value) => {
+    fetchBrands(value);
   };
 
-  const onCategoryChange = (value) => {
-    setSelectedCategory(value);
+  const handleCategoryChange = (value) => {
     fetchSubcategories(value);
   };
 
-  const onFinish = (values) => {
-    onOk(values);
-  };
-
   return (
-    <Form form={form} onFinish={onFinish} initialValues={initialValues}>
-      <Form.Item
-        name="productName"
-        label="Product Name"
-        rules={[{ required: true, message: "Please enter the product name" }]}
-      >
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={(values) => onOk({ ...values })}
+      initialValues={initialValues}
+    >
+      <Form.Item label="Product Name" name="productName" rules={[{ required: true, message: "Please input the product name!" }]}>
         <Input />
       </Form.Item>
-      <Form.Item
-        name="manufacturerName"
-        label="Manufacturer Name"
-        rules={[{ required: true, message: "Please select the manufacturer name" }]}
-      >
-        <Select>
-          {/* Manufacturer options */}
+      <Form.Item label="Manufacturer" name="manufacturerName">
+        <Select onChange={handleManufacturerChange}>
+          {manufacturers.map((manufacturer) => (
+            <Option key={manufacturer._id} value={manufacturer.name}>
+              {manufacturer.name}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        name="brand"
-        label="Brand"
-        rules={[{ required: true, message: "Please enter the brand" }]}
-      >
+      <Form.Item label="Brand" name="brand">
         <Select>
-          {/* Brand options */}
+          {brands.map((brand, index) => (
+            <Option key={index} value={brand}>
+              {brand}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        name="productCategory"
-        label="Product Category"
-        rules={[{ required: true, message: "Please select the product category" }]}
-      >
-        <Select onChange={onCategoryChange}>
+      <Form.Item label="Category" name="productCategory">
+        <Select onChange={handleCategoryChange}>
           {categories.map((category) => (
-            <Option key={category._id} value={category.name}>
+            <Option key={category.name} value={category.name}>
               {category.name}
             </Option>
           ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        name="productSubcategory"
-        label="Subcategory"
-        rules={[{ required: true, message: "Please select the subcategory" }]}
-      >
-        <Select disabled={!selectedCategory}>
+      <Form.Item label="Subcategory" name="productSubcategory">
+        <Select>
           {subcategories.map((subcategory) => (
             <Option key={subcategory} value={subcategory}>
               {subcategory}
@@ -366,60 +408,29 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        name="variant"
-        label="Variant"
-        rules={[{ required: true, message: "Please enter the variant" }]}
-      >
+      <Form.Item label="Variant" name="variant">
         <Input />
       </Form.Item>
-      <Form.Item
-        name="weightInKg"
-        label="Weight (in Kg)"
-        rules={[{ required: true, message: "Please enter the weight (in Kg)" }]}
-      >
+      <Form.Item label="Weight (Kg)" name="weightInKg">
+        <Input type="number" />
+      </Form.Item>
+      <Form.Item label="Image URL" name="imageUrl">
         <Input />
       </Form.Item>
-      <Form.Item
-        name="imageUrl"
-        label="Image URL"
-        rules={[{ required: true, message: "Please enter the image URL" }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="status"
-        label="Status"
-        rules={[{ required: true, message: "Please select the status" }]}
-      >
-        <Select onChange={(value) => setStatus(value)}>
+      <Form.Item label="Status" name="status">
+        <Select>
           <Option value="pending">Pending</Option>
-          <Option value="approved">Approve</Option>
-          <Option value="rejected">Reject</Option>
+          <Option value="approved">Approved</Option>
+          <Option value="rejected">Rejected</Option>
         </Select>
       </Form.Item>
-      {status === "rejected" && (
-        <Form.Item
-          name="rejectionReason"
-          label="Rejection Reason"
-          rules={[
-            {
-              required: true,
-              message: "Please provide a reason for rejection",
-            },
-          ]}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
-      )}
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-        <span style={{ margin: "0 8px" }} />
-        <Button type="default" danger onClick={onCancel}>
-          Cancel
-        </Button>
+        <Space>
+          <Button onClick={onCancel}>Cancel</Button>
+          <Button type="primary" htmlType="submit">
+            {initialValues ? "Update" : "Create"}
+          </Button>
+        </Space>
       </Form.Item>
     </Form>
   );
@@ -430,5 +441,4 @@ ApprovalForm.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,
 };
-
 export default Approval;
