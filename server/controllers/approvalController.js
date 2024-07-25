@@ -3,7 +3,9 @@ const Approval = require("../models/approvalModel");
 // Get all products awaiting approval
 exports.getAllAwaitingApproval = async (req, res, next) => {
   try {
-    const approvals = await Approval.find();
+    const { search } = req.query;
+    const query = search ? { name: { $regex: search, $options: "i" } } : {};
+    const approvals = await Approval.find(query);
     res.status(200).json(approvals);
   } catch (error) {
     next(error);
@@ -45,12 +47,11 @@ exports.createApproval = async (req, res, next) => {
   }
 };
 
-
 // Update a product awaiting approval by ID
 exports.updateApproval = async (req, res, next) => {
   try {
     const updateData = req.body;
-    
+
     if (updateData.productSubcategory === undefined) {
       updateData.productSubcategory = "";
     }
