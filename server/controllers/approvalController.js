@@ -82,3 +82,49 @@ exports.deleteApproval = async (req, res, next) => {
     next(error);
   }
 };
+// Bulk approve products
+exports.bulkApprove = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "Invalid data format or empty list" });
+    }
+
+    const result = await Approval.updateMany(
+      { _id: { $in: ids } },
+      { $set: { status: "approved" } },
+      { multi: true }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No products found to approve" });
+    }
+
+    res.status(200).json({ message: "Products approved successfully", result });
+  } catch (error) {
+    next(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+// Delete all approved products awaiting approval
+exports.deleteAllApproved = async (req, res, next) => {
+  try {
+    const result = await Approval.deleteMany(
+      data.filter((item) => item.status === "approved")
+    );
+
+    if (result.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "No approved products found to delete 😔" });
+    }
+    res
+      .status(200)
+      .json({ message: "All approved products deleted successfully 🎉" });
+  } catch (error) {
+    next(error);
+  }
+};

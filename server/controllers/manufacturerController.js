@@ -7,7 +7,6 @@ exports.getManufacturers = async (req, res) => {
     const query = search
       ? { name: { $regex: search, $options: 'i' } }
       : {}; 
-    
     const manufacturers = await Manufacturer.find(query);
     res.json(manufacturers);
   } catch (err) {
@@ -21,7 +20,6 @@ exports.createManufacturer = async (req, res) => {
     name: req.body.name,
     brands: req.body.brands,
   });
-
   try {
     const newManufacturer = await manufacturer.save();
     res.status(201).json(newManufacturer);
@@ -37,7 +35,6 @@ exports.updateManufacturer = async (req, res) => {
     if (!manufacturer) {
       return res.status(404).json({ message: "Manufacturer not found 😔" });
     }
-
     manufacturer.name = req.body.name;
     manufacturer.brands = req.body.brands;
     const updatedManufacturer = await manufacturer.save();
@@ -54,7 +51,6 @@ exports.archiveManufacturer = async (req, res) => {
     if (!manufacturer) {
       return res.status(404).json({ message: "Manufacturer not found 😔" });
     }
-
     manufacturer.isArchived = true;
     const updatedManufacturer = await manufacturer.save();
     res.json(updatedManufacturer);
@@ -70,8 +66,7 @@ exports.unarchiveManufacturer = async (req, res) => {
     if (!manufacturer) {
       return res.status(404).json({ message: "Manufacturer not found 😔" });
     }
-
-    manufacturer.isArchived = false; // Set the manufacturer as not archived
+    manufacturer.isArchived = false;
     const updatedManufacturer = await manufacturer.save();
     res.json(updatedManufacturer);
   } catch (err) {
@@ -87,7 +82,6 @@ exports.deleteManufacturer = async (req, res) => {
     if (!manufacturer) {
       return res.status(404).json({ message: "Manufacturer not found 😔" });
     }
-
     await manufacturer.deleteOne();
     res.json({ message: "Manufacturer deleted 🫢" });
   } catch (err) {

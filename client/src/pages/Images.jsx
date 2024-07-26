@@ -20,7 +20,6 @@ const Images = () => {
       message.error("No file selected");
       return;
     }
-
     if (
       !file.type.includes("spreadsheetml.sheet") &&
       !file.type.includes("excel")
@@ -28,7 +27,6 @@ const Images = () => {
       message.error("Invalid file type. Please upload an Excel file. 🤔");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       const arrayBuffer = e.target.result;
@@ -45,7 +43,6 @@ const Images = () => {
           );
           return;
         }
-
         console.log("Parsed data:", parsedData);
         setData(parsedData);
       } catch (error) {
@@ -81,7 +78,6 @@ const Images = () => {
       );
       console.log("Fetched processed images:", response.data);
       setProcessedImages(response.data);
-
       message.success("Images processed successfully 🎉");
     } catch (error) {
       console.error("Error processing images:", error);
@@ -94,29 +90,24 @@ const Images = () => {
   const convertVariantFormat = (variant) => {
     variant = String(variant);
     variant = variant.replace(/\s*[xX×]\s*/g, "x").replace("ltr", "L");
-
     const pattern1 = /(\d+)\s*([a-zA-Z]+)\s*x\s*(\d+)/i;
     const pattern2 = /(\d+)\s*x\s*(\d+)\s*([a-zA-Z]+)/i;
     const pattern3 = /(\d+)x(\d+)([a-zA-Z]+)/i;
-
     const match1 = variant.match(pattern1);
     if (match1) {
       const [, size, unit, count] = match1;
       return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
     }
-
     const match2 = variant.match(pattern2);
     if (match2) {
       const [, count, size, unit] = match2;
       return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
     }
-
     const match3 = variant.match(pattern3);
     if (match3) {
       const [, count, size, unit] = match3;
       return `${size.toUpperCase()}${unit.toUpperCase()} x ${count}`;
     }
-
     return variant;
   };
 
@@ -135,7 +126,6 @@ const Images = () => {
   const processedData = data.map((item) => {
     const formattedVariant = convertVariantFormat(item["Variant"]);
     const amount = extractAmount(formattedVariant);
-
     return {
       ...item,
       Variant: formattedVariant,
