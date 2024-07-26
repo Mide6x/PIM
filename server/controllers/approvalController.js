@@ -108,23 +108,37 @@ exports.bulkApprove = async (req, res, next) => {
   }
 };
 
-
-// Delete all approved products awaiting approval
-exports.deleteAllApproved = async (req, res, next) => {
+//delete approved
+exports.deleteApprovedProducts = async (req, res) => {
   try {
-    const result = await Approval.deleteMany(
-      data.filter((item) => item.status === "approved")
-    );
-
-    if (result.deletedCount === 0) {
-      return res
-        .status(404)
-        .json({ message: "No approved products found to delete 😔" });
-    }
-    res
-      .status(200)
-      .json({ message: "All approved products deleted successfully 🎉" });
+    await Approval.deleteMany({ status: "approved" });
+    res.status(200).json({ message: "Approved products deleted successfully" });
   } catch (error) {
-    next(error);
+    console.error("Error deleting approved products:", error);
+    res.status(500).json({ message: "Failed to delete approved products" });
   }
 };
+
+
+
+// Delete duplicate products by IDs
+exports.deleteDuplicates = async (req, res, next) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ error: "Invalid data format or empty list" });
+    }
+
+    const result = await Approval.deleteMany({ _id: { $in: ids } });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "No duplicate products found to delete 😔" });
+    }
+    res.status(200).json({ message: "Duplicate products deleted successfully 🎉" });
+  } catch (error) {
+    next(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+

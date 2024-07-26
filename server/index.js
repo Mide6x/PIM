@@ -22,6 +22,7 @@ app.use("/api/images", imageRoutes);
 app.use("/api/approvals", approvalRoutes);
 app.use("/api/processedimages", require('./routes/processedImageRoutes'));
 
+
 // MongoDB connect
 mongoose
   .connect("mongodb://localhost:27017/")

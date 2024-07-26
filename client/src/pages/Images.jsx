@@ -5,6 +5,7 @@ import Sidebar from "./sidebar/Sidebar";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
+import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -282,6 +283,16 @@ const Images = () => {
                 rowKey={(record) => record["Product Name"] || record.index}
                 className="spaced"
               />
+              <Link to="/uploadtab">
+                {" "}
+                <Button
+                  type="primary"
+                  className="spaced"
+                  style={{ marginBottom: "20px" }}
+                >
+                  Next
+                </Button>
+              </Link>
             </TabPane>
           </Tabs>
         </div>

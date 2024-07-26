@@ -45,7 +45,7 @@ const Approval = () => {
       setRejectedApprovals(data.filter((item) => item.status === "rejected"));
       setApprovedApprovals(data.filter((item) => item.status === "approved"));
     } catch (error) {
-      console.error("Error fetching approvals:", error); // More specific error logging
+      console.error("Error fetching approvals:", error); 
       message.error("Failed to fetch approvals 😔");
     } finally {
       setLoading(false);

@@ -12,7 +12,9 @@ const UploadTab = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/processedimages");
+        const response = await axios.get(
+          "http://localhost:3000/api/processedimages"
+        );
         setData(response.data);
       } catch (error) {
         message.error("Failed to fetch data 😔");
@@ -96,7 +98,9 @@ const UploadTab = () => {
         const amount = extractAmount(variant);
         const weightInKg = weight && amount ? (weight * amount) / 1000 : null;
 
-        const { productCategory, productSubcategory } = await categorizeProduct(row.productName);
+        const { productCategory, productSubcategory } = await categorizeProduct(
+          row.productName
+        );
 
         return {
           ...row,
@@ -123,16 +127,39 @@ const UploadTab = () => {
     }
     setLoading(false);
   };
+ 
 
   const handlePushToApproval = async () => {
     try {
       await axios.post("http://localhost:3000/api/approvals", data);
-      message.success("Data successfully sent for approval 🎉");
+      message.success("Data successfully sent for approval.");
+      await deleteProcessedImages(getImageIdsFromData(data));
+      message.success("Processed images deleted successfully.");
     } catch (error) {
-      message.error("Failed to send data for approval 😔");
-      console.error("Error sending data for approval:", error);
+      console.error(
+        "Error sending data for approval or deleting processed images:",
+        error
+      );
+      message.error(
+        "Failed to send data for approval or delete processed images."
+      );
     }
   };
+  const getImageIdsFromData = (data) => {
+    const imageIds = data.map((item) => item._id);
+    console.log(imageIds)
+    return imageIds
+  };
+
+  const deleteProcessedImages = async (imageIds) => {
+    try {
+      await axios.delete("http://localhost:3000/api/processedimages/deleteProcessedImages", {
+        data: { imageIds },
+      });      
+    } catch (error) {
+      console.error("Error deleting processed images:", error);
+    }
+  };  
 
   const handleModalOk = async () => {
     setIsModalVisible(false);

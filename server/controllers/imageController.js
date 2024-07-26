@@ -65,7 +65,6 @@ const uploadAndTransformImage = async (filePath, amount) => {
   }
 };
 
-
 // Endpoint to process images
 exports.processImages = async (req, res) => {
   console.log("Request body:", req.body);
@@ -141,5 +140,19 @@ exports.getProcessedImages = async (req, res) => {
   } catch (error) {
     console.error("Error fetching processed images:", error);
     res.status(500).json({ message: "Failed to fetch processed images" });
+  }
+};
+
+exports.deleteAllProcessedImages = async (req, res) => {
+  try {
+    const { imageIds } = req.body;
+    if (!Array.isArray(imageIds) || imageIds.length === 0) {
+      return res.status(400).json({ message: "No image IDs provided." });
+    }
+    await ProcessedImage.deleteMany({ _id: { $in: imageIds } });
+    res.status(200).json({ message: "Processed images deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting processed images:", error);
+    res.status(500).json({ message: "Failed to delete processed images." });
   }
 };
