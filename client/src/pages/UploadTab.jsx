@@ -5,11 +5,21 @@ import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 
 const UploadTab = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(() => {
+    // Retrieve data from local storage, if available
+    const savedData = localStorage.getItem("processedData");
+    return savedData ? JSON.parse(savedData) : [];
+  });
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
+    // Save data to local storage whenever it changes
+    localStorage.setItem("processedData", JSON.stringify(data));
+  }, [data]);
+
+  useEffect(() => {
+    // Fetch initial data from the server (if needed)
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -34,7 +44,7 @@ const UploadTab = () => {
         const unit = match[2].toUpperCase();
         if (unit === "KG") return value * 1000;
         if (unit === "G") return value;
-        if (unit === "ML") return value * 1;
+        if (unit === "ML") return value;
         if (unit === "L") return value * 1000;
         if (unit === "CL") return value * 10;
       }
@@ -86,8 +96,14 @@ const UploadTab = () => {
   };
 
   const categorizeProduct = async (productName) => {
-    const result = await categorizeProductWithOpenAI(productName);
-    return result;
+    try {
+      const result = await categorizeProductWithOpenAI(productName);
+      return result;
+    } catch (error) {
+      message.error("Failed to categorize product 😔");
+      console.error("Error categorizing product:", error);
+      return { productCategory: "Unknown", productSubcategory: "Unknown" };
+    }
   };
 
   const cleanData = async (df) => {
@@ -127,7 +143,6 @@ const UploadTab = () => {
     }
     setLoading(false);
   };
- 
 
   const handlePushToApproval = async () => {
     try {
@@ -135,6 +150,10 @@ const UploadTab = () => {
       message.success("Data successfully sent for approval.");
       await deleteProcessedImages(getImageIdsFromData(data));
       message.success("Processed images deleted successfully.");
+      // Clear local storage after successful push
+      localStorage.removeItem("processedData");
+      // Clear the state
+      setData([]);
     } catch (error) {
       console.error(
         "Error sending data for approval or deleting processed images:",
@@ -145,21 +164,23 @@ const UploadTab = () => {
       );
     }
   };
+
   const getImageIdsFromData = (data) => {
-    const imageIds = data.map((item) => item._id);
-    console.log(imageIds)
-    return imageIds
+    return data.map((item) => item._id);
   };
 
   const deleteProcessedImages = async (imageIds) => {
     try {
-      await axios.delete("http://localhost:3000/api/processedimages/deleteProcessedImages", {
-        data: { imageIds },
-      });      
+      await axios.delete(
+        "http://localhost:3000/api/processedimages/deleteProcessedImages",
+        {
+          data: { imageIds },
+        }
+      );
     } catch (error) {
       console.error("Error deleting processed images:", error);
     }
-  };  
+  };
 
   const handleModalOk = async () => {
     setIsModalVisible(false);
@@ -237,6 +258,7 @@ const UploadTab = () => {
             type="primary"
             className="spaced"
             onClick={handleProcess}
+            loading={loading}
             disabled={loading || !data.length}
           >
             Process Data
@@ -248,20 +270,25 @@ const UploadTab = () => {
               rowKey="productName"
               className="spaced"
             />
-            <Button type="primary" className="spaced" onClick={handleConfirm}>
-              Confirm & Send to Approval Page
+            <Button
+              type="primary"
+              className="spaced"
+              onClick={handleConfirm}
+              disabled={!data.length}
+            >
+              Send to Approval
             </Button>
+            <Modal
+              title="Confirm Send to Approval"
+              visible={isModalVisible}
+              onOk={handleModalOk}
+              onCancel={handleModalCancel}
+              okText="Confirm"
+              cancelText="Cancel"
+            >
+              <p>Are you sure you want to send the data for approval?</p>
+            </Modal>
           </>
-          <Modal
-            title="Confirm Data"
-            open={isModalVisible}
-            onOk={handleModalOk}
-            onCancel={handleModalCancel}
-          >
-            <p>
-              Are you sure you want to send these products to the Approval Page?
-            </p>
-          </Modal>
         </div>
       </Flex>
     </div>

@@ -289,6 +289,7 @@ const Images = () => {
                   type="primary"
                   className="spaced"
                   style={{ marginBottom: "20px" }}
+                  disabled={processedImages.length === 0}
                 >
                   Next
                 </Button>

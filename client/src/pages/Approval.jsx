@@ -45,7 +45,7 @@ const Approval = () => {
       setRejectedApprovals(data.filter((item) => item.status === "rejected"));
       setApprovedApprovals(data.filter((item) => item.status === "approved"));
     } catch (error) {
-      console.error("Error fetching approvals:", error); 
+      console.error("Error fetching approvals:", error);
       message.error("Failed to fetch approvals 😔");
     } finally {
       setLoading(false);
@@ -54,24 +54,23 @@ const Approval = () => {
   const handleBulkApprove = async () => {
     setLoading(true);
     try {
-      const approvedItems = selectedRows.map(item => ({
+      const approvedItems = selectedRows.map((item) => ({
         ...item,
-        status: 'approved',
+        status: "approved",
       }));
       await Promise.all(
-        approvedItems.map(item =>
+        approvedItems.map((item) =>
           axios.put(`http://localhost:3000/api/approvals/${item._id}`, item)
         )
       );
-      message.success('Selected items approved successfully 🎉');
+      message.success("Selected items approved successfully 🎉");
       fetchApprovals();
     } catch (error) {
-      message.error('Failed to approve selected items 😔');
+      message.error("Failed to approve selected items 😔");
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleEdit = (item) => {
     setEditingItem(item);
@@ -124,18 +123,17 @@ const Approval = () => {
     setLoading(true);
     try {
       const duplicateNames = await checkForDuplicates(approvedApprovals);
-  
+
       if (duplicateNames.length > 0) {
-        // Handle Duplicates
         const duplicateProducts = approvedApprovals.filter((product) =>
           duplicateNames.includes(product.productName)
         );
         const uniqueProducts = approvedApprovals.filter(
           (product) => !duplicateNames.includes(product.productName)
         );
-  
+
         setDuplicateApprovals(duplicateProducts);
-  
+
         if (uniqueProducts.length > 0) {
           await axios.post(
             "http://localhost:3000/api/products/bulk",
@@ -145,13 +143,12 @@ const Approval = () => {
             "Unique products have been successfully pushed to the database"
           );
         }
-  
         message.warning(
           "Some products are already in the database. Duplicates have been moved to the 'Duplicate Products' tab."
         );
-  
-        await axios.delete("http://localhost:3000/api/approvals/delete-approved");
-        
+        await axios.delete(
+          "http://localhost:3000/api/approvals/delete-approved"
+        );
       } else {
         await axios.post(
           "http://localhost:3000/api/products/bulk",
@@ -161,7 +158,7 @@ const Approval = () => {
           "Approved products have been successfully pushed to the database 🎉"
         );
       }
-  
+
       setApprovedApprovals([]);
       fetchApprovals();
     } catch (error) {
@@ -170,8 +167,6 @@ const Approval = () => {
       setLoading(false);
     }
   };
-  
-
 
   const handleSearch = debounce((value) => {
     if (value.length >= 3) {
@@ -189,7 +184,10 @@ const Approval = () => {
     setLoading(true);
     try {
       const ids = duplicateApprovals.map((product) => product._id);
-      await axios.post("http://localhost:3000/api/products/delete", { ids });
+      await axios.post(
+        "http://localhost:3000/api/approvals/delete-duplicates",
+        { ids }
+      );
       message.success("Duplicate products have been deleted 🎉");
       fetchApprovals();
     } catch (error) {
@@ -198,8 +196,6 @@ const Approval = () => {
       setLoading(false);
     }
   };
-
-  
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -316,38 +312,41 @@ const Approval = () => {
               loading={loading}
               rowKey="_id"
               rowSelection={rowSelection}
+              className="spaced"
             />
-             <span style={{ margin: "0 8px" }} />
-             <Button
-  type="primary"
-  className="archived"
-  onClick={handleBulkApprove}
-  style={{ marginBottom: "20px" }}
-  disabled={selectedRows.length === 0}
->
-  Approve Selected
-</Button>
+            <span style={{ margin: "0 8px" }} />
+            <Button
+              type="primary"
+              className="archived spaced"
+              onClick={handleBulkApprove}
+              style={{ marginBottom: "20px" }}
+              disabled={selectedRows.length === 0}
+            >
+              Approve Selected
+            </Button>
           </TabPane>
           <TabPane tab="Approved Products" key="approved">
             <Table
               columns={columns}
               dataSource={approvedApprovals}
               loading={loading}
+              className="spaced"
               rowKey="_id"
             />
             <Button
               type="primary"
               onClick={handleConfirm}
+              className="spaced"
               style={{ marginBottom: "20px" }}
             >
               Confirm and Push to Database
             </Button>
-           
           </TabPane>
           <TabPane tab="Rejected Products" key="rejected">
             <Table
               columns={rejectedColumns}
               dataSource={rejectedApprovals}
+              className="spaced"
               loading={loading}
               rowKey="_id"
             />
@@ -358,10 +357,12 @@ const Approval = () => {
               dataSource={duplicateApprovals}
               loading={loading}
               rowKey="_id"
+              className="spaced"
             />
             <Button
               type="primary"
               onClick={handleDeleteDuplicates}
+              className="spaced"
               style={{ marginBottom: "20px" }}
               danger
             >
