@@ -109,16 +109,15 @@ exports.bulkApprove = async (req, res, next) => {
 };
 
 //delete approved
-exports.deleteApprovedProducts = async (req, res) => {
+exports.deleteAllApprovedProducts = async (req, res, next) => {
   try {
-    await Approval.deleteMany({ status: "approved" });
-    res.status(200).json({ message: "Approved products deleted successfully" });
+    const deletedCount = await Approval.deleteMany({ status: "approved" });
+    res.status(200).json({ message: `${deletedCount} approved products deleted successfully` });
   } catch (error) {
-    console.error("Error deleting approved products:", error);
-    res.status(500).json({ message: "Failed to delete approved products" });
+    next(error);
+    res.status(500).json({ error: "Failed to delete approved products" });
   }
 };
-
 
 
 // Delete duplicate products by IDs

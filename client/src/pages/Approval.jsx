@@ -119,29 +119,39 @@ const Approval = () => {
       return [];
     }
   };
+
   const handleConfirm = async () => {
     setLoading(true);
     try {
       const duplicateNames = await checkForDuplicates(approvedApprovals);
+  
       if (duplicateNames.length > 0) {
-        message.warning(
-          `Some products are already in the database. Duplicates have been moved to the "Duplicate Products" tab.`
-        );
+        // Handle Duplicates
         const duplicateProducts = approvedApprovals.filter((product) =>
           duplicateNames.includes(product.productName)
         );
         const uniqueProducts = approvedApprovals.filter(
           (product) => !duplicateNames.includes(product.productName)
         );
+  
         setDuplicateApprovals(duplicateProducts);
   
-        await axios.post(
-          "http://localhost:3000/api/products/bulk",
-          uniqueProducts
+        if (uniqueProducts.length > 0) {
+          await axios.post(
+            "http://localhost:3000/api/products/bulk",
+            uniqueProducts
+          );
+          message.success(
+            "Unique products have been successfully pushed to the database"
+          );
+        }
+  
+        message.warning(
+          "Some products are already in the database. Duplicates have been moved to the 'Duplicate Products' tab."
         );
-        message.success(
-          "Unique products have been successfully pushed to the database 🎉"
-        );
+  
+        await axios.delete("http://localhost:3000/api/approvals/delete-approved");
+        
       } else {
         await axios.post(
           "http://localhost:3000/api/products/bulk",
@@ -151,15 +161,17 @@ const Approval = () => {
           "Approved products have been successfully pushed to the database 🎉"
         );
       }
+  
       setApprovedApprovals([]);
       fetchApprovals();
     } catch (error) {
-      message.error("Failed to push approved products to the database 😔");
+      message.error("Failed to process approved products");
     } finally {
       setLoading(false);
     }
   };
   
+
 
   const handleSearch = debounce((value) => {
     if (value.length >= 3) {

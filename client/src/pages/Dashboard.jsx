@@ -54,7 +54,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/api/products/${id}`);
-      message.success("Product deleted successfully 🎉 🎉");
+      message.success("Product deleted successfully 🎉");
       fetchProducts();
     } catch (error) {
       message.error("Failed to delete product 😔");
