@@ -280,7 +280,7 @@ const UploadTab = () => {
             </Button>
             <Modal
               title="Confirm Send to Approval"
-              visible={isModalVisible}
+              open={isModalVisible}
               onOk={handleModalOk}
               onCancel={handleModalCancel}
               okText="Confirm"
