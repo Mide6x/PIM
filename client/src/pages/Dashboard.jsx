@@ -9,6 +9,7 @@ import {
   Select,
   message,
   Space,
+  Card,
 } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -22,6 +23,30 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [productCount, setProductCount] = useState(0);
+  const [categoryCount, setCategoryCount] = useState(0);
+  const [manufacturerCount, setManufacturerCount] = useState(0);
+
+  const fetchCounts = async () => {
+    try {
+      const productResponse = await axios.get(
+        "http://localhost:3000/api/products"
+      );
+      setProductCount(productResponse.data.length);
+
+      const categoryResponse = await axios.get(
+        "http://localhost:3000/api/categories"
+      );
+      setCategoryCount(categoryResponse.data.length);
+
+      const manufacturerResponse = await axios.get(
+        "http://localhost:3000/api/manufacturer"
+      );
+      setManufacturerCount(manufacturerResponse.data.length);
+    } catch (error) {
+      message.error("Failed to fetch counts 😔");
+    }
+  };
 
   const fetchProducts = async (search = "") => {
     setLoading(true);
@@ -43,6 +68,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    fetchCounts();
     fetchProducts();
   }, []);
 
@@ -78,6 +104,7 @@ const Dashboard = () => {
         await axios.post("http://localhost:3000/api/products", values);
         message.success("Product created successfully 🎉");
       }
+      fetchCounts();
       fetchProducts();
       setIsModalVisible(false);
     } catch (error) {
@@ -165,6 +192,21 @@ const Dashboard = () => {
           <p className="spaced">
             From here, you can manually create and edit products.
           </p>
+          <div className="stats-container">
+            <Card className="stats-item">
+              <h3>Total Products</h3>
+              <p>{productCount}</p>
+            </Card>
+            <Card className="stats-item">
+              <h3>Total Categories</h3>
+              <p>{categoryCount}</p>
+            </Card>
+            <Card className="stats-item">
+              <h3>Total Manufacturers</h3>
+              <p>{manufacturerCount}</p>
+            </Card>
+          </div>
+
           <Input
             placeholder="Search products..."
             onChange={(e) => handleSearch(e.target.value)}
