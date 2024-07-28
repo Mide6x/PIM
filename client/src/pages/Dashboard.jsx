@@ -15,11 +15,12 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
 import productImage from "../assets/products.png";
-import categoriesImage from "../assets/products.png";
+import categoriesImage from "../assets/categories.png";
 import manufacturerImage from "../assets/manufacturers.png";
 import { debounce } from "lodash";
 
 const { Option } = Select;
+
 
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
@@ -69,6 +70,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchCounts();
@@ -194,7 +196,6 @@ const Dashboard = () => {
           <div>
             <h2>Products Dashboard 📦</h2>
             
-         
             <div className="stats-container">
               <Card className="stats-item0">
                 <div className="stats-item-content">
