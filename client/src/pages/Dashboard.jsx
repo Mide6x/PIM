@@ -22,7 +22,6 @@ import useAuth from "../contexts/useAuth";
 
 const { Option } = Select;
 
-
 const Dashboard = () => {
   const { userData } = useAuth();
   const [products, setProducts] = useState([]);
@@ -32,6 +31,14 @@ const Dashboard = () => {
   const [productCount, setProductCount] = useState(0);
   const [categoryCount, setCategoryCount] = useState(0);
   const [manufacturerCount, setManufacturerCount] = useState(0);
+
+  const today = new Date();
+
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(today);
 
   const fetchCounts = async () => {
     try {
@@ -72,7 +79,6 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchCounts();
@@ -199,8 +205,10 @@ const Dashboard = () => {
             <h2>Products Dashboard 📦</h2>
             {userData && (
               <div>
-                <h3>Hi, {userData.name}!</h3>
-                <p style={{fontSize:"15px"}}>{userData.email}</p>
+                <h3>Hi, {userData.name}.</h3>
+                <p style={{ fontSize: "15px" }}>
+                  {userData.email} - {formattedDate}
+                </p>
               </div>
             )}
             <div className="stats-container">

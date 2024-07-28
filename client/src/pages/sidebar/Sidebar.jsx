@@ -85,7 +85,7 @@ const Sidebar = () => {
           <img src={logoImage} className="logo-img" alt="Total Manufacturers" />
         </div>
         <div>
-          <h3>NotBackOffice</h3>
+          <h3>NotBack<a style={{color:"#20d4a7"}}>Office</a></h3>
         </div>
       </div>
 
