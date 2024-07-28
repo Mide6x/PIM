@@ -12,8 +12,8 @@ import useAuth from "./contexts/useAuth";
 import UploadTab from "./pages/UploadTab";
 import Approval from "./pages/Approval";
 import Images from "./pages/Images";
-import MngManufacturers from "./pages/subpages/MngManufacturers";
-import Categories from "./pages/subpages/Categories";
+import MngManufacturers from "./pages/MngManufacturers";
+import Categories from "./pages/Categories";
 
 
 

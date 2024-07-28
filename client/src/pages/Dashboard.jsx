@@ -18,12 +18,10 @@ import productImage from "../assets/products.png";
 import categoriesImage from "../assets/categories.png";
 import manufacturerImage from "../assets/manufacturers.png";
 import { debounce } from "lodash";
-import useAuth from "../contexts/useAuth";
 
 const { Option } = Select;
 
 const Dashboard = () => {
-  const { userData } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -202,15 +200,7 @@ const Dashboard = () => {
       <div className="fullcontent">
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>Products Dashboard 📦</h2>
-            {userData && (
-              <div>
-                <h3>Hi, {userData.name}.</h3>
-                <p style={{ fontSize: "15px" }}>
-                  {userData.email} - {formattedDate}
-                </p>
-              </div>
-            )}
+            <h2>Products Dashboard 📦 - <a style={{fontWeight:"lighter", fontSize:"22px"}}>{formattedDate}</a></h2>
             <div className="stats-container">
               <Card className="stats-item0">
                 <div className="stats-item-content">

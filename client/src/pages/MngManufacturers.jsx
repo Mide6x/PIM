@@ -12,7 +12,7 @@ import {
   Tabs,
 } from "antd";
 import axios from "axios";
-import Sidebar from "../sidebar/Sidebar";
+import Sidebar from "./sidebar/Sidebar";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
 

@@ -1,8 +1,6 @@
 .logout-button {
   position: bottom;
-}
-.spacedbar {
-  margin-bottom: 10px;
+  margin-top: 40px;
 }
 .header {
   display: flex;
@@ -17,4 +15,12 @@
 .logo-img {
   height: 25px;
   width: auto;
+}
+
+.active-menu-item {
+  background-color: #1b5efa !important; 
+  color: #ffffff !important;
+}
+.menuitem{
+text-align: center !important;
 }
