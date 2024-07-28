@@ -2,9 +2,8 @@ import PropTypes from "prop-types";
 import { Menu, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import {
-  ProductOutlined ,
   ContainerOutlined,
-  DatabaseOutlined ,
+  DatabaseOutlined,
   PieChartOutlined,
   MacCommandOutlined,
   CheckSquareOutlined,
@@ -28,11 +27,10 @@ const items = [
   },
   {
     key: "3",
-    icon: < PieChartOutlined />,
+    icon: <PieChartOutlined />,
     label: "Data Cleaning",
     to: "/uploadtab",
   },
-  
   {
     key: "4",
     icon: <CheckSquareOutlined />,
@@ -40,25 +38,17 @@ const items = [
     to: "/approval",
   },
   {
-    key: "sub1",
-    label: "Product Details",
-    icon: <ProductOutlined />,
-    children: [
-      {
-        key: "5",
-        icon: <ContainerOutlined />,
-        label: "Manage Categories",
-        to: "/categories",
-      },
-      {
-        key: "6",
-        label: "Manage Manufacturers",
-        icon: <MacCommandOutlined />,
-        to: "/mngmanufacturers",
-      }
-    ],
+    key: "5",
+    icon: <ContainerOutlined />,
+    label: "Manage Categories",
+    to: "/categories",
   },
-  
+  {
+    key: "6",
+    label: "Manage Manufacturers",
+    icon: <MacCommandOutlined />,
+    to: "/mngmanufacturers",
+  }
 ];
 
 const MenuItem = ({ item }) => (
@@ -76,34 +66,6 @@ MenuItem.propTypes = {
   }).isRequired,
 };
 
-const SubMenu = ({ item }) => (
-  <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
-    {item.children.map((child) =>
-      child.children ? (
-        <SubMenu key={child.key} item={child} />
-      ) : (
-        <MenuItem key={child.key} item={child} />
-      )
-    )}
-  </Menu.SubMenu>
-);
-
-SubMenu.propTypes = {
-  item: PropTypes.shape({
-    key: PropTypes.string.isRequired,
-    icon: PropTypes.node.isRequired,
-    label: PropTypes.string.isRequired,
-    children: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        label: PropTypes.string.isRequired,
-        to: PropTypes.string,
-        children: PropTypes.array,
-      })
-    ).isRequired,
-  }).isRequired,
-};
-
 const Sidebar = () => {
   const { logout } = useAuth();
   const location = useLocation();
@@ -112,28 +74,24 @@ const Sidebar = () => {
     logout();
   };
 
+  const currentKey = items.find(item => item.to === location.pathname)?.key || "1";
+
   return (
-    <>
+    <div className="barbody">
       <Menu
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
+        defaultSelectedKeys={[currentKey]}
         mode="inline"
-        theme="light"
-        selectedKeys={[location.pathname]}
-        className="spaced"
+        selectedKeys={[currentKey]}
+        className="spacedbar"
       >
-        {items.map((item) =>
-          item.children ? (
-            <SubMenu key={item.key} item={item} />
-          ) : (
-            <MenuItem key={item.key} item={item} />
-          )
-        )}
+        {items.map((item) => (
+          <MenuItem key={item.key} item={item} />
+        ))}
       </Menu>
       <Button onClick={handleLogout} danger className="logout-button">
         Logout
       </Button>
-    </>
+    </div>
   );
 };
 

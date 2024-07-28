@@ -246,6 +246,7 @@ const Images = () => {
           <Button type="primary" className="spaced" onClick={handleDownload}>
             Download Excel Template
           </Button>
+         
           <span style={{ margin: "0 8px" }} />
           <Upload
             name="file"
@@ -267,6 +268,8 @@ const Images = () => {
           >
             Process Data
           </Button>
+          <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
           <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
             <TabPane tab="Uploaded Sheet" key="1">
               <Table
@@ -296,6 +299,7 @@ const Images = () => {
               </Link>
             </TabPane>
           </Tabs>
+          </div>
         </div>
       </Flex>
     </div>

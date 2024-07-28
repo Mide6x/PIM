@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -7,6 +8,8 @@ const productRoutes = require("./routes/productRoute");
 const manufacturerRoutes = require("./routes/manufacturerRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const approvalRoutes = require("./routes/approvalRoutes");
+const processedImageRoutes = require('./routes/processedImageRoutes');
+
 const app = express();
 
 // Middleware
@@ -20,16 +23,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/manufacturer", manufacturerRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/approvals", approvalRoutes);
-app.use("/api/processedimages", require('./routes/processedImageRoutes'));
-
-
-// MongoDB connect
-mongoose
-  .connect("mongodb://localhost:27017/")
-  .then(() => console.log("Connection With Database Established. 🎉"))
-  .catch((error) =>
-    console.error("Failed 😔 to Establish Connection With Database:", error)
-  );
+app.use("/api/processedimages", processedImageRoutes);
 
 // Error handling - Global
 app.use((err, req, res, next) => {
@@ -42,7 +36,15 @@ app.use((err, req, res, next) => {
 });
 
 // Server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is Running on Port: ${PORT}`);
 });
+
+// MongoDB connect
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connection With Database Established. 🎉"))
+  .catch((error) =>
+    console.error("Failed 😔 to Establish Connection With Database:", error)
+  );

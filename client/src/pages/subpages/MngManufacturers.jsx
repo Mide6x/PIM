@@ -202,12 +202,15 @@ const MngManufacturers = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
+      <div className="fullcontent">
       <Flex vertical flex={1} className="content">
         <div>
           <h2>Manufacturer 🏭</h2>
           <p className="spaced">
             From here, you can manually create and edit Manufacturers.
           </p>
+          <div className="details">
+            <span style={{ margin: "0 8px", marginTop: "60px" }} />
           <Input
             placeholder="Search manufacturers..."
             onChange={(e) => handleSearch(e.target.value)}
@@ -235,6 +238,7 @@ const MngManufacturers = () => {
               />
             </TabPane>
           </Tabs>
+          </div>
           <Modal
             title={
               editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
@@ -251,6 +255,7 @@ const MngManufacturers = () => {
           </Modal>
         </div>
       </Flex>
+      </div>
     </div>
   );
 };

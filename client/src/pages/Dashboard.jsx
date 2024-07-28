@@ -14,6 +14,9 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
+import productImage from "../assets/products.png";
+import categoriesImage from "../assets/manufacturers.png";
+import manufacturerImage from "../assets/manufacturers.png";
 import { debounce } from "lodash";
 
 const { Option } = Select;
@@ -186,6 +189,7 @@ const Dashboard = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
+      <div className="fullcontent">
       <Flex vertical flex={1} className="content">
         <div>
           <h2>Products Dashboard 📦</h2>
@@ -193,37 +197,72 @@ const Dashboard = () => {
             From here, you can manually create and edit products.
           </p>
           <div className="stats-container">
-            <Card className="stats-item">
-              <h3>Total Products</h3>
-              <p>{productCount}</p>
+            <Card className="stats-item0">
+              <div className="stats-item-content">
+                <div className="text-content">
+                  <h3>Total Products</h3>
+                  <p>{productCount}</p>
+                </div>
+                <div className="image-content">
+                  <img
+                    src={productImage}
+                    className="dash-img"
+                    alt="Total Products"
+                  />
+                </div>
+              </div>
             </Card>
-            <Card className="stats-item">
-              <h3>Total Categories</h3>
-              <p>{categoryCount}</p>
+
+            <Card className="stats-item1">
+              <div className="stats-item-content">
+                <div className="text-content">
+                  <h3>Total Categories</h3>
+                  <p>{categoryCount}</p>
+                </div>
+                <div className="image-content">
+                  <img
+                    src={categoriesImage}
+                    className="dash-img"
+                    alt="Total Categories"
+                  />
+                </div>
+              </div>
             </Card>
-            <Card className="stats-item">
-              <h3>Total Manufacturers</h3>
-              <p>{manufacturerCount}</p>
+            <Card className="stats-item2">
+              <div className="stats-item-content">
+                <div className="text-content">
+                  <h3>Total Manufacturers</h3>
+                  <p>{manufacturerCount}</p>
+                </div>
+                <div className="image-content">
+                  <img
+                    src={manufacturerImage}
+                    className="dash-img"
+                    alt="Total Manufacturers"
+                  />
+                </div>
+              </div>
             </Card>
           </div>
-
-          <Input
-            placeholder="Search products..."
-            onChange={(e) => handleSearch(e.target.value)}
-            style={{ marginBottom: "20px", width: "300px" }}
-          />
-          <span style={{ margin: "0 8px" }} />
-          <Button type="primary" className="spaced" onClick={handleCreate}>
-            Add New Product
-          </Button>
-          <Table
-            columns={columns}
-            dataSource={products}
-            loading={loading}
-            rowKey="_id"
-          />
+          <div className="details">
+            <span style={{ margin: "0 8px", marginTop: "60px" }} />
+            <Input
+              placeholder="Search products..."
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ marginBottom: "20px", width: "300px" }}
+            />
+            <span style={{ margin: "0 8px" }} />
+            <Button type="primary" className="spaced" onClick={handleCreate}>
+              Add New Product
+            </Button>
+            <Table
+              columns={columns}
+              dataSource={products}
+              loading={loading}
+              rowKey="_id"
+            />
+          </div>
         </div>
-
         <Modal
           title={editingProduct ? "Edit Product" : "Create Product"}
           open={isModalVisible}
@@ -237,6 +276,7 @@ const Dashboard = () => {
           />
         </Modal>
       </Flex>
+      </div>
     </div>
   );
 };
