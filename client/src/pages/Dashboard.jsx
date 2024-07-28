@@ -15,7 +15,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
 import productImage from "../assets/products.png";
-import categoriesImage from "../assets/manufacturers.png";
+import categoriesImage from "../assets/products.png";
 import manufacturerImage from "../assets/manufacturers.png";
 import { debounce } from "lodash";
 
@@ -193,15 +193,14 @@ const Dashboard = () => {
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Products Dashboard 📦</h2>
-            <p className="spaced">
-              From here, you can manually create and edit products.
-            </p>
+            
+         
             <div className="stats-container">
               <Card className="stats-item0">
                 <div className="stats-item-content">
                   <div className="text-content">
-                    <h3>Total Products</h3>
-                    <p>{productCount}</p>
+                    <h3 className="stats-item-header">Total InProducts</h3>
+                    <p className="stats-item-body">{productCount}</p>
                   </div>
                   <div className="image-content">
                     <img
@@ -216,8 +215,8 @@ const Dashboard = () => {
               <Card className="stats-item1">
                 <div className="stats-item-content">
                   <div className="text-content">
-                    <h3>Total Categories</h3>
-                    <p>{categoryCount}</p>
+                    <h3 className="stats-item-header">Total Categories</h3>
+                    <p className="stats-item-body">{categoryCount}</p>
                   </div>
                   <div className="image-content">
                     <img
@@ -231,8 +230,8 @@ const Dashboard = () => {
               <Card className="stats-item2">
                 <div className="stats-item-content">
                   <div className="text-content">
-                    <h3>Total Manufacturers</h3>
-                    <p>{manufacturerCount}</p>
+                    <h3 className="stats-item-header">Total Manufacturers</h3>
+                    <p className="stats-item-body">{manufacturerCount}</p>
                   </div>
                   <div className="image-content">
                     <img

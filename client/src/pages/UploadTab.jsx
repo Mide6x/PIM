@@ -252,15 +252,14 @@ const UploadTab = () => {
         <Flex vertical flex={1} className="content">
         <div>
           <h2>Data Cleaning 🧼</h2>
-          <p className="spaced">
-            From here, you will perform AI-assisted data cleaning.
-          </p>
+     
           <Button
             type="primary"
             className="spaced"
             onClick={handleProcess}
             loading={loading}
             disabled={loading || !data.length}
+            style={{ marginTop: "20px"}}
           >
             Process Data
           </Button>

@@ -7,10 +7,11 @@ import {
   PieChartOutlined,
   MacCommandOutlined,
   CheckSquareOutlined,
-  FileImageOutlined
+  FileImageOutlined,
 } from "@ant-design/icons";
 import useAuth from "../../contexts/useAuth";
 import "./Sidebar.css";
+import logoImage from "../../assets/boxes.svg";
 
 const items = [
   {
@@ -23,7 +24,7 @@ const items = [
     key: "2",
     label: "Image Transformation",
     icon: <FileImageOutlined />,
-    to: "/images"
+    to: "/images",
   },
   {
     key: "3",
@@ -48,7 +49,7 @@ const items = [
     label: "Manage Manufacturers",
     icon: <MacCommandOutlined />,
     to: "/mngmanufacturers",
-  }
+  },
 ];
 
 const MenuItem = ({ item }) => (
@@ -74,21 +75,32 @@ const Sidebar = () => {
     logout();
   };
 
-  const currentKey = items.find(item => item.to === location.pathname)?.key || "1";
+  const currentKey =
+    items.find((item) => item.to === location.pathname)?.key || "1";
 
   return (
     <div className="barbody">
+      <div className="header" style={{ marginTop: "10px" }}>
+        <div className="image">
+          <img src={logoImage} className="logo-img" alt="Total Manufacturers" />
+        </div>
+        <div>
+          <h3>NotBackOffice</h3>
+        </div>
+      </div>
+
       <Menu
         defaultSelectedKeys={[currentKey]}
         mode="inline"
         selectedKeys={[currentKey]}
         className="spacedbar"
+        style={{ marginTop: "15px" }}
       >
         {items.map((item) => (
           <MenuItem key={item.key} item={item} />
         ))}
       </Menu>
-      <Button onClick={handleLogout} danger className="logout-button">
+      <Button onClick={handleLogout} danger className="logout-button" >
         Logout
       </Button>
     </div>

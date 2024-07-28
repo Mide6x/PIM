@@ -297,12 +297,8 @@ const Approval = () => {
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Product Approval ✅</h2>
-            <p className="spaced">
-              From here, you can approve and edit products before pushing to the
-              database.
-            </p>
-            <div className="details">
-              <span style={{ margin: "0 8px", marginTop: "60px" }} />
+            <div className="details" style={{ marginTop: "20px"}}>
+              <span style={{ margin: "0 8px"}} />
               <Input
                 placeholder="Search products..."
                 onChange={(e) => handleSearch(e.target.value)}

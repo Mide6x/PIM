@@ -33,21 +33,26 @@ html {
   background-color: #5a8afb;
   color: #ffffff;
   border-radius: 14px;
+  border: none;
   padding: 20px;
   box-shadow: 0px 0px 8px -1.5px #2443636f;
 }
 
 .stats-item1 {
   flex: 1;
-  background-color: #a0fbe4;
+  background-color: #20d4a7;
+  color: #ffffff;
   border-radius: 14px;
+  border: none;
   padding: 20px;
   box-shadow: 0px 0px 8px -1.5px #2443636f;
 }
 .stats-item2 {
   flex: 1;
-  background-color: #e3cbff;
+  background-color: #ad83dc;
+  color: #ffffff;
   border-radius: 14px;
+  border: none;
   padding: 20px;
   box-shadow: 0px 0px 8px -1.5px #2443636f;
 }
@@ -55,6 +60,13 @@ html {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.stats-item-header{
+  font-size: 30px;
+}
+.stats-item-body{
+  font-size: 20px;
 }
 
 .details {
@@ -128,6 +140,7 @@ html {
 
 .spaced {
   margin-bottom: 20px;
+
 }
 
 @media (max-width: 768px) {

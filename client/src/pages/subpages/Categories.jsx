@@ -194,11 +194,9 @@ const Categories = () => {
       <Flex vertical flex={1} className="content">
         <div>
           <h2>Categories 🛍️</h2>
-          <p className="spaced">
-            From here, you can manually create and edit categories.
-          </p>
-          <div className="details">
-          <span style={{ margin: "0 8px", marginTop: "60px" }} />
+          
+          <div className="details" style={{ marginTop: "20px"}}>
+          <span style={{ margin: "0 8px"}} />
           <Input
             placeholder="Search categories..."
             onChange={(e) => handleSearch(e.target.value)}
