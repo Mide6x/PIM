@@ -73,7 +73,10 @@ html {
   box-shadow: 0px 0px 8px -2px #2443636f;
   border-radius: 14px;
   padding: 20px;
+  width: fit-content;
 }
+
+
 
 .text-content {
   flex: 1;
@@ -98,7 +101,7 @@ html {
   display: flex;
   height: 100vh;
   width: 100%;
-  background: #aac3fc98;
+  background: #d9d9d998;
 }
 
 .stats-container {
