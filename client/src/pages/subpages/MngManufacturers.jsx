@@ -203,58 +203,60 @@ const MngManufacturers = () => {
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <Flex vertical flex={1} className="content">
-        <div>
-          <h2>Manufacturer 🏭</h2>
-          <p className="spaced">
-            From here, you can manually create and edit Manufacturers.
-          </p>
-          <div className="details">
-            <span style={{ margin: "0 8px", marginTop: "60px" }} />
-          <Input
-            placeholder="Search manufacturers..."
-            onChange={(e) => handleSearch(e.target.value)}
-            style={{ marginBottom: "20px", width: "300px" }}
-          />
-          <span style={{ margin: "0 8px" }} />
-          <Button type="primary" className="spaced" onClick={handleCreate}>
-            Add New Manufacturer
-          </Button>
-          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
-            <TabPane tab="Live Manufacturers" key="live">
-              <Table
-                columns={columns}
-                dataSource={manufacturers}
-                loading={loading}
-                rowKey="_id"
+        <Flex vertical flex={1} className="content">
+          <div>
+            <h2>Manufacturer 🏭</h2>
+            <p className="spaced">
+              From here, you can manually create and edit Manufacturers.
+            </p>
+            <div className="details">
+              <span style={{ margin: "0 8px", marginTop: "60px" }} />
+              <Input
+                placeholder="Search manufacturers..."
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ marginBottom: "20px", width: "300px" }}
               />
-            </TabPane>
-            <TabPane tab="Archived Manufacturers" key="archived">
-              <Table
-                columns={archivedColumns}
-                dataSource={archivedManufacturers}
-                loading={loading}
-                rowKey="_id"
-              />
-            </TabPane>
-          </Tabs>
-          </div>
-          <Modal
-            title={
-              editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
-            }
-            open={isModalVisible}
-            onCancel={handleCancel}
-            footer={null}
-          >
-            <ManufacturerForm
-              initialValues={editingManufacturer}
+              <span style={{ margin: "0 8px" }} />
+              <Button type="primary" className="spaced" onClick={handleCreate}>
+                Add New Manufacturer
+              </Button>
+              <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+                <TabPane tab="Live Manufacturers" key="live">
+                  <Table
+                    columns={columns}
+                    dataSource={manufacturers}
+                    loading={loading}
+                    rowKey="_id"
+                  />
+                </TabPane>
+                <TabPane tab="Archived Manufacturers" key="archived">
+                  <Table
+                    columns={archivedColumns}
+                    dataSource={archivedManufacturers}
+                    loading={loading}
+                    rowKey="_id"
+                  />
+                </TabPane>
+              </Tabs>
+            </div>
+            <Modal
+              title={
+                editingManufacturer
+                  ? "Edit Manufacturer"
+                  : "Create Manufacturer"
+              }
+              open={isModalVisible}
               onCancel={handleCancel}
-              onOk={handleOk}
-            />
-          </Modal>
-        </div>
-      </Flex>
+              footer={null}
+            >
+              <ManufacturerForm
+                initialValues={editingManufacturer}
+                onCancel={handleCancel}
+                onOk={handleOk}
+              />
+            </Modal>
+          </div>
+        </Flex>
       </div>
     </div>
   );

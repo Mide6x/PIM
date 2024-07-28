@@ -235,7 +235,8 @@ const Images = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <Flex vertical flex={1} className="content">
+      <div className="fullcontent">
+        <Flex vertical flex={1} className="content">
         <div>
           <h2>Upload Excel Sheet Here 📂</h2>
           <p className="spaced">
@@ -302,6 +303,7 @@ const Images = () => {
           </div>
         </div>
       </Flex>
+      </div>
     </div>
   );
 };

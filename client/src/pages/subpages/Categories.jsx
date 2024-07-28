@@ -190,12 +190,15 @@ const Categories = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
+      <div className="fullcontent">
       <Flex vertical flex={1} className="content">
         <div>
           <h2>Categories 🛍️</h2>
           <p className="spaced">
             From here, you can manually create and edit categories.
           </p>
+          <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
           <Input
             placeholder="Search categories..."
             onChange={(e) => handleSearch(e.target.value)}
@@ -223,9 +226,10 @@ const Categories = () => {
               />
             </TabPane>
           </Tabs>
+          </div>
         </div>
         {categories.length === 0 && !loading && <p>No categories found.</p>}
-      </Flex>
+    
       <Modal
         title={editingCategory ? "Edit Category" : "Create Category"}
         open={isModalVisible}
@@ -238,6 +242,8 @@ const Categories = () => {
           onOk={handleOk}
         />
       </Modal>
+      </Flex>
+      </div>
     </div>
   );
 };

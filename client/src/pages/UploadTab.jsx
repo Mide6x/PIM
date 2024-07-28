@@ -248,7 +248,8 @@ const UploadTab = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <Flex vertical flex={1} className="content">
+      <div className="fullcontent">
+        <Flex vertical flex={1} className="content">
         <div>
           <h2>Data Cleaning 🧼</h2>
           <p className="spaced">
@@ -264,6 +265,8 @@ const UploadTab = () => {
             Process Data
           </Button>
           <>
+          <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
             <Table
               columns={columns}
               dataSource={data}
@@ -278,6 +281,7 @@ const UploadTab = () => {
             >
               Send to Approval
             </Button>
+            </div>
             <Modal
               title="Confirm Send to Approval"
               open={isModalVisible}
@@ -291,6 +295,7 @@ const UploadTab = () => {
           </>
         </div>
       </Flex>
+      </div>
     </div>
   );
 };

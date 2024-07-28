@@ -9,19 +9,19 @@ body,
 html {
   height: 100%;
   margin: 0;
-  background: #cbdbff ;
+  background: #cbdbff;
 }
 
-.unarchived{
-  background:#02ad3b;
-  color:white;
-  border-color: #ffffff00;
+.unarchived {
+  background: #e3cbff;;
+  color: #000000;
+  border-color: none;
 }
 
-.archived{
-  background:#ffa065; 
-  color:white;
-  border-color: #ffffff00;
+.archived {
+  background: #a0fbe4;
+  color: #000000;
+  border-color: none;
 }
 
 #root {
@@ -34,7 +34,7 @@ html {
   color: #ffffff;
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0px 0px 8px -1.5px #0000004d;
+  box-shadow: 0px 0px 8px -1.5px #2443636f;
 }
 
 .stats-item1 {
@@ -42,14 +42,14 @@ html {
   background-color: #a0fbe4;
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0px 0px 8px -1.5px #0000004d;
+  box-shadow: 0px 0px 8px -1.5px #2443636f;
 }
 .stats-item2 {
   flex: 1;
   background-color: #e3cbff;
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0px 0px 8px -1.5px #0000004d;
+  box-shadow: 0px 0px 8px -1.5px #2443636f;
 }
 .stats-item-content {
   display: flex;
@@ -57,8 +57,8 @@ html {
   justify-content: space-between;
 }
 
-.details{
-  box-shadow: 0px 0px 8px -2px #0000004d;
+.details {
+  box-shadow: 0px 0px 8px -2px #2443636f;
   border-radius: 14px;
   padding: 20px;
 }
@@ -86,31 +86,32 @@ html {
   display: flex;
   height: 100vh;
   width: 100%;
-  background: #aac3fc98 ;
+  background: #aac3fc98;
 }
 
 .stats-container {
   display: flex;
   justify-content: space-between;
-  gap: 30px; 
+  gap: 30px;
   padding: 20px;
 }
 
 .sidebar {
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 8px #87befa4d;
   border-radius: 14px;
   padding: 20px;
   width: fit-content;
   margin: auto;
+  margin-top: 20px;
   margin-left: 10px;
   height: 95vh;
   background: #ffffff;
 }
-.fullcontent{
- padding: 20px;
- margin-left: 10px;
- height: 100%;
- margin: auto;
+.fullcontent {
+  padding: 20px;
+  margin-left: 10px;
+  height: 100%;
+  margin: auto;
 }
 
 .content {
@@ -122,9 +123,23 @@ html {
   background: #ffffff;
   width: 160vh;
   border-radius: 14px;
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 8px #87befa4d;
 }
 
 .spaced {
   margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    flex: 1;
+    margin: auto;
+    height: 95vh;
+    overflow-y: scroll;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    width: fit-content;
+  }
 }

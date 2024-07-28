@@ -190,92 +190,92 @@ const Dashboard = () => {
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <Flex vertical flex={1} className="content">
-        <div>
-          <h2>Products Dashboard 📦</h2>
-          <p className="spaced">
-            From here, you can manually create and edit products.
-          </p>
-          <div className="stats-container">
-            <Card className="stats-item0">
-              <div className="stats-item-content">
-                <div className="text-content">
-                  <h3>Total Products</h3>
-                  <p>{productCount}</p>
+        <Flex vertical flex={1} className="content">
+          <div>
+            <h2>Products Dashboard 📦</h2>
+            <p className="spaced">
+              From here, you can manually create and edit products.
+            </p>
+            <div className="stats-container">
+              <Card className="stats-item0">
+                <div className="stats-item-content">
+                  <div className="text-content">
+                    <h3>Total Products</h3>
+                    <p>{productCount}</p>
+                  </div>
+                  <div className="image-content">
+                    <img
+                      src={productImage}
+                      className="dash-img"
+                      alt="Total Products"
+                    />
+                  </div>
                 </div>
-                <div className="image-content">
-                  <img
-                    src={productImage}
-                    className="dash-img"
-                    alt="Total Products"
-                  />
-                </div>
-              </div>
-            </Card>
+              </Card>
 
-            <Card className="stats-item1">
-              <div className="stats-item-content">
-                <div className="text-content">
-                  <h3>Total Categories</h3>
-                  <p>{categoryCount}</p>
+              <Card className="stats-item1">
+                <div className="stats-item-content">
+                  <div className="text-content">
+                    <h3>Total Categories</h3>
+                    <p>{categoryCount}</p>
+                  </div>
+                  <div className="image-content">
+                    <img
+                      src={categoriesImage}
+                      className="dash-img"
+                      alt="Total Categories"
+                    />
+                  </div>
                 </div>
-                <div className="image-content">
-                  <img
-                    src={categoriesImage}
-                    className="dash-img"
-                    alt="Total Categories"
-                  />
+              </Card>
+              <Card className="stats-item2">
+                <div className="stats-item-content">
+                  <div className="text-content">
+                    <h3>Total Manufacturers</h3>
+                    <p>{manufacturerCount}</p>
+                  </div>
+                  <div className="image-content">
+                    <img
+                      src={manufacturerImage}
+                      className="dash-img"
+                      alt="Total Manufacturers"
+                    />
+                  </div>
                 </div>
-              </div>
-            </Card>
-            <Card className="stats-item2">
-              <div className="stats-item-content">
-                <div className="text-content">
-                  <h3>Total Manufacturers</h3>
-                  <p>{manufacturerCount}</p>
-                </div>
-                <div className="image-content">
-                  <img
-                    src={manufacturerImage}
-                    className="dash-img"
-                    alt="Total Manufacturers"
-                  />
-                </div>
-              </div>
-            </Card>
+              </Card>
+            </div>
+            <div className="details">
+              <span style={{ margin: "0 8px", marginTop: "60px" }} />
+              <Input
+                placeholder="Search products..."
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ marginBottom: "20px", width: "300px" }}
+              />
+              <span style={{ margin: "0 8px" }} />
+              <Button type="primary" className="spaced" onClick={handleCreate}>
+                Add New Product
+              </Button>
+              <Table
+                columns={columns}
+                dataSource={products}
+                loading={loading}
+                rowKey="_id"
+              />
+            </div>
           </div>
-          <div className="details">
-            <span style={{ margin: "0 8px", marginTop: "60px" }} />
-            <Input
-              placeholder="Search products..."
-              onChange={(e) => handleSearch(e.target.value)}
-              style={{ marginBottom: "20px", width: "300px" }}
-            />
-            <span style={{ margin: "0 8px" }} />
-            <Button type="primary" className="spaced" onClick={handleCreate}>
-              Add New Product
-            </Button>
-            <Table
-              columns={columns}
-              dataSource={products}
-              loading={loading}
-              rowKey="_id"
-            />
-          </div>
-        </div>
-        <Modal
-          title={editingProduct ? "Edit Product" : "Create Product"}
-          open={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <ProductForm
-            initialValues={editingProduct}
+          <Modal
+            title={editingProduct ? "Edit Product" : "Create Product"}
+            open={isModalVisible}
             onCancel={handleCancel}
-            onOk={handleOk}
-          />
-        </Modal>
-      </Flex>
+            footer={null}
+          >
+            <ProductForm
+              initialValues={editingProduct}
+              onCancel={handleCancel}
+              onOk={handleOk}
+            />
+          </Modal>
+        </Flex>
       </div>
     </div>
   );
