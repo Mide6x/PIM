@@ -250,50 +250,55 @@ const UploadTab = () => {
       </div>
       <div className="fullcontent">
         <Flex vertical flex={1} className="content">
-        <div>
-          <h2>Data Cleaning 🧼</h2>
-     
-          <Button
-            type="primary"
-            className="spaced"
-            onClick={handleProcess}
-            loading={loading}
-            disabled={loading || !data.length}
-            style={{ marginTop: "20px"}}
-          >
-            Process Data
-          </Button>
-          <>
-          <div className="details">
-          <span style={{ margin: "0 8px", marginTop: "60px" }} />
-            <Table
-              columns={columns}
-              dataSource={data}
-              rowKey="productName"
-              className="spaced"
-            />
-            <Button
-              type="primary"
-              className="spaced"
-              onClick={handleConfirm}
-              disabled={!data.length}
-            >
-              Send to Approval
-            </Button>
-            </div>
-            <Modal
-              title="Confirm Send to Approval"
-              open={isModalVisible}
-              onOk={handleModalOk}
-              onCancel={handleModalCancel}
-              okText="Confirm"
-              cancelText="Cancel"
-            >
-              <p>Are you sure you want to send the data for approval?</p>
-            </Modal>
-          </>
-        </div>
-      </Flex>
+          <div style={{ marginTop: "20px" }}>
+            <h2>Data Cleaning 🧼</h2>
+            <p style={{ marginTop: "10px" }}>
+              Here the data is cleaned using our in-built Artificial
+              Intelligence system. the Product Category, Product Subcategory,
+              and other relvant details are automatically inputted.
+            </p>
+            <>
+              <div className="details" style={{ marginTop: "20px" }}>
+                <span style={{ margin: "0 8px", marginTop: "60px" }} />
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  rowKey="productName"
+                  className="spaced"
+                />
+                <Button
+                  type="primary"
+                  className="spaced"
+                  onClick={handleProcess}
+                  loading={loading}
+                  disabled={loading || !data.length}
+                >
+                  Process Data
+                </Button>
+                <span style={{ margin: "0 8px" }} />
+                <Button
+                  type="primary"
+                  className="spaced"
+                  onClick={handleConfirm}
+                  disabled={!data.length}
+                  style={{backgroundColor:"#20d4a7"}}
+                >
+                  Send to Approval
+                </Button>
+              </div>
+              <Modal
+                title="Confirm Send to Approval"
+                open={isModalVisible}
+                onOk={handleModalOk}
+                onCancel={handleModalCancel}
+                okText="Confirm"
+                cancelText="Cancel"
+              >
+                <p>Are you sure you want to send the data for approval?</p>
+              </Modal>
+            </>
+          </div>
+        </Flex>
       </div>
     </div>
   );

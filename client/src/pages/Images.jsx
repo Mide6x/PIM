@@ -237,72 +237,73 @@ const Images = () => {
       </div>
       <div className="fullcontent">
         <Flex vertical flex={1} className="content">
-        <div>
-          <h2>Upload Excel Sheet Here 📂</h2>
-          <p className="spaced">
-            Download the template and insert your data so that we begin! Most
-            processes are AI-assisted but ensure a level of data accuracy, and
-            verify results before moving on to the next step.
-          </p>
-          <Button type="primary" className="spaced" onClick={handleDownload}>
-            Download Excel Template
-          </Button>
-         
-          <span style={{ margin: "0 8px" }} />
-          <Upload
-            name="file"
-            accept=".xlsx, .xls"
-            beforeUpload={() => false}
-            onChange={handleUpload}
-            showUploadList={false}
-            className="spaced"
-          >
-            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-          </Upload>
-          <span style={{ margin: "0 8px" }} />
-          <Button
-            type="primary"
-            className="spaced"
-            onClick={processImages}
-            loading={loading}
-            disabled={loading || !data.length}
-          >
-            Process Data
-          </Button>
-          <div className="details">
-          <span style={{ margin: "0 8px", marginTop: "60px" }} />
-          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
-            <TabPane tab="Uploaded Sheet" key="1">
-              <Table
-                columns={columns}
-                dataSource={processedData}
-                rowKey={(record) => record["Product Name"] || record.index}
-                className="spaced"
-              />
-            </TabPane>
-            <TabPane tab="Processed Images" key="2">
-              <Table
-                columns={processedColumns}
-                dataSource={processedImages}
-                rowKey={(record) => record["Product Name"] || record.index}
-                className="spaced"
-              />
-              <Link to="/uploadtab">
-                {" "}
-                <Button
-                  type="primary"
-                  className="spaced"
-                  style={{ marginBottom: "20px" }}
-                  disabled={processedImages.length === 0}
-                >
-                  Next
-                </Button>
-              </Link>
-            </TabPane>
-          </Tabs>
+          <div style={{ marginTop: "20px" }}>
+            <h2>Upload Excel Sheet Here 📂</h2>
+            <p style={{ marginBottom: "10px" }}>
+              Download the template and insert your data so that we begin! Most
+              processes are AI-assisted but ensure a level of data accuracy, and
+              verify results before moving on to the next step.
+            </p>
+            <Button type="primary" className="spaced" onClick={handleDownload}>
+              Download Excel Template
+            </Button>
+
+            <span style={{ margin: "0 8px" }} />
+            <Upload
+              name="file"
+              accept=".xlsx, .xls"
+              beforeUpload={() => false}
+              onChange={handleUpload}
+              showUploadList={false}
+              className="spaced"
+            >
+              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
+            <div className="details" >
+              <span style={{ margin: "0 8px", marginTop: "60px" }} />
+              <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+                <TabPane tab="Uploaded Sheet" key="1">
+                  <Table
+                    columns={columns}
+                    dataSource={processedData}
+                    rowKey={(record) => record["Product Name"] || record.index}
+                    className="spaced"
+                  />
+
+                  <span style={{ margin: "0 8px" }} />
+                  <Button
+                    type="primary"
+                    className="spaced"
+                    onClick={processImages}
+                    loading={loading}
+                    disabled={loading || !data.length}
+                  >
+                    Process Data
+                  </Button>
+                </TabPane>
+                <TabPane tab="Processed Images" key="2">
+                  <Table
+                    columns={processedColumns}
+                    dataSource={processedImages}
+                    rowKey={(record) => record["Product Name"] || record.index}
+                    className="spaced"
+                  />
+                  <Link to="/uploadtab">
+                    {" "}
+                    <Button
+                      type="primary"
+                      className="spaced"
+                      style={{ marginBottom: "20px" }}
+                      disabled={processedImages.length === 0}
+                    >
+                      Next
+                    </Button>
+                  </Link>
+                </TabPane>
+              </Tabs>
+            </div>
           </div>
-        </div>
-      </Flex>
+        </Flex>
       </div>
     </div>
   );
