@@ -149,10 +149,8 @@ const UploadTab = () => {
       await axios.post("http://localhost:3000/api/approvals", data);
       message.success("Data successfully sent for approval.");
       await deleteProcessedImages(getImageIdsFromData(data));
-      message.success("Processed images deleted successfully.");
-      // Clear local storage after successful push
       localStorage.removeItem("processedData");
-      // Clear the state
+
       setData([]);
     } catch (error) {
       console.error(

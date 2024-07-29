@@ -1,7 +1,17 @@
 .logout-button {
-  position: bottom;
-  margin-top: 40px;
+  margin-top: 10px;
+  width: 100%;
 }
+
+.logout-tab {
+  padding: 20px;
+  background-color: #f2f2f2;
+  border-radius: 14px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 550px;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -18,9 +28,10 @@
 }
 
 .active-menu-item {
-  background-color: #2866f7 !important; 
+  background-color: #2866f7 !important;
   color: #ffffff !important;
+  padding: 10px !important;
 }
-.menuitem{
-text-align: center !important;
+.menuitem {
+  text-align: center !important;
 }

@@ -96,21 +96,13 @@ const Sidebar = () => {
         </div>
         <div>
           <h3>
-            <a style={{ color: "#20d4a7" }}>Not</a>
-            <a style={{ color: "#ad83dc" }}>Back</a>
-            <a style={{ color: "#5a8afb" }}>Office</a>
-            <a style={{ color: "#ad83dc" }}>.</a>
+            <a style={{ color: "black" }}>Not</a>
+            <a style={{ color: "black" }}>Back</a>
+            <a style={{ color: "black" }}>Office</a>
+            <a style={{ color: "black" }}>.</a>
           </h3>
         </div>
       </div>
-      {userData && (
-              <div>
-                <h3>Hi, {userData.name}.</h3>
-                <p style={{ fontSize: "14px" }}>
-                  {userData.email}
-                </p>
-              </div>
-            )}
       <Menu
         mode="inline"
         selectedKeys={[currentKey]}
@@ -125,9 +117,19 @@ const Sidebar = () => {
           />
         ))}
       </Menu>
+      <div className="logout-tab">
+      {userData && (
+              <div>
+                <h3 style={{ fontSize: "20px" }}>Hi, <a style={{color:"#20d4a7"}}>{userData.name}</a> <a style={{color:"#ad83dc"}}>.</a></h3>
+                <p style={{ fontSize: "13px" }}>
+                  {userData.email}
+                </p>
+              </div>
+            )}
       <Button onClick={handleLogout} danger className="logout-button">
         Logout
       </Button>
+      </div>
     </div>
   );
 };
