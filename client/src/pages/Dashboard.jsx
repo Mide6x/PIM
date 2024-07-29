@@ -200,7 +200,12 @@ const Dashboard = () => {
       <div className="fullcontent">
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>Products Dashboard 📦 - <a style={{fontWeight:"lighter", fontSize:"22px"}}>{formattedDate}</a></h2>
+            <h2>
+              Products Dashboard 📦 -{" "}
+              <a style={{ fontWeight: "lighter", fontSize: "22px" }}>
+                {formattedDate}
+              </a>
+            </h2>
             <div className="stats-container">
               <Card className="stats-item0">
                 <div className="stats-item-content">

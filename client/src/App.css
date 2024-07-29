@@ -13,7 +13,7 @@ html {
 }
 
 .unarchived {
-  background: #e3cbff;;
+  background: #e3cbff;
   color: #000000;
   border-color: none;
 }
@@ -62,10 +62,10 @@ html {
   justify-content: space-between;
 }
 
-.stats-item-header{
+.stats-item-header {
   font-size: 30px;
 }
-.stats-item-body{
+.stats-item-body {
   font-size: 20px;
 }
 
@@ -141,7 +141,6 @@ html {
 
 .spaced {
   margin-bottom: 40px;
-
 }
 
 @media (max-width: 768px) {

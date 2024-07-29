@@ -57,7 +57,7 @@ const MenuItem = ({ item, isActive }) => (
   <Menu.Item
     key={item.key}
     icon={item.icon}
-    className={isActive ? 'active-menu-item' : ''}
+    className={isActive ? "active-menu-item" : ""}
   >
     {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
   </Menu.Item>
@@ -79,10 +79,9 @@ const Sidebar = () => {
   const [currentKey, setCurrentKey] = useState("");
 
   useEffect(() => {
-    const currentItem = items.find(item => item.to === location.pathname);
+    const currentItem = items.find((item) => item.to === location.pathname);
     setCurrentKey(currentItem ? currentItem.key : "");
   }, [location.pathname]);
-
 
   const handleLogout = () => {
     logout();
@@ -106,11 +105,11 @@ const Sidebar = () => {
       <Menu
         mode="inline"
         selectedKeys={[currentKey]}
-        style={{ marginTop: "40px", fontSize:"15px" }}
+        style={{ marginTop: "40px", fontSize: "15px" }}
       >
         {items.map((item) => (
           <MenuItem
-          className="menuitem"
+            className="menuitem"
             key={item.key}
             item={item}
             isActive={item.key === currentKey}
@@ -118,17 +117,18 @@ const Sidebar = () => {
         ))}
       </Menu>
       <div className="logout-tab">
-      {userData && (
-              <div>
-                <h3 style={{ fontSize: "20px" }}>Hi, <a style={{color:"#20d4a7"}}>{userData.name}</a> <a style={{color:"#ad83dc"}}>.</a></h3>
-                <p style={{ fontSize: "13px" }}>
-                  {userData.email}
-                </p>
-              </div>
-            )}
-      <Button onClick={handleLogout} danger className="logout-button">
-        Logout
-      </Button>
+        {userData && (
+          <div>
+            <h3 style={{ fontSize: "20px" }}>
+              Hi, <a style={{ color: "#20d4a7" }}>{userData.name}</a>{" "}
+              <a style={{ color: "#ad83dc" }}>.</a>
+            </h3>
+            <p style={{ fontSize: "13px" }}>{userData.email}</p>
+          </div>
+        )}
+        <Button onClick={handleLogout} danger className="logout-button">
+          Logout
+        </Button>
       </div>
     </div>
   );

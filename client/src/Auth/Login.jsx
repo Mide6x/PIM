@@ -15,11 +15,9 @@ const Login = () => {
     <div className="authbody">
       <Card className="form-container">
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          {/* This for the Picture */}
           <div style={{ flex: 1 }}>
             <img src={loginImage} className="auth-img" alt="Login" />
           </div>
-          {/* This for the Registration Form */}
           <div style={{ flex: 1 }}>
             <Typography.Title level={3} strong className="title">
               Let&apos;s get you logged in! 😤

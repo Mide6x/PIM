@@ -259,7 +259,7 @@ const Images = () => {
             >
               <Button icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
-            <div className="details" >
+            <div className="details">
               <span style={{ margin: "0 8px", marginTop: "60px" }} />
               <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
                 <TabPane tab="Uploaded Sheet" key="1">

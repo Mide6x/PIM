@@ -15,9 +15,6 @@ import Images from "./pages/Images";
 import MngManufacturers from "./pages/MngManufacturers";
 import Categories from "./pages/Categories";
 
-
-
-
 const App = () => {
   const { isAuthenticated } = useAuth();
 

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const processedImageSchema = new mongoose.Schema({
   manufacturerName: { type: String },
@@ -10,9 +10,11 @@ const processedImageSchema = new mongoose.Schema({
   weight: { type: String },
   imageUrl: { type: String },
 });
-processedImageSchema.index({ productName: 1, variant: 1, weight: 1 }, { unique: true });
+processedImageSchema.index(
+  { productName: 1, variant: 1, weight: 1 },
+  { unique: true }
+);
 
-
-const ProcessedImage = mongoose.model('ProcessedImage', processedImageSchema);
+const ProcessedImage = mongoose.model("ProcessedImage", processedImageSchema);
 
 module.exports = ProcessedImage;

@@ -4,7 +4,9 @@ const Product = require("../models/productModel");
 exports.getAllProducts = async (req, res, next) => {
   try {
     const { search } = req.query;
-    const query = search ? { productName: { $regex: search, $options: 'i' } } : {};
+    const query = search
+      ? { productName: { $regex: search, $options: "i" } }
+      : {};
     const products = await Product.find(query);
     res.status(200).json(products);
   } catch (error) {
@@ -22,19 +24,23 @@ exports.bulkCreateProducts = async (req, res, next) => {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
-    const validProducts = products.filter(productData => productData.productCategory.toLowerCase() !== 'unknown');
+    const validProducts = products.filter(
+      (productData) => productData.productCategory.toLowerCase() !== "unknown"
+    );
 
-    const createdProducts = await Product.insertMany(validProducts.map(productData => ({
-      manufacturerName: productData.manufacturerName,
-      brand: productData.brand,
-      productCategory: productData.productCategory,
-      productSubcategory: productData.productSubcategory,
-      productName: productData.productName,
-      variantType: productData.variantType,
-      variant: productData.variant,
-      weight: productData.weightInKg,
-      imageUrl: productData.imageUrl,
-    })));
+    const createdProducts = await Product.insertMany(
+      validProducts.map((productData) => ({
+        manufacturerName: productData.manufacturerName,
+        brand: productData.brand,
+        productCategory: productData.productCategory,
+        productSubcategory: productData.productSubcategory,
+        productName: productData.productName,
+        variantType: productData.variantType,
+        variant: productData.variant,
+        weight: productData.weightInKg,
+        imageUrl: productData.imageUrl,
+      }))
+    );
 
     res.status(201).json(createdProducts);
   } catch (error) {
@@ -43,6 +49,7 @@ exports.bulkCreateProducts = async (req, res, next) => {
   }
 };
 
+// Cgeck for duplicates
 exports.checkForDuplicates = async (req, res) => {
   try {
     const products = req.body;
@@ -52,7 +59,7 @@ exports.checkForDuplicates = async (req, res) => {
       const existingProduct = await Product.findOne({
         productName: productData.productName,
         manufacturerName: productData.manufacturerName,
-        variant: productData.variant
+        variant: productData.variant,
       });
 
       if (existingProduct) {
@@ -62,7 +69,7 @@ exports.checkForDuplicates = async (req, res) => {
 
     res.status(200).json(Array.from(duplicateNames));
   } catch (error) {
-    res.status(500).json({ error: 'Failed to check for duplicates 😔' });
+    res.status(500).json({ error: "Failed to check for duplicates 😔" });
   }
 };
 
@@ -93,13 +100,10 @@ exports.createProduct = async (req, res, next) => {
 exports.createProducts = async (req, res, next) => {
   try {
     const products = req.body;
-
-    // Validate the data
     if (!Array.isArray(products)) {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
-    // Create products
     const createdProducts = [];
     for (const productData of products) {
       const product = new Product({

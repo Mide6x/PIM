@@ -203,7 +203,7 @@ const Approval = () => {
       setSelectedRows(selectedRows);
     },
     getCheckboxProps: (record) => ({
-      disabled: record.status === "", // Example condition
+      disabled: record.status === "",
     }),
   };
 
@@ -297,8 +297,8 @@ const Approval = () => {
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Product Approval ✅</h2>
-            <div className="details" style={{ marginTop: "20px"}}>
-              <span style={{ margin: "0 8px"}} />
+            <div className="details" style={{ marginTop: "20px" }}>
+              <span style={{ margin: "0 8px" }} />
               <Input
                 placeholder="Search products..."
                 onChange={(e) => handleSearch(e.target.value)}

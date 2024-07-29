@@ -88,7 +88,9 @@ exports.bulkApprove = async (req, res, next) => {
     const { ids } = req.body;
 
     if (!Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ error: "Invalid data format or empty list" });
+      return res
+        .status(400)
+        .json({ error: "Invalid data format or empty list" });
     }
 
     const result = await Approval.updateMany(
@@ -112,13 +114,16 @@ exports.bulkApprove = async (req, res, next) => {
 exports.deleteAllApprovedProducts = async (req, res, next) => {
   try {
     const deletedCount = await Approval.deleteMany({ status: "approved" });
-    res.status(200).json({ message: `${deletedCount} approved products deleted successfully` });
+    res
+      .status(200)
+      .json({
+        message: `${deletedCount} approved products deleted successfully`,
+      });
   } catch (error) {
     next(error);
     res.status(500).json({ error: "Failed to delete approved products" });
   }
 };
-
 
 // Delete duplicate products by IDs
 exports.deleteDuplicates = async (req, res, next) => {
@@ -126,18 +131,23 @@ exports.deleteDuplicates = async (req, res, next) => {
     const { ids } = req.body;
 
     if (!Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ error: "Invalid data format or empty list" });
+      return res
+        .status(400)
+        .json({ error: "Invalid data format or empty list" });
     }
 
     const result = await Approval.deleteMany({ _id: { $in: ids } });
 
     if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "No duplicate products found to delete 😔" });
+      return res
+        .status(404)
+        .json({ message: "No duplicate products found to delete 😔" });
     }
-    res.status(200).json({ message: "Duplicate products deleted successfully 🎉" });
+    res
+      .status(200)
+      .json({ message: "Duplicate products deleted successfully 🎉" });
   } catch (error) {
     next(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-

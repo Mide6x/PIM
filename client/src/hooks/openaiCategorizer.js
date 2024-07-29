@@ -2,7 +2,7 @@ import { OpenAI } from "openai";
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true
+  dangerouslyAllowBrowser: true,
 });
 
 export const categorizeProductWithOpenAI = async (productName) => {
@@ -42,18 +42,18 @@ export const categorizeProductWithOpenAI = async (productName) => {
         - Dry Fruits
 
     Baking Ingredients:
-        - Flour & Baking Powder 
+        - Flour & Baking Powder
         - Baking Tools & Accessories
 
     Alcoholic Drinks:
         - Beer
         - Liquers & Creams
         - Cognac & Spirits
-        - Wines & Champagne 
+        - Wines & Champagne
 
     Non-Alcoholic Drinks:
         - Fizzy Drinks & Malt
-        - Energy Drinks 
+        - Energy Drinks
         - Wines
         - Fruit Juices & Yoghurt
         - Water
@@ -79,7 +79,7 @@ export const categorizeProductWithOpenAI = async (productName) => {
         - Foil Paper & Cling Film
         - Pests & Insect Control
         - Lighters and Match Box
-        - Air Fresheners 
+        - Air Fresheners
 
     Beauty & Personal Care:
         - Skin Care
@@ -101,32 +101,29 @@ export const categorizeProductWithOpenAI = async (productName) => {
 
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: [
-        { role: "user", content: prompt }
-      ],
+      messages: [{ role: "user", content: prompt }],
       max_tokens: 60,
       temperature: 0.5,
     });
 
     const result = response.choices[0].message.content.trim();
-    
-    //parse the result to extract category and subcategory
-    const lines = result.split('\n');
-    let productCategory = 'unknown';
-    let productSubcategory = 'unknown';
 
-    lines.forEach(line => {
-      if (line.startsWith('productCategory:')) {
-        productCategory = line.replace('productCategory:', '').trim();
+    const lines = result.split("\n");
+    let productCategory = "unknown";
+    let productSubcategory = "unknown";
+
+    lines.forEach((line) => {
+      if (line.startsWith("productCategory:")) {
+        productCategory = line.replace("productCategory:", "").trim();
       }
-      if (line.startsWith('productSubcategory:')) {
-        productSubcategory = line.replace('productSubcategory:', '').trim();
+      if (line.startsWith("productSubcategory:")) {
+        productSubcategory = line.replace("productSubcategory:", "").trim();
       }
     });
 
     return { productCategory, productSubcategory };
   } catch (error) {
     console.error("Error categorizing product:", error);
-    return { productCategory: 'unknown', productSubcategory: 'unknown' };
+    return { productCategory: "unknown", productSubcategory: "unknown" };
   }
 };

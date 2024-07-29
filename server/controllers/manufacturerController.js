@@ -3,10 +3,8 @@ const Manufacturer = require("../models/manufacturerModel");
 // Get all manufacturers
 exports.getManufacturers = async (req, res) => {
   try {
-    const { search } = req.query; 
-    const query = search
-      ? { name: { $regex: search, $options: 'i' } }
-      : {}; 
+    const { search } = req.query;
+    const query = search ? { name: { $regex: search, $options: "i" } } : {};
     const manufacturers = await Manufacturer.find(query);
     res.json(manufacturers);
   } catch (err) {
@@ -73,7 +71,6 @@ exports.unarchiveManufacturer = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 // Delete a manufacturer
 exports.deleteManufacturer = async (req, res) => {

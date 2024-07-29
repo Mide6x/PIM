@@ -133,6 +133,7 @@ exports.processImages = async (req, res) => {
   }
 };
 
+// Get processed Images
 exports.getProcessedImages = async (req, res) => {
   try {
     const images = await ProcessedImage.find();
@@ -143,6 +144,7 @@ exports.getProcessedImages = async (req, res) => {
   }
 };
 
+// After processing, delete the images
 exports.deleteAllProcessedImages = async (req, res) => {
   try {
     const { imageIds } = req.body;

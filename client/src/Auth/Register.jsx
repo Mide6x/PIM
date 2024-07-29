@@ -15,7 +15,6 @@ const Register = () => {
     <div className="authbody">
       <Card className="form-container">
         <Flex gap="large" align="center">
-          {/* This for the Registration Form */}
           <Flex vertical flex={1}>
             <Typography.Title level={3} strong className="title">
               Welcome Pookie, let&apos;s create an account for you! 🎉
@@ -116,8 +115,6 @@ const Register = () => {
               </Form.Item>
             </Form>
           </Flex>
-
-          {/* This for the Picture */}
           <Flex flex={1}>
             <img src={registerImage} className="auth-img" alt="Register" />
           </Flex>

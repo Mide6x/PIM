@@ -3,8 +3,8 @@ const productController = require("../controllers/productController");
 
 const router = express.Router();
 
-router.post('/bulk', productController.bulkCreateProducts);
-router.post('/check-duplicates', productController.checkForDuplicates);
+router.post("/bulk", productController.bulkCreateProducts);
+router.post("/check-duplicates", productController.checkForDuplicates);
 
 router
   .route("/")

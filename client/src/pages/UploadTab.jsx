@@ -6,7 +6,6 @@ import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 
 const UploadTab = () => {
   const [data, setData] = useState(() => {
-    // Retrieve data from local storage, if available
     const savedData = localStorage.getItem("processedData");
     return savedData ? JSON.parse(savedData) : [];
   });
@@ -14,12 +13,10 @@ const UploadTab = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    // Save data to local storage whenever it changes
     localStorage.setItem("processedData", JSON.stringify(data));
   }, [data]);
 
   useEffect(() => {
-    // Fetch initial data from the server (if needed)
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -279,7 +276,7 @@ const UploadTab = () => {
                   className="spaced"
                   onClick={handleConfirm}
                   disabled={!data.length}
-                  style={{backgroundColor:"#20d4a7"}}
+                  style={{ backgroundColor: "#20d4a7" }}
                 >
                   Send to Approval
                 </Button>

@@ -191,56 +191,55 @@ const Categories = () => {
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <Flex vertical flex={1} className="content">
-        <div>
-          <h2>Categories 🛍️</h2>
-          
-          <div className="details" style={{ marginTop: "20px"}}>
-          <span style={{ margin: "0 8px"}} />
-          <Input
-            placeholder="Search categories..."
-            onChange={(e) => handleSearch(e.target.value)}
-            style={{ marginBottom: "20px", width: "300px" }}
-          />
-          <span style={{ margin: "0 8px" }} />
-          <Button className="spaced" type="primary" onClick={handleCreate}>
-            Add New Category
-          </Button>
-          <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
-            <TabPane tab="Live Categories" key="live">
-              <Table
-                columns={columns}
-                dataSource={categories}
-                loading={loading}
-                rowKey="_id"
+        <Flex vertical flex={1} className="content">
+          <div>
+            <h2>Categories 🛍️</h2>
+            <div className="details" style={{ marginTop: "20px" }}>
+              <span style={{ margin: "0 8px" }} />
+              <Input
+                placeholder="Search categories..."
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ marginBottom: "20px", width: "300px" }}
               />
-            </TabPane>
-            <TabPane tab="Archived Categories" key="archived">
-              <Table
-                columns={archivedColumns}
-                dataSource={archivedCategories}
-                loading={loading}
-                rowKey="_id"
-              />
-            </TabPane>
-          </Tabs>
+              <span style={{ margin: "0 8px" }} />
+              <Button className="spaced" type="primary" onClick={handleCreate}>
+                Add New Category
+              </Button>
+              <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+                <TabPane tab="Live Categories" key="live">
+                  <Table
+                    columns={columns}
+                    dataSource={categories}
+                    loading={loading}
+                    rowKey="_id"
+                  />
+                </TabPane>
+                <TabPane tab="Archived Categories" key="archived">
+                  <Table
+                    columns={archivedColumns}
+                    dataSource={archivedCategories}
+                    loading={loading}
+                    rowKey="_id"
+                  />
+                </TabPane>
+              </Tabs>
+            </div>
           </div>
-        </div>
-        {categories.length === 0 && !loading && <p>No categories found.</p>}
-    
-      <Modal
-        title={editingCategory ? "Edit Category" : "Create Category"}
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <CategoryForm
-          initialValues={editingCategory}
-          onCancel={handleCancel}
-          onOk={handleOk}
-        />
-      </Modal>
-      </Flex>
+          {categories.length === 0 && !loading && <p>No categories found.</p>}
+
+          <Modal
+            title={editingCategory ? "Edit Category" : "Create Category"}
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={null}
+          >
+            <CategoryForm
+              initialValues={editingCategory}
+              onCancel={handleCancel}
+              onOk={handleOk}
+            />
+          </Modal>
+        </Flex>
       </div>
     </div>
   );

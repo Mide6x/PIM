@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');
-const createError = require('../utils/appError');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("../models/userModel");
+const createError = require("../utils/appError");
 
 // User Registration
 exports.signup = async (req, res, next) => {
@@ -48,12 +48,16 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user)
-      return next(new createError("We can't seem to find your account, sorry 😔", 404));
+      return next(
+        new createError("We can't seem to find your account, sorry 😔", 404)
+      );
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return next(new createError("Oops, your Email or Password is incorrect 🫢", 401));
+      return next(
+        new createError("Oops, your Email or Password is incorrect 🫢", 401)
+      );
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {

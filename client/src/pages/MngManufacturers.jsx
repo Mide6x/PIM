@@ -206,8 +206,8 @@ const MngManufacturers = () => {
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Manufacturer 🏭</h2>
-            <div className="details" style={{ marginTop: "20px"}}>
-              <span style={{ margin: "0 8px"}} />
+            <div className="details" style={{ marginTop: "20px" }}>
+              <span style={{ margin: "0 8px" }} />
               <Input
                 placeholder="Search manufacturers..."
                 onChange={(e) => handleSearch(e.target.value)}
