@@ -210,7 +210,7 @@ const Dashboard = () => {
               <Card className="stats-item0">
                 <div className="stats-item-content">
                   <div className="text-content">
-                    <h3 className="stats-item-header">Total InProducts</h3>
+                    <p className="stats-item-header">Total InProducts</p>
                     <p className="stats-item-body">{productCount}</p>
                   </div>
                   <div className="image-content">
@@ -226,7 +226,7 @@ const Dashboard = () => {
               <Card className="stats-item1">
                 <div className="stats-item-content">
                   <div className="text-content">
-                    <h3 className="stats-item-header">Total Categories</h3>
+                    <p className="stats-item-header">Total Categories</p>
                     <p className="stats-item-body">{categoryCount}</p>
                   </div>
                   <div className="image-content">
@@ -241,7 +241,7 @@ const Dashboard = () => {
               <Card className="stats-item2">
                 <div className="stats-item-content">
                   <div className="text-content">
-                    <h3 className="stats-item-header">Total Manufacturers</h3>
+                    <p className="stats-item-header">Total Manufacturers</p>
                     <p className="stats-item-body">{manufacturerCount}</p>
                   </div>
                   <div className="image-content">
@@ -270,6 +270,7 @@ const Dashboard = () => {
                 dataSource={products}
                 loading={loading}
                 rowKey="_id"
+                className="spaced"
               />
             </div>
           </div>

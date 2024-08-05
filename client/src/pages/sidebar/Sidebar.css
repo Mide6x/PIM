@@ -9,22 +9,26 @@
 }
 
 .logo-img {
-  height: 25px;
-  width: auto;
+  height: 35px;
+  width: 35px;
+  border-radius: 5px;
 }
-
+.teamDetails{
+  color: #878787;
+  padding: 10px;
+  margin-bottom: 20px;
+}
 .active-menu-item {
-  background-color: #2866f7 !important;
-  color: #ffffff !important;
-  padding: 10px !important;
+  background-color: #d8e4ff !important;
+  border-color: #5a8afb;
+  border-width: 10px;
+  color: #004cff !important;
+  font-weight: bold;
 }
-.menuitem {
-  text-align: center !important;
-}
-
 .barbody {
   width: fit-content;
-  height: 95vh;
+  height:100%;
+  padding: 15px;
 }
 
 .logout-button {
@@ -39,5 +43,4 @@
   justify-content: center;
   width: 100%;
   position: relative;
-  bottom: -550px;
 }

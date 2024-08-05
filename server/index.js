@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -8,7 +8,8 @@ const productRoutes = require("./routes/productRoute");
 const manufacturerRoutes = require("./routes/manufacturerRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const approvalRoutes = require("./routes/approvalRoutes");
-const processedImageRoutes = require("./routes/processedImageRoutes");
+const processedImageRoutes = require('./routes/processedImageRoutes');
+const userRoutes = require('./routes/userRoute')
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/manufacturer", manufacturerRoutes);
@@ -35,11 +37,13 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is Running on Port: ${PORT}`);
 });
 
+// MongoDB connect
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("Connection With Database Established. 🎉"))

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Menu, Button } from "antd";
+import { Menu, Button, message } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import {
   ContainerOutlined,
@@ -9,10 +9,11 @@ import {
   CheckSquareOutlined,
   FileImageOutlined,
 } from "@ant-design/icons";
+import axios from "axios";
 import useAuth from "../../contexts/useAuth";
 import { useState, useEffect } from "react";
 import "./Sidebar.css";
-import logoImage from "../../assets/boxes.svg";
+import logoImage from "../../assets/logo.png";
 
 const items = [
   {
@@ -58,6 +59,7 @@ const MenuItem = ({ item, isActive }) => (
     key={item.key}
     icon={item.icon}
     className={isActive ? "active-menu-item" : ""}
+    style={{ padding: "10px" }}
   >
     {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
   </Menu.Item>
@@ -77,10 +79,21 @@ const Sidebar = () => {
   const { logout, userData } = useAuth();
   const location = useLocation();
   const [currentKey, setCurrentKey] = useState("");
+  const [userCount, setUserCount] = useState(0);
+
+  const fetchCounts = async () => {
+    try {
+      const userRep = await axios.get("http://localhost:3000/api/users");
+      setUserCount(userRep.data.length);
+    } catch (error) {
+      message.error("Failed to fetch Users 😔");
+    }
+  };
 
   useEffect(() => {
     const currentItem = items.find((item) => item.to === location.pathname);
     setCurrentKey(currentItem ? currentItem.key : "");
+    fetchCounts();
   }, [location.pathname]);
 
   const handleLogout = () => {
@@ -89,19 +102,15 @@ const Sidebar = () => {
 
   return (
     <div className="barbody">
-      <div className="header" style={{ marginBottom: "40px" }}>
+      <div className="header">
         <div className="image">
           <img src={logoImage} className="logo-img" alt="Logo" />
         </div>
         <div>
-          <h3>
-            <a style={{ color: "black" }}>Not</a>
-            <a style={{ color: "black" }}>Back</a>
-            <a style={{ color: "black" }}>Office</a>
-            <a style={{ color: "black" }}>.</a>
-          </h3>
+          <h3>NotBackOffice.</h3>
         </div>
       </div>
+      <div className="teamDetails">Team - {userCount} Members</div>
       <Menu
         mode="inline"
         selectedKeys={[currentKey]}
@@ -109,7 +118,6 @@ const Sidebar = () => {
       >
         {items.map((item) => (
           <MenuItem
-            className="menuitem"
             key={item.key}
             item={item}
             isActive={item.key === currentKey}
