@@ -11,6 +11,7 @@ import {
   Tabs,
 } from "antd";
 import Sidebar from "./sidebar/Sidebar";
+import Navbar from "./sidebar/navbar";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
@@ -187,10 +188,13 @@ const Categories = () => {
 
   return (
     <div className="container">
-      <div className="sidebar">
+      <div >
         <Sidebar />
       </div>
       <div className="fullcontent">
+      <div className="cont">
+       <Navbar/>
+      </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Categories 🛍️</h2>

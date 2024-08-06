@@ -19,7 +19,7 @@ const items = [
   {
     key: "1",
     icon: <DatabaseOutlined />,
-    label: "Product Catalogue",
+    label: "Dashboard",
     to: "/dashboard",
   },
   {
@@ -58,8 +58,8 @@ const MenuItem = ({ item, isActive }) => (
   <Menu.Item
     key={item.key}
     icon={item.icon}
+    style={{padding:'5px'}}
     className={isActive ? "active-menu-item" : ""}
-    style={{ padding: "10px" }}
   >
     {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
   </Menu.Item>
@@ -114,7 +114,7 @@ const Sidebar = () => {
       <Menu
         mode="inline"
         selectedKeys={[currentKey]}
-        style={{ marginTop: "40px", fontSize: "15px" }}
+        style={{ marginTop: "20px", fontSize: "15px" }}
       >
         {items.map((item) => (
           <MenuItem
@@ -128,8 +128,8 @@ const Sidebar = () => {
         {userData && (
           <div>
             <h3 style={{ fontSize: "20px" }}>
-              Hi, <a style={{ color: "#20d4a7" }}>{userData.name}</a>{" "}
-              <a style={{ color: "#ad83dc" }}>.</a>
+              Hi, <span>{userData.name}</span>{" "}
+              <span>.</span>
             </h3>
             <p style={{ fontSize: "13px" }}>{userData.email}</p>
           </div>

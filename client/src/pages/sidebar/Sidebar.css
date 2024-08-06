@@ -19,9 +19,10 @@
   margin-bottom: 20px;
 }
 .active-menu-item {
-  background-color: #d8e4ff !important;
-  border-color: #5a8afb;
-  border-width: 10px;
+  background-color: #dbe4fc !important;
+  border-style: solid;
+  border-color: #749eff;
+  border-width: 0.5px;
   color: #004cff !important;
   font-weight: bold;
 }
@@ -29,6 +30,10 @@
   width: fit-content;
   height:100%;
   padding: 15px;
+  background-color: #ffff;
+  border-right-color: #e8f0ff;
+  border-right-width: 0.5px;
+  border-right-style: solid;
 }
 
 .logout-button {
@@ -38,9 +43,11 @@
 
 .logout-tab {
   padding: 20px;
-  background-color: #f2f2f2;
-  border-radius: 14px;
+  background-color: #f0f0f0;
+  color: #3c3c3c;
+  border-radius: 12px;
   justify-content: center;
   width: 100%;
-  position: relative;
+  position: bottom;
+  margin-top: 580px;
 }

@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
+import Navbar from "./sidebar/navbar";
 import { debounce } from "lodash";
 
 const { Option } = Select;
@@ -290,10 +291,13 @@ const Approval = () => {
 
   return (
     <div className="container">
-      <div className="sidebar">
+      <div >
         <Sidebar />
       </div>
       <div className="fullcontent">
+      <div className="cont">
+       <Navbar/>
+      </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Product Approval ✅</h2>

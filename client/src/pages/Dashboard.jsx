@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
+import Navbar from "./sidebar/navbar";
 import productImage from "../assets/products.png";
 import categoriesImage from "../assets/categories.png";
 import manufacturerImage from "../assets/manufacturers.png";
@@ -194,10 +195,14 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <div className="sidebar">
+      <div >
         <Sidebar />
       </div>
+      
       <div className="fullcontent">
+      <div className="cont">
+       <Navbar/>
+      </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Flex, Button, message, Upload, Table, Tabs } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Sidebar from "./sidebar/Sidebar";
+import Navbar from "./sidebar/navbar";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
@@ -232,10 +233,13 @@ const Images = () => {
 
   return (
     <div className="container">
-      <div className="sidebar">
+      <div >
         <Sidebar />
       </div>
       <div className="fullcontent">
+      <div className="cont">
+       <Navbar/>
+      </div>
         <Flex vertical flex={1} className="content">
           <div style={{ marginTop: "20px" }}>
             <h2>Upload Excel Sheet Here 📂</h2>
