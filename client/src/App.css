@@ -12,7 +12,7 @@ html {
   margin: 0;
   background: #f9f9ff;
 }
-.cont{
+.cont {
   width: 100%;
   height: 80px;
   background-color: #ffffff;
@@ -27,16 +27,9 @@ html {
   height: 100%;
   width: 100%;
   background: #e6ebff33;
-  border-radius: 16px;
-  box-shadow: 0 4px 30px #0000001a;
-  backdrop-filter: blur(5.6px);
-  -webkit-backdrop-filter: blur(5.6px);
-  border: 1px solid #ffffff;
-  border-width: 0.5px;
 }
 
 .fullcontent {
-
   width: 100%;
 }
 
@@ -45,7 +38,7 @@ html {
   margin: auto;
   height: fit-content;
   margin-left: 10px;
-  width: 100%;
+  width: fit-content;
   overflow-y: scroll;
   padding: 50px;
   background: #ffffff;
@@ -147,7 +140,6 @@ html {
   gap: 30px;
   padding: 20px;
 }
-
 
 @media (max-width: 768px) {
   .content {

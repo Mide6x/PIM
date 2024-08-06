@@ -24,7 +24,7 @@ const items = [
   },
   {
     key: "2",
-    label: "Image Transformation",
+    label: "Image Conversion",
     icon: <FileImageOutlined />,
     to: "/images",
   },
@@ -58,7 +58,7 @@ const MenuItem = ({ item, isActive }) => (
   <Menu.Item
     key={item.key}
     icon={item.icon}
-    style={{padding:'5px'}}
+    style={{ padding: "5px", color: "#e8efff", fontWeight: "450" }}
     className={isActive ? "active-menu-item" : ""}
   >
     {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
@@ -76,7 +76,7 @@ MenuItem.propTypes = {
 };
 
 const Sidebar = () => {
-  const { logout, userData } = useAuth();
+  const { logout } = useAuth();
   const location = useLocation();
   const [currentKey, setCurrentKey] = useState("");
   const [userCount, setUserCount] = useState(0);
@@ -106,7 +106,7 @@ const Sidebar = () => {
         <div className="image">
           <img src={logoImage} className="logo-img" alt="Logo" />
         </div>
-        <div>
+        <div style={{ color: "#ffff", alignItems: "center" }}>
           <h3>NotBackOffice.</h3>
         </div>
       </div>
@@ -114,7 +114,11 @@ const Sidebar = () => {
       <Menu
         mode="inline"
         selectedKeys={[currentKey]}
-        style={{ marginTop: "20px", fontSize: "15px" }}
+        style={{
+          marginTop: "20px",
+          fontSize: "15px",
+          backgroundColor: "#002270",
+        }}
       >
         {items.map((item) => (
           <MenuItem
@@ -125,15 +129,6 @@ const Sidebar = () => {
         ))}
       </Menu>
       <div className="logout-tab">
-        {userData && (
-          <div>
-            <h3 style={{ fontSize: "20px" }}>
-              Hi, <span>{userData.name}</span>{" "}
-              <span>.</span>
-            </h3>
-            <p style={{ fontSize: "13px" }}>{userData.email}</p>
-          </div>
-        )}
         <Button onClick={handleLogout} danger className="logout-button">
           Logout
         </Button>

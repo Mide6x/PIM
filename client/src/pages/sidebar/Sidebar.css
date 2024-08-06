@@ -8,42 +8,55 @@
   display: flex;
 }
 
+.topbarContent {
+  display: flex;
+  justify-content: right;
+  padding: 10px;
+  gap: 9px;
+}
+.userImage{
+  display: flex;
+  align-items: center;
+}
+
 .logo-img {
   height: 35px;
   width: 35px;
   border-radius: 5px;
 }
-.teamDetails{
+.logo-img2 {
+  height: 45px;
+  width: 45px;
+  border-radius: 5px;
+}
+.teamDetails {
   color: #878787;
   padding: 10px;
   margin-bottom: 20px;
 }
 .active-menu-item {
-  background-color: #dbe4fc !important;
-  border-style: solid;
-  border-color: #749eff;
-  border-width: 0.5px;
-  color: #004cff !important;
+  background-color: #1c60ff!important;
+  color: #f2f5fc !important;
   font-weight: bold;
+  padding: 15px !important;
 }
 .barbody {
   width: fit-content;
-  height:100%;
+  height: 100%;
   padding: 15px;
-  background-color: #ffff;
-  border-right-color: #e8f0ff;
-  border-right-width: 0.5px;
-  border-right-style: solid;
+  background-color: #002270;
 }
 
 .logout-button {
-  margin-top: 10px;
   width: 100%;
+  border-style: none !important;
+  color: #002270 !important ;
+  font-weight: 600;
 }
 
 .logout-tab {
-  padding: 20px;
-  background-color: #f0f0f0;
+  padding: 30px;
+  background-color: #e2eaff;
   color: #3c3c3c;
   border-radius: 12px;
   justify-content: center;

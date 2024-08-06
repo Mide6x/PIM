@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Flex, Button, message, Table, Modal } from "antd";
 import Sidebar from "./sidebar/Sidebar";
-import Navbar from "./sidebar/navbar";
+import Topbar from "./sidebar/Topbar";
 import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 
@@ -246,7 +246,7 @@ const UploadTab = () => {
       </div>
       <div className="fullcontent">
       <div className="cont">
-       <Navbar/>
+       <Topbar/>
       </div>
         <Flex vertical flex={1} className="content">
           <div style={{ marginTop: "20px" }}>

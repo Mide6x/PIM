@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Flex, Button, message, Upload, Table, Tabs } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Sidebar from "./sidebar/Sidebar";
-import Navbar from "./sidebar/navbar";
+import Topbar from "./sidebar/Topbar";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
@@ -238,7 +238,7 @@ const Images = () => {
       </div>
       <div className="fullcontent">
       <div className="cont">
-       <Navbar/>
+      <Topbar/>
       </div>
         <Flex vertical flex={1} className="content">
           <div style={{ marginTop: "20px" }}>

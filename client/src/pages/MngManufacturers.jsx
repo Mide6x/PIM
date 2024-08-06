@@ -13,7 +13,7 @@ import {
 } from "antd";
 import axios from "axios";
 import Sidebar from "./sidebar/Sidebar";
-import Navbar from "./sidebar/navbar";
+import Topbar from "./sidebar/Topbar";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
 
@@ -205,7 +205,7 @@ const MngManufacturers = () => {
       </div>
       <div className="fullcontent">
       <div className="cont">
-       <Navbar/>
+      <Topbar/>
       </div>
         <Flex vertical flex={1} className="content">
           <div>
