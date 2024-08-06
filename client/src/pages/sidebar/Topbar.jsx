@@ -11,19 +11,38 @@ const Topbar = () => {
     <>
       {userData && (
         <div className="topbarContent">
-          <div className="icon">
-          <FontAwesomeIcon icon={faBell} size="2xl" style={{color: "#1c60ff"}} />
+          <div className="topbarContent0">
+            <div className="flex1">
+              <h3 style={{ fontSize: "21px" }}>
+                Good Morning, <span>{userData.name} 👋</span>
+              </h3>
+            </div>
+            <div className="flex2">
+              <p style={{ color: "#878787" }}>
+                Manage your products with NotBackOffice by leveraging a
+                well-tested process.
+              </p>
+            </div>
           </div>
-          <div className="userImage">
-            <img src={userImage} className="logo-img2" alt="User" />
-          </div>
-          <div>
-            <h3 style={{ fontSize: "18px" }}>
-              Hi, <span>{userData.name}</span> <span>.</span>
-            </h3>
-            <p style={{ fontSize: "12px", color: "#878787" }}>
-              {userData.email}
-            </p>
+          <div className="topbarContent1">
+            <div className="flex1">
+              <FontAwesomeIcon
+                icon={faBell}
+                size="2xl"
+                style={{ color: "#002270" }}
+              />
+            </div>
+            <div className="flex2">
+              <img src={userImage} className="logo-img2" alt="User" />
+            </div>
+            <div>
+              <h3 style={{ fontSize: "18px" }}>
+                <span>{userData.name}.</span>
+              </h3>
+              <p style={{ fontSize: "12px", color: "#878787" }}>
+                {userData.email}
+              </p>
+            </div>
           </div>
         </div>
       )}

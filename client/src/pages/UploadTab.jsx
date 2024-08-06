@@ -249,7 +249,7 @@ const UploadTab = () => {
        <Topbar/>
       </div>
         <Flex vertical flex={1} className="content">
-          <div style={{ marginTop: "20px" }}>
+          <div >
             <h2>Data Cleaning 🧼</h2>
             <p style={{ marginTop: "10px" }}>
               Here the data is cleaned using our in-built Artificial
@@ -263,7 +263,7 @@ const UploadTab = () => {
                   columns={columns}
                   dataSource={data}
                   rowKey="productName"
-                  className="spaced"
+                    className="table"
                 />
                 <Button
                   type="primary"

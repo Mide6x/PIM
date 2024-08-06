@@ -200,13 +200,13 @@ const MngManufacturers = () => {
 
   return (
     <div className="container">
-      <div >
+      <div>
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <div className="cont">
-      <Topbar/>
-      </div>
+        <div className="cont">
+          <Topbar />
+        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Manufacturer 🏭</h2>
@@ -221,7 +221,11 @@ const MngManufacturers = () => {
               <Button type="primary" className="spaced" onClick={handleCreate}>
                 Add New Manufacturer
               </Button>
-              <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+              <Tabs
+                activeKey={activeTab}
+                onChange={(key) => setActiveTab(key)}
+                className="table"
+              >
                 <TabPane tab="Live Manufacturers" key="live">
                   <Table
                     columns={columns}

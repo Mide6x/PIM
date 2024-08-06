@@ -188,13 +188,13 @@ const Categories = () => {
 
   return (
     <div className="container">
-      <div >
+      <div>
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <div className="cont">
-       <Topbar/>
-      </div>
+        <div className="cont">
+          <Topbar />
+        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Categories 🛍️</h2>
@@ -209,13 +209,18 @@ const Categories = () => {
               <Button className="spaced" type="primary" onClick={handleCreate}>
                 Add New Category
               </Button>
-              <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+              <Tabs
+                activeKey={activeTab}
+                onChange={(key) => setActiveTab(key)}
+                className="table"
+              >
                 <TabPane tab="Live Categories" key="live">
                   <Table
                     columns={columns}
                     dataSource={categories}
                     loading={loading}
                     rowKey="_id"
+                    className="table"
                   />
                 </TabPane>
                 <TabPane tab="Archived Categories" key="archived">

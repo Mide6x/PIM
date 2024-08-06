@@ -195,22 +195,23 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <div >
+      <div>
         <Sidebar />
       </div>
-      
+
       <div className="fullcontent">
-      <div className="cont">
-      <Topbar/>
-      </div>
+        <div className="cont">
+          <Topbar />
+        </div>
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>
-              Products Dashboard 📦 -{" "}
-              <a style={{ fontWeight: "lighter", fontSize: "22px" }}>
-                {formattedDate}
-              </a>
-            </h2>
+            <div className="intro">
+              <h2>Dashboard </h2>
+              
+              <span style={{ fontSize: "15px", color: "#878787" }}>
+              {formattedDate}
+            </span>
+            </div>
             <div className="stats-container">
               <Card className="stats-item0">
                 <div className="stats-item-content">
@@ -275,7 +276,7 @@ const Dashboard = () => {
                 dataSource={products}
                 loading={loading}
                 rowKey="_id"
-                className="spaced"
+                className="table"
               />
             </div>
           </div>

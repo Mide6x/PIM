@@ -291,13 +291,13 @@ const Approval = () => {
 
   return (
     <div className="container">
-      <div >
+      <div>
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <div className="cont">
-      <Topbar/>
-      </div>
+        <div className="cont">
+          <Topbar />
+        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Product Approval ✅</h2>
@@ -309,7 +309,11 @@ const Approval = () => {
                 style={{ marginBottom: "20px", width: "300px" }}
               />
 
-              <Tabs activeKey={activeTab} onChange={(key) => setActiveTab(key)}>
+              <Tabs
+                activeKey={activeTab}
+                onChange={(key) => setActiveTab(key)}
+                className="table"
+              >
                 <TabPane tab="Pending Approvals" key="pending">
                   <Table
                     columns={columns}
@@ -317,7 +321,6 @@ const Approval = () => {
                     loading={loading}
                     rowKey="_id"
                     rowSelection={rowSelection}
-                    className="spaced"
                   />
                   <span style={{ margin: "0 8px" }} />
                   <Button
