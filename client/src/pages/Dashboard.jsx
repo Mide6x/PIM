@@ -17,9 +17,9 @@ import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./sidebar/Topbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBoxesPacking,
   faLayerGroup,
   faIndustry,
+  faBoxArchive,
 } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 
@@ -201,9 +201,9 @@ const Dashboard = () => {
       <div>
         <Sidebar />
       </div>
-
+      
       <div className="fullcontent">
-        <div className="cont">
+      <div className="cont">
           <Topbar />
         </div>
         <Flex vertical flex={1} className="content">
@@ -220,7 +220,7 @@ const Dashboard = () => {
                 <div className="stats-item-content">
                   <div>
                     <FontAwesomeIcon
-                      icon={faBoxesPacking}
+                      icon={faBoxArchive}
                       size="2xl"
                       style={{ color: "#023bbd" }}
                       className="iconContent"

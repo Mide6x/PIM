@@ -1,14 +1,8 @@
 import PropTypes from "prop-types";
 import { Menu, Button, message } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import {
-  ContainerOutlined,
-  DatabaseOutlined,
-  PieChartOutlined,
-  MacCommandOutlined,
-  CheckSquareOutlined,
-  FileImageOutlined,
-} from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDatabase, faChartLine, faImage, faFileCircleCheck, faIndustry, faCartShopping} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import useAuth from "../../contexts/useAuth";
 import { useState, useEffect } from "react";
@@ -18,38 +12,38 @@ import logoImage from "../../assets/logo.png";
 const items = [
   {
     key: "1",
-    icon: <DatabaseOutlined />,
+    icon: <FontAwesomeIcon icon={faChartLine} size="lg" style={{color: "#ffffff",}} />,
     label: "Dashboard",
     to: "/dashboard",
   },
   {
     key: "2",
     label: "Image Conversion",
-    icon: <FileImageOutlined />,
+    icon:  <FontAwesomeIcon icon={faImage} size="lg" style={{color: "#ffffff",}} />,
     to: "/images",
   },
   {
     key: "3",
-    icon: <PieChartOutlined />,
+    icon:<FontAwesomeIcon icon={faDatabase} size="lg" style={{color: "#ffffff",}} />,
     label: "Data Cleaning",
     to: "/uploadtab",
   },
   {
     key: "4",
-    icon: <CheckSquareOutlined />,
+    icon: <FontAwesomeIcon icon={faFileCircleCheck} size="lg" style={{color: "#ffffff",}} />,
     label: "Approve Products",
     to: "/approval",
   },
   {
     key: "5",
-    icon: <ContainerOutlined />,
+    icon:  <FontAwesomeIcon icon={faCartShopping} size="lg" style={{color: "#ffffff",}} />,
     label: "Manage Categories",
     to: "/categories",
   },
   {
     key: "6",
     label: "Manage Manufacturers",
-    icon: <MacCommandOutlined />,
+    icon:  <FontAwesomeIcon icon={faIndustry} size="lg" style={{color: "#ffffff",}} />,
     to: "/mngmanufacturers",
   },
 ];
@@ -128,11 +122,9 @@ const Sidebar = () => {
           />
         ))}
       </Menu>
-      <div className="logout-tab">
         <Button onClick={handleLogout} danger className="logout-button">
           Logout
         </Button>
-      </div>
     </div>
   );
 };
