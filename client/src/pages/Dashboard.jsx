@@ -15,9 +15,12 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./sidebar/Topbar";
-import productImage from "../assets/products.png";
-import categoriesImage from "../assets/categories.png";
-import manufacturerImage from "../assets/manufacturers.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBoxesPacking,
+  faLayerGroup,
+  faIndustry,
+} from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 
 const { Option } = Select;
@@ -207,55 +210,58 @@ const Dashboard = () => {
           <div>
             <div className="intro">
               <h2>Dashboard </h2>
-              
+
               <span style={{ fontSize: "15px", color: "#878787" }}>
-              {formattedDate}
-            </span>
+                {formattedDate}
+              </span>
             </div>
             <div className="stats-container">
               <Card className="stats-item0">
                 <div className="stats-item-content">
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faBoxesPacking}
+                      size="2xl"
+                      style={{ color: "#023bbd" }}
+                      className="iconContent"
+                    />
+                  </div>
                   <div className="text-content">
                     <p className="stats-item-header">Total InProducts</p>
                     <p className="stats-item-body">{productCount}</p>
-                  </div>
-                  <div className="image-content">
-                    <img
-                      src={productImage}
-                      className="dash-img"
-                      alt="Total Products"
-                    />
                   </div>
                 </div>
               </Card>
 
               <Card className="stats-item1">
                 <div className="stats-item-content">
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faLayerGroup}
+                      size="2xl"
+                      className="iconContent2"
+                      style={{ color: "#ffffff" }}
+                    />
+                  </div>
                   <div className="text-content">
                     <p className="stats-item-header">Total Categories</p>
                     <p className="stats-item-body">{categoryCount}</p>
-                  </div>
-                  <div className="image-content">
-                    <img
-                      src={categoriesImage}
-                      className="dash-img"
-                      alt="Total Categories"
-                    />
                   </div>
                 </div>
               </Card>
               <Card className="stats-item2">
                 <div className="stats-item-content">
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faIndustry}
+                      className="iconContent"
+                      size="2xl"
+                      style={{ color: "#023bbd" }}
+                    />
+                  </div>
                   <div className="text-content">
                     <p className="stats-item-header">Total Manufacturers</p>
                     <p className="stats-item-body">{manufacturerCount}</p>
-                  </div>
-                  <div className="image-content">
-                    <img
-                      src={manufacturerImage}
-                      className="dash-img"
-                      alt="Total Manufacturers"
-                    />
                   </div>
                 </div>
               </Card>

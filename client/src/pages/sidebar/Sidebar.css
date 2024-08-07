@@ -9,10 +9,9 @@
 }
 .topbarContent {
   display: flex;
-justify-content: space-between;
+  justify-content: space-between;
   padding: 10px;
-  gap: 9px;
-  background-color: #f0f3ff;
+  background-color: #ffffff;
   border-bottom-color: #d0d0d0;
   border-bottom-width: 0.5px;
   border-bottom-style: solid;
@@ -20,25 +19,33 @@ justify-content: space-between;
 }
 .topbarContent0 {
   display: flex;
-
-  padding: 10px;
+  padding: 13px;
   gap: 9px;
+  font-size: 20px;
 }
 
 .topbarContent1 {
   display: flex;
-
   padding: 10px;
   gap: 9px;
 }
-
-.flex1{
+.iconContent3{
+  background-color: #eeeeee;
+  color: #c8c8c8;
+  padding: 13px;
+  border-radius: 50px;
+  align-items: center;
+}
+.flex1 {
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
-.flex2{
+.flex2 {
   display: flex;
+  align-items: center;
+}
+.flex3 {
   align-items: center;
 }
 
@@ -58,7 +65,7 @@ justify-content: space-between;
   margin-bottom: 20px;
 }
 .active-menu-item {
-  background-color: #1c60ff!important;
+  background-color: #1c60ff !important;
   color: #f2f5fc !important;
   font-weight: bold;
   padding: 15px !important;

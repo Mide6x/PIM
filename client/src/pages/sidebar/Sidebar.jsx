@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import useAuth from "../../contexts/useAuth";
 import { useState, useEffect } from "react";
-import "./Sidebar.css";
+import "./Sidebar.module.css";
 import logoImage from "../../assets/logo.png";
 
 const items = [
@@ -86,7 +86,7 @@ const Sidebar = () => {
       const userRep = await axios.get("http://localhost:3000/api/users");
       setUserCount(userRep.data.length);
     } catch (error) {
-      message.error("Failed to fetch Users 😔");
+      message.error("Failed to fetch Users ");
     }
   };
 

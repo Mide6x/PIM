@@ -10,7 +10,7 @@ html {
   height: 100%;
   width: 100%;
   margin: 0;
-  background: #f0f3ff;
+  background: #ffffff;
 }
 h2{
   font-size: 40px;
@@ -33,7 +33,7 @@ h2{
   display: flex;
   height: 100%;
   width: 100%;
-  background: #e6ebff33;
+  background: #d4ddff33;
 }
 
 .fullcontent {
@@ -44,7 +44,7 @@ h2{
   flex: 1;
   height: fit-content;
   width: fit-content;
-  overflow-y: scroll;
+
   margin-bottom: 30px;
   padding: 15px;
 }
@@ -54,10 +54,11 @@ h2{
   padding: 20px;
   width: 100%;
   background-color: #ffffff;
+  overflow-y: scroll !important;
 }
 .stats-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   gap: 25px;
   padding: 10px;
   width: 100%;
@@ -91,19 +92,19 @@ h2{
     rgba(255, 255, 255, 1) 0%,
     rgba(255, 255, 255, 1) 0%,
     rgb(45, 106, 250) 0%,
-    rgb(2, 51, 167) 100%
+    rgb(2, 59, 189) 100%
   );
   color: #ffffff;
   border-radius: 30px;
   border: none;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0px 0px 8px -1.5px #c2c2c24d;
 }
 
 .stats-item1 {
   flex: 1;
   background-color: #ffffff;
-  color: #002270;
+  color: #012f9a;
   border-radius: 30px;
   border: none;
   padding: 20px;
@@ -125,9 +126,28 @@ h2{
   padding: 20px;
   box-shadow: 0px 0px 8px -1.5px #c2c2c24d;
 }
+
+.iconContent{
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  height: 35px;
+}
+.iconContent2{
+  background-color: #023bbd;
+  padding: 20px;
+  border-radius: 15px;
+  height: 35px;
+}
+.text-content {
+  flex: 1;
+  padding: 10px;
+}
+
 .stats-item-content {
   display: flex;
   align-items: center;
+  gap: 30px;
 }
 
 .stats-item-header {
@@ -138,17 +158,9 @@ h2{
   font-weight: 700;
 }
 
-.text-content {
-  flex: 1;
-}
+
 .table {
   width: 148vh;
-}
-
-.image-content {
-  flex: 1;
-  display: flex;
-  justify-content: center;
 }
 
 .dash-img {

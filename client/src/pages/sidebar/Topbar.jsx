@@ -7,36 +7,41 @@ import { faBell } from "@fortawesome/free-solid-svg-icons";
 const Topbar = () => {
   const { userData } = useAuth();
 
+  const getGreeting = () => {
+    const now = new Date();
+    const hour = now.getHours();
+
+    if (hour < 12) {
+      return "Good Morning";
+    } else if (hour < 17) {
+      return "Good Afternoon";
+    } else {
+      return "Good Evening";
+    }
+  };
+
   return (
     <>
       {userData && (
         <div className="topbarContent">
           <div className="topbarContent0">
-            <div className="flex1">
-              <h3 style={{ fontSize: "21px" }}>
-                Good Morning, <span>{userData.name} 👋</span>
-              </h3>
-            </div>
-            <div className="flex2">
-              <p style={{ color: "#878787" }}>
-                Manage your products with NotBackOffice by leveraging a
-                well-tested process.
-              </p>
-            </div>
+            <h3>
+              {getGreeting()}, <span>{userData.name} 👋 </span>
+            </h3>
           </div>
           <div className="topbarContent1">
             <div className="flex1">
               <FontAwesomeIcon
                 icon={faBell}
-                size="2xl"
-                style={{ color: "#002270" }}
+                size="xl"
+                 className="iconContent3"
               />
             </div>
             <div className="flex2">
               <img src={userImage} className="logo-img2" alt="User" />
             </div>
-            <div>
-              <h3 style={{ fontSize: "18px" }}>
+            <div className="flex3">
+              <h3>
                 <span>{userData.name}.</span>
               </h3>
               <p style={{ fontSize: "12px", color: "#878787" }}>
