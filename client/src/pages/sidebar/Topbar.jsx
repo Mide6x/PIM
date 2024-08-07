@@ -1,11 +1,15 @@
+import { useState } from "react";
 import useAuth from "../../contexts/useAuth";
 import "./Sidebar.css";
+import NotificationSidebar from "./Notifications";
 import userImage from "../../assets/user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 
+
 const Topbar = () => {
   const { userData } = useAuth();
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const getGreeting = () => {
     const now = new Date();
@@ -20,6 +24,14 @@ const Topbar = () => {
     }
   };
 
+  const handleBellClick = () => {
+    setShowSidebar(true);
+  };
+
+  const handleSidebarClose = () => {
+    setShowSidebar(false);
+  };
+
   return (
     <>
       {userData && (
@@ -31,10 +43,11 @@ const Topbar = () => {
           </div>
           <div className="topbarContent1">
             <div className="flex1">
-              <FontAwesomeIcon
+            <FontAwesomeIcon
                 icon={faBell}
                 size="xl"
-                 className="iconContent3"
+                className="iconContent3"
+                onClick={handleBellClick}
               />
             </div>
             <div className="flex2">
@@ -51,6 +64,7 @@ const Topbar = () => {
           </div>
         </div>
       )}
+       {showSidebar && <NotificationSidebar userId={userData._id} onClose={handleSidebarClose} />}
     </>
   );
 };

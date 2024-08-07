@@ -10,6 +10,7 @@ const imageRoutes = require("./routes/imageRoutes");
 const approvalRoutes = require("./routes/approvalRoutes");
 const processedImageRoutes = require('./routes/processedImageRoutes');
 const userRoutes = require('./routes/userRoute')
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/api/manufacturer", manufacturerRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/approvals", approvalRoutes);
 app.use("/api/processedimages", processedImageRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Error handling - Global
 app.use((err, req, res, next) => {
