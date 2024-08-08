@@ -22,6 +22,7 @@ import {
   faBoxArchive,
 } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
+import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 
 const { Option } = Select;
 
@@ -287,17 +288,18 @@ const Dashboard = () => {
             </div>
           </div>
           <Modal
-            title={editingProduct ? "Edit Product" : "Create Product"}
-            open={isModalVisible}
-            onCancel={handleCancel}
-            footer={null}
-          >
-            <ProductForm
-              initialValues={editingProduct}
-              onCancel={handleCancel}
-              onOk={handleOk}
-            />
-          </Modal>
+  title={editingProduct ? "Edit Product" : "Create Product"}
+  open={isModalVisible}
+  onCancel={handleCancel}
+  footer={null}
+>
+  <ProductForm
+    initialValues={editingProduct} 
+    onCancel={handleCancel}
+    onOk={handleOk}
+  />
+</Modal>
+
         </Flex>
       </div>
     </div>
@@ -313,62 +315,83 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    form.setFieldsValue(initialValues);
-  }, [initialValues, form]);
-
-  useEffect(() => {
-    const fetchManufacturers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/manufacturer"
-        );
-        setManufacturers(response.data);
-      } catch (error) {
-        message.error("Failed to fetch manufacturers 😔");
-      }
-    };
-
     fetchManufacturers();
   }, []);
 
-  const onManufacturerChange = (value) => {
-    const selectedManu = manufacturers.find(
-      (manufacturer) => manufacturer.name === value
-    );
-    setSelectedManufacturer(selectedManu);
-    setBrands(selectedManu ? selectedManu.brands : []);
-    form.setFieldsValue({ brand: null });
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    } else {
+      form.resetFields();
+    }
+  }, [initialValues, form]);
+
+  const fetchManufacturers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/manufacturer");
+      setManufacturers(response.data);
+    } catch (error) {
+      message.error("Failed to fetch manufacturers 😔");
+    }
   };
 
   const fetchCategories = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/categories");
-      if (Array.isArray(response.data)) {
-        setCategories(response.data);
-      } else {
-        setCategories([]);
-        message.error("Invalid data received from server");
-      }
+      setCategories(response.data);
     } catch (error) {
       message.error("Failed to fetch categories 😔");
     }
   };
 
+  const onManufacturerChange = (value) => {
+    const selectedManu = manufacturers.find((manufacturer) => manufacturer.name === value);
+    setSelectedManufacturer(selectedManu);
+    setBrands(selectedManu ? selectedManu.brands : []);
+    form.setFieldsValue({ brand: null });
+  };
+
   const onFinish = (values) => {
-    onOk(values);
+    onOk({
+      ...values,
+      weight: parseFloat(values.weight),
+    });
+  };
+
+  const handleAIButtonClick = async () => {
+    const productName = form.getFieldValue("productName");
+    if (!productName) {
+      message.warning("Please enter the product name first.");
+      return;
+    }
+
+    try {
+      const response = await categorizeProductWithOpenAI(productName);
+
+      // Update the form with the AI results
+      form.setFieldsValue({
+        productCategory: response.productCategory,
+        productSubcategory: response.productSubcategory,
+      });
+      message.success('Product category and subcategory populated using AI 🎉');
+    } catch (error) {
+      message.error('Failed to categorize product using AI 😔');
+    }
   };
 
   return (
     <Form form={form} onFinish={onFinish} initialValues={initialValues}>
       <Form.Item
+        name="productName"
+        label="Product Name"
+        rules={[{ required: true, message: "Please enter the product name" }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
         name="manufacturerName"
         label="Manufacturer Name"
-        rules={[
-          { required: true, message: "Please enter the manufacturer name" },
-        ]}
+        rules={[{ required: true, message: "Please enter the manufacturer name" }]}
       >
         <Select onChange={onManufacturerChange}>
           {manufacturers.map((manufacturer) => (
@@ -394,9 +417,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="productCategory"
         label="Product Category"
-        rules={[
-          { required: true, message: "Please enter the product category" },
-        ]}
+        rules={[{ required: true, message: "Please enter the product category" }]}
       >
         <Select>
           {categories.map((category) => (
@@ -407,9 +428,16 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         </Select>
       </Form.Item>
       <Form.Item
-        name="productName"
-        label="Product Name"
-        rules={[{ required: true, message: "Please enter the product name" }]}
+        name="productSubcategory"
+        label="Product Subcategory"
+        rules={[{ required: true, message: "Please enter the product subcategory" }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="variantType"
+        label="Variant Type"
+        rules={[{ required: true, message: "Please enter the variant type" }]}
       >
         <Input />
       </Form.Item>
@@ -422,10 +450,10 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item
         name="weight"
-        label="Weight"
+        label="Weight (Kg)"
         rules={[{ required: true, message: "Please enter the weight" }]}
       >
-        <Input />
+        <Input type="number" step="0.01" />
       </Form.Item>
       <Form.Item
         name="imageUrl"
@@ -436,11 +464,15 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Submit
+          {initialValues ? "Update Product" : "Create Product"}
         </Button>
         <span style={{ margin: "0 8px" }} />
         <Button type="default" danger onClick={onCancel}>
           Cancel
+        </Button>
+        <span style={{ margin: "0 8px" }} />
+        <Button type="default" onClick={handleAIButtonClick}>
+          AI Assist
         </Button>
       </Form.Item>
     </Form>
