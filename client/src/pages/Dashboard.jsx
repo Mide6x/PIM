@@ -20,9 +20,10 @@ import {
   faLayerGroup,
   faIndustry,
   faBoxArchive,
+  faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
-import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
+import { getProductDetailsFromOpenAI } from "../hooks/productAddWithOpenAI";
 
 const { Option } = Select;
 
@@ -308,14 +309,15 @@ const Dashboard = () => {
 
 const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
-  const [manufacturers, setManufacturers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [manufacturers, setManufacturers] = useState([]);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
+  const [manufacturerSuggestions, setManufacturerSuggestions] = useState([]);
 
   useEffect(() => {
     fetchCategories();
-    fetchManufacturers();
+    fetchManufacturers(); // Added this line
   }, []);
 
   useEffect(() => {
@@ -326,21 +328,21 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     }
   }, [initialValues, form]);
 
-  const fetchManufacturers = async () => {
-    try {
-      const response = await axios.get("http://localhost:3000/api/manufacturer");
-      setManufacturers(response.data);
-    } catch (error) {
-      message.error("Failed to fetch manufacturers 😔");
-    }
-  };
-
   const fetchCategories = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/categories");
       setCategories(response.data);
     } catch (error) {
       message.error("Failed to fetch categories 😔");
+    }
+  };
+
+  const fetchManufacturers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/manufacturer");
+      setManufacturers(response.data);
+    } catch (error) {
+      message.error("Failed to fetch manufacturers 😔");
     }
   };
 
@@ -366,16 +368,16 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     }
 
     try {
-      const response = await categorizeProductWithOpenAI(productName);
+      const { productCategory, productSubcategory, manufacturers } = await getProductDetailsFromOpenAI(productName);
 
-      // Update the form with the AI results
       form.setFieldsValue({
-        productCategory: response.productCategory,
-        productSubcategory: response.productSubcategory,
+        productCategory,
+        productSubcategory,
       });
-      message.success('Product category and subcategory populated using AI 🎉');
+      setManufacturerSuggestions(manufacturers);
+      message.success('Product details populated using AI 🎉');
     } catch (error) {
-      message.error('Failed to categorize product using AI 😔');
+      message.error('Failed to fetch product details using AI 😔');
     }
   };
 
@@ -393,7 +395,22 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         label="Manufacturer Name"
         rules={[{ required: true, message: "Please enter the manufacturer name" }]}
       >
-        <Select onChange={onManufacturerChange}>
+        <Select onChange={onManufacturerChange} dropdownRender={menu => (
+          <div>
+            {menu}
+            
+            {manufacturerSuggestions.length > 0 && (
+              <div style={{ padding: 8 }}>
+                <p>Manufacturer Suggestions:</p>
+                <ul>
+                  {manufacturerSuggestions.slice(0, 4).map((suggestion, index) => (
+                    <li key={index}>{suggestion}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}>
           {manufacturers.map((manufacturer) => (
             <Option key={manufacturer._id} value={manufacturer.name}>
               {manufacturer.name}
@@ -472,12 +489,13 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         </Button>
         <span style={{ margin: "0 8px" }} />
         <Button type="default" onClick={handleAIButtonClick}>
-          AI Assist
+          <FontAwesomeIcon icon={faWandMagicSparkles} style={{color: "#2929ff",}} /> AI Assist
         </Button>
       </Form.Item>
     </Form>
   );
 };
+
 
 ProductForm.propTypes = {
   initialValues: PropTypes.object,
