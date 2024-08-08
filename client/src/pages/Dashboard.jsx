@@ -289,18 +289,17 @@ const Dashboard = () => {
             </div>
           </div>
           <Modal
-  title={editingProduct ? "Edit Product" : "Create Product"}
-  open={isModalVisible}
-  onCancel={handleCancel}
-  footer={null}
->
-  <ProductForm
-    initialValues={editingProduct} 
-    onCancel={handleCancel}
-    onOk={handleOk}
-  />
-</Modal>
-
+            title={editingProduct ? "Edit Product" : "Create Product"}
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={null}
+          >
+            <ProductForm
+              initialValues={editingProduct}
+              onCancel={handleCancel}
+              onOk={handleOk}
+            />
+          </Modal>
         </Flex>
       </div>
     </div>
@@ -317,7 +316,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
   useEffect(() => {
     fetchCategories();
-    fetchManufacturers(); // Added this line
+    fetchManufacturers();
   }, []);
 
   useEffect(() => {
@@ -339,7 +338,9 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
   const fetchManufacturers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/manufacturer");
+      const response = await axios.get(
+        "http://localhost:3000/api/manufacturer"
+      );
       setManufacturers(response.data);
     } catch (error) {
       message.error("Failed to fetch manufacturers 😔");
@@ -347,7 +348,9 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   };
 
   const onManufacturerChange = (value) => {
-    const selectedManu = manufacturers.find((manufacturer) => manufacturer.name === value);
+    const selectedManu = manufacturers.find(
+      (manufacturer) => manufacturer.name === value
+    );
     setSelectedManufacturer(selectedManu);
     setBrands(selectedManu ? selectedManu.brands : []);
     form.setFieldsValue({ brand: null });
@@ -368,17 +371,23 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     }
 
     try {
-      const { productCategory, productSubcategory, manufacturers } = await getProductDetailsFromOpenAI(productName);
+      const { productCategory, productSubcategory, manufacturers } =
+        await getProductDetailsFromOpenAI(productName);
 
       form.setFieldsValue({
         productCategory,
         productSubcategory,
       });
       setManufacturerSuggestions(manufacturers);
-      message.success('Product details populated using AI 🎉');
+      message.success("Product details populated using AI 🎉");
     } catch (error) {
-      message.error('Failed to fetch product details using AI 😔');
+      message.error("Failed to fetch product details using AI 😔");
     }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    form.setFieldsValue({ manufacturerName: suggestion });
+    setManufacturerSuggestions([]);
   };
 
   return (
@@ -390,33 +399,56 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       >
         <Input />
       </Form.Item>
+
       <Form.Item
         name="manufacturerName"
         label="Manufacturer Name"
-        rules={[{ required: true, message: "Please enter the manufacturer name" }]}
+        rules={[
+          { required: true, message: "Please enter the manufacturer name" },
+        ]}
       >
-        <Select onChange={onManufacturerChange} dropdownRender={menu => (
-          <div>
-            {menu}
-            
-            {manufacturerSuggestions.length > 0 && (
+        <Select
+          onChange={onManufacturerChange}
+          dropdownRender={(menu) => (
+            <div>
+              {menu}
               <div style={{ padding: 8 }}>
-                <p>Manufacturer Suggestions:</p>
-                <ul>
-                  {manufacturerSuggestions.slice(0, 4).map((suggestion, index) => (
-                    <li key={index}>{suggestion}</li>
-                  ))}
-                </ul>
+                <Button type="link" onClick={handleAIButtonClick}>
+                  <FontAwesomeIcon
+                    icon={faWandMagicSparkles}
+                    style={{ color: "#2929ff" }}
+                  />{" "}
+                  Get Product Details
+                </Button>
               </div>
-            )}
-          </div>
-        )}>
+            </div>
+          )}
+        >
           {manufacturers.map((manufacturer) => (
             <Option key={manufacturer._id} value={manufacturer.name}>
               {manufacturer.name}
             </Option>
           ))}
         </Select>
+        <div style={{ paddingTop: 8, marginBottom: "25px" }}>
+          {manufacturerSuggestions.length > 0 && (
+            <div style={{ display: "flex" }} className="productForm">
+              <div style={{ display: "flex" }}>
+                {manufacturerSuggestions
+                  .slice(0, 4)
+                  .map((suggestion, index) => (
+                    <Button
+                      key={index}
+                      type="link"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion}
+                    </Button>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
       </Form.Item>
       <Form.Item
         name="brand"
@@ -434,7 +466,9 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="productCategory"
         label="Product Category"
-        rules={[{ required: true, message: "Please enter the product category" }]}
+        rules={[
+          { required: true, message: "Please enter the product category" },
+        ]}
       >
         <Select>
           {categories.map((category) => (
@@ -447,7 +481,9 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       <Form.Item
         name="productSubcategory"
         label="Product Subcategory"
-        rules={[{ required: true, message: "Please enter the product subcategory" }]}
+        rules={[
+          { required: true, message: "Please enter the product subcategory" },
+        ]}
       >
         <Input />
       </Form.Item>
@@ -489,13 +525,16 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         </Button>
         <span style={{ margin: "0 8px" }} />
         <Button type="default" onClick={handleAIButtonClick}>
-          <FontAwesomeIcon icon={faWandMagicSparkles} style={{color: "#2929ff",}} /> AI Assist
+          <FontAwesomeIcon
+            icon={faWandMagicSparkles}
+            style={{ color: "#002270" }}
+          />{" "}
+          AI Assist
         </Button>
       </Form.Item>
     </Form>
   );
 };
-
 
 ProductForm.propTypes = {
   initialValues: PropTypes.object,
