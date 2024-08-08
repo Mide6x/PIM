@@ -5,20 +5,13 @@ import PropTypes from "prop-types";
 
 const NotificationSidebar = ({ onClose }) => {
   const [notifications, setNotifications] = useState([]);
-  const [readNotifications, setReadNotifications] = useState(new Set());
 
   useEffect(() => {
     console.log("Fetching all notifications");
     axios
       .get("http://localhost:3000/api/notifications/")
       .then((response) => {
-        console.log("Fetched notifications:", response.data);
-        const fetchedNotifications = response.data.data || [];
-        const readSet = new Set(
-          fetchedNotifications.filter((n) => n.read).map((n) => n._id)
-        );
-        setNotifications(fetchedNotifications);
-        setReadNotifications(readSet);
+        setNotifications(response.data.data || []);
       })
       .catch((error) => {
         console.error("Error fetching notifications:", error);
@@ -30,7 +23,6 @@ const NotificationSidebar = ({ onClose }) => {
     axios
       .patch(`http://localhost:3000/api/notifications/${id}/read`)
       .then(() => {
-        setReadNotifications((prev) => new Set(prev.add(id)));
         setNotifications((prev) =>
           prev.map((notification) =>
             notification._id === id
@@ -38,20 +30,23 @@ const NotificationSidebar = ({ onClose }) => {
               : notification
           )
         );
+      })
+      .catch((error) => {
+        console.error("Error marking notification as read:", error);
       });
   };
 
   const handleNotificationDelete = (id) => {
-    axios.delete(`http://localhost:3000/api/notifications/${id}`).then(() => {
-      setNotifications((prev) =>
-        prev.filter((notification) => notification._id !== id)
-      );
-      setReadNotifications((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(id);
-        return newSet;
+    axios
+      .delete(`http://localhost:3000/api/notifications/${id}`)
+      .then(() => {
+        setNotifications((prev) =>
+          prev.filter((notification) => notification._id !== id)
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting notification:", error);
       });
-    });
   };
 
   return (
@@ -65,22 +60,20 @@ const NotificationSidebar = ({ onClose }) => {
             <div
               key={notification._id}
               className={`notificationItem ${
-                readNotifications.has(notification._id) ? "read" : "unread"
+                notification.read ? "read" : "unread"
               }`}
               onClick={() => handleNotificationClick(notification._id)}
             >
               {notification.message}
-              {readNotifications.has(notification._id) && (
-                <button
-                  className="deleteButton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNotificationDelete(notification._id);
-                  }}
-                >
-                  🗑️
-                </button>
-              )}
+              <button
+                className="deleteButton"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNotificationDelete(notification._id);
+                }}
+              >
+                🗑️
+              </button>
             </div>
           ))
         ) : (
