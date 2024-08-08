@@ -33,7 +33,7 @@
   background-color: #f5f5f5;
   color: #4e67b2;
   padding: 13px;
-  border-radius: 50px;
+  border-radius: 15px;
   align-items: center;
 }
 .flex1 {
@@ -69,6 +69,7 @@
   color: #f2f5fc !important;
   font-weight: bold;
   padding: 15px !important;
+  border-radius: 13px !important;
 }
 .barbody {
   width: fit-content;
@@ -76,18 +77,33 @@
   padding: 15px;
   background-color: #002270;
 }
+
+.logout-button {
+  width: 200px;
+  padding: 20px;
+  border-style: none !important;
+  border-radius: 13px;
+  color: #002270 !important ;
+  font-weight: 600;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 40px;
+}
+
 .notificationSidebar {
   position: fixed;
   top: 0;
   right: 0;
   width: 300px;
   height: 100%;
-  background-color: white;
+  background-color: #ffffff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
   overflow-y: auto;
   transition: transform 0.6s ease-in-out;
   transform: translateX(0);
-  z-index: 1;
+  z-index: 1000; /* Ensures the sidebar is above other content */
+  display: flex;
+  flex-direction: column;
 }
 
 .notificationSidebar .closeButton {
@@ -98,16 +114,22 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
+  color: #000; /* Button color */
 }
 
 .notificationSidebar .notificationContent {
   padding: 20px;
+  flex: 1; /* Ensures content takes up available space */
+  overflow-y: auto; /* Allows scrolling if content overflows */
 }
 
 .notificationSidebar .notificationItem {
   padding: 10px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .notificationSidebar .notificationItem.read {
@@ -118,15 +140,25 @@
   font-weight: bold;
 }
 
-
-.logout-button {
-  width: fit-content;
-  padding: 20px;
-  border-style: none !important;
-  border-radius: 13px;
-  color: #002270 !important ;
-  font-weight: 600;
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 40px;
+.notificationSidebar .deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px; 
 }
+
+.bellIconWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notificationDot {
+  position: absolute;
+  top: 0px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+}
+

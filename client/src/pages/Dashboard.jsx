@@ -201,9 +201,9 @@ const Dashboard = () => {
       <div>
         <Sidebar />
       </div>
-      
+
       <div className="fullcontent">
-      <div className="cont">
+        <div className="cont">
           <Topbar />
         </div>
         <Flex vertical flex={1} className="content">

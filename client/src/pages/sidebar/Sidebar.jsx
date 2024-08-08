@@ -1,9 +1,15 @@
 import PropTypes from "prop-types";
-import { Menu, Button, message } from "antd";
+import { Menu, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDatabase, faChartLine, faImage, faFileCircleCheck, faIndustry, faCartShopping} from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
+import {
+  faDatabase,
+  faChartLine,
+  faImage,
+  faFileCircleCheck,
+  faIndustry,
+  faCartShopping,
+} from "@fortawesome/free-solid-svg-icons";
 import useAuth from "../../contexts/useAuth";
 import { useState, useEffect } from "react";
 import "./Sidebar.module.css";
@@ -12,38 +18,70 @@ import logoImage from "../../assets/logo.png";
 const items = [
   {
     key: "1",
-    icon: <FontAwesomeIcon icon={faChartLine} size="lg" style={{color: "#ffffff",}} />,
+    icon: (
+      <FontAwesomeIcon
+        icon={faChartLine}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
     label: "Dashboard",
     to: "/dashboard",
   },
   {
     key: "2",
     label: "Image Conversion",
-    icon:  <FontAwesomeIcon icon={faImage} size="lg" style={{color: "#ffffff",}} />,
+    icon: (
+      <FontAwesomeIcon icon={faImage} size="lg" style={{ color: "#ffffff" }} />
+    ),
     to: "/images",
   },
   {
     key: "3",
-    icon:<FontAwesomeIcon icon={faDatabase} size="lg" style={{color: "#ffffff",}} />,
+    icon: (
+      <FontAwesomeIcon
+        icon={faDatabase}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
     label: "Data Cleaning",
     to: "/uploadtab",
   },
   {
     key: "4",
-    icon: <FontAwesomeIcon icon={faFileCircleCheck} size="lg" style={{color: "#ffffff",}} />,
+    icon: (
+      <FontAwesomeIcon
+        icon={faFileCircleCheck}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
     label: "Approve Products",
     to: "/approval",
   },
   {
     key: "5",
-    icon:  <FontAwesomeIcon icon={faCartShopping} size="lg" style={{color: "#ffffff",}} />,
+    icon: (
+      <FontAwesomeIcon
+        icon={faCartShopping}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
     label: "Manage Categories",
     to: "/categories",
   },
   {
     key: "6",
     label: "Manage Manufacturers",
-    icon:  <FontAwesomeIcon icon={faIndustry} size="lg" style={{color: "#ffffff",}} />,
+    icon: (
+      <FontAwesomeIcon
+        icon={faIndustry}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
     to: "/mngmanufacturers",
   },
 ];
@@ -73,21 +111,10 @@ const Sidebar = () => {
   const { logout } = useAuth();
   const location = useLocation();
   const [currentKey, setCurrentKey] = useState("");
-  const [userCount, setUserCount] = useState(0);
-
-  const fetchCounts = async () => {
-    try {
-      const userRep = await axios.get("http://localhost:3000/api/users");
-      setUserCount(userRep.data.length);
-    } catch (error) {
-      message.error("Failed to fetch Users ");
-    }
-  };
 
   useEffect(() => {
     const currentItem = items.find((item) => item.to === location.pathname);
     setCurrentKey(currentItem ? currentItem.key : "");
-    fetchCounts();
   }, [location.pathname]);
 
   const handleLogout = () => {
@@ -104,7 +131,7 @@ const Sidebar = () => {
           <h3>NotBackOffice.</h3>
         </div>
       </div>
-      <div className="teamDetails">Team - {userCount} Members</div>
+
       <Menu
         mode="inline"
         selectedKeys={[currentKey]}
@@ -122,9 +149,9 @@ const Sidebar = () => {
           />
         ))}
       </Menu>
-        <Button onClick={handleLogout} danger className="logout-button">
-          Logout
-        </Button>
+      <Button onClick={handleLogout} danger className="logout-button">
+        Logout
+      </Button>
     </div>
   );
 };
