@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Button,
   Table,
@@ -309,6 +309,7 @@ const Dashboard = () => {
 const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [manufacturers, setManufacturers] = useState([]);
   const [selectedManufacturer, setSelectedManufacturer] = useState(null);
@@ -336,6 +337,21 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     }
   };
 
+  const fetchSubcategories = useCallback(async (categoryName) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/categories/${categoryName}/subcategories`
+      );
+      if (Array.isArray(response.data.subcategories)) {
+        setSubcategories(response.data.subcategories);
+      } else {
+        console.error("Unexpected response format for subcategories");
+      }
+    } catch (error) {
+      message.error("Failed to fetch subcategories 😔");
+    }
+  }, []);
+
   const fetchManufacturers = async () => {
     try {
       const response = await axios.get(
@@ -358,7 +374,6 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    console.log("Suggestion clicked:", suggestion); // Debugging line
     const selectedManu = manufacturers.find(
       (manufacturer) => manufacturer.name === suggestion
     );
@@ -366,7 +381,6 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     setBrands(selectedManu ? selectedManu.brands : []);
     form.setFieldsValue({ brand: null });
 
-    // Directly set the value of the manufacturerName field
     form.setFields([
       {
         name: "manufacturerName",
@@ -374,7 +388,6 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       },
     ]);
 
-    console.log("Updated form values:", form.getFieldsValue()); // Debugging line
     setManufacturerSuggestions([]);
   };
 
@@ -383,6 +396,10 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       ...values,
       weight: parseFloat(values.weight),
     });
+  };
+
+  const handleCategoryChange = (value) => {
+    fetchSubcategories(value);
   };
 
   const handleAIButtonClick = async () => {
@@ -419,20 +436,26 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
       <Form.Item
         name="manufacturerName"
-        label="Manufacturer Name"
+        label="Manufacturer (Type to Search)"
         rules={[
           { required: true, message: "Please enter the manufacturer name" },
         ]}
       >
         <Select
+          showSearch
           value={form.getFieldValue("manufacturerName")}
           onChange={onManufacturerChange}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().includes(input.toLowerCase())
+          }
         >
-          {manufacturers.map((manufacturer) => (
-            <Option key={manufacturer._id} value={manufacturer.name}>
-              {manufacturer.name}
-            </Option>
-          ))}
+          {manufacturers
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((manufacturer) => (
+              <Option key={manufacturer._id} value={manufacturer.name}>
+                {manufacturer.name}
+              </Option>
+            ))}
         </Select>
         <div style={{ paddingTop: 8, marginBottom: "25px" }}>
           {manufacturerSuggestions.length > 0 && (
@@ -465,17 +488,28 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item
         name="productCategory"
-        label="Product Category"
+        label="Category (Start typing to search)"
         rules={[
-          { required: true, message: "Please enter the product category" },
+          { required: true, message: "Please input the product's category" },
         ]}
       >
-        <Select>
-          {categories.map((category) => (
-            <Option key={category._id} value={category.name}>
-              {category.name}
-            </Option>
-          ))}
+        <Select
+          showSearch
+          onChange={handleCategoryChange}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().includes(input.toLowerCase())
+          }
+          rules={[
+            { required: true, message: "Please enter the product category" },
+          ]}
+        >
+          {categories
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((category) => (
+              <Option key={category._id} value={category.name}>
+                {category.name}
+              </Option>
+            ))}
         </Select>
       </Form.Item>
       <Form.Item
@@ -485,7 +519,13 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           { required: true, message: "Please enter the product subcategory" },
         ]}
       >
-        <Input />
+        <Select>
+          {subcategories.map((subcategory) => (
+            <Option key={subcategory} value={subcategory}>
+              {subcategory}
+            </Option>
+          ))}
+        </Select>
       </Form.Item>
       <Form.Item
         name="variantType"
