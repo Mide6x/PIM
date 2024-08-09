@@ -97,7 +97,7 @@ export const getProductDetailsFromOpenAI = async (productName) => {
     Provide the following in your response:
     1. Product Category: [Category]
     2. Product Subcategory: [Subcategory]
-    3. Manufacturers: List of the top 4 most probable manufacturers e.g Apple Inc. for Iphone, separated by commas.
+    3. Manufacturers: List of the top 4 most probable manufacturers, separated by commas.
 
     Format your response as follows:
     ProductCategory: [Category]

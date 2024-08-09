@@ -153,6 +153,26 @@ h2 {
   border-radius: 10px;
   align-items: center;
 }
+.buttonContainer {
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.buttonContainer .ant-btn {
+  margin: 3px; 
+}
+
+
+Button {
+  border-radius: 12px !important;
+  padding: 15px !important;
+}
+
+Form {
+  padding: 15px !important;
+}
 
 .stats-item-content {
   display: flex;

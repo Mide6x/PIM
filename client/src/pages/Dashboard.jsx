@@ -21,6 +21,8 @@ import {
   faIndustry,
   faBoxArchive,
   faWandMagicSparkles,
+  faXmark,
+  faFolderPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 import { getProductDetailsFromOpenAI } from "../hooks/productAddWithOpenAI";
@@ -425,7 +427,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   };
 
   return (
-    <Form form={form} onFinish={onFinish} initialValues={initialValues}>
+    <Form form={form} onFinish={onFinish} initialValues={initialValues} layout="vertical">
       <Form.Item
         name="productName"
         label="Product Name"
@@ -555,19 +557,23 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       >
         <Input />
       </Form.Item>
-      <Form.Item>
+      <Form.Item className="buttonContainer">
         <Button type="primary" htmlType="submit">
+        <FontAwesomeIcon icon={faFolderPlus} style={{color: "#ffffff",}} />
           {initialValues ? "Update Product" : "Create Product"}
         </Button>
-        <span style={{ margin: "0 8px" }} />
         <Button type="default" danger onClick={onCancel}>
+        <FontAwesomeIcon icon={faXmark} style={{color: "#ff2424",}} />
           Cancel
         </Button>
-        <span style={{ margin: "0 8px" }} />
-        <Button type="default" onClick={handleAIButtonClick}>
+        <Button
+          type="default"
+          onClick={handleAIButtonClick}
+          style={{ borderColor: "#023bbd", color: "#023bbd" }}
+        >
           <FontAwesomeIcon
             icon={faWandMagicSparkles}
-            style={{ color: "#002270" }}
+            style={{ color: "#023bbd" }}
           />{" "}
           AI Assist
         </Button>

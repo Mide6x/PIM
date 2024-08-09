@@ -15,6 +15,8 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./sidebar/Topbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilePen, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 
 const { Option } = Select;
@@ -649,13 +651,15 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
           <Input.TextArea rows={4} />
         </Form.Item>
       )}
-      <Form.Item>
-        <Space>
-          <Button onClick={onCancel}>Cancel</Button>
-          <Button type="primary" htmlType="submit">
-            {initialValues ? "Update" : "Create"}
-          </Button>
-        </Space>
+      <Form.Item className="buttonContainer">
+        <Button type="default" danger onClick={onCancel}>
+          <FontAwesomeIcon icon={faXmark} style={{ color: "#ff2424" }} />
+          Cancel
+        </Button>
+        <Button type="primary" htmlType="submit">
+          <FontAwesomeIcon icon={faFilePen} style={{ color: "#ffffff" }} />
+          {initialValues ? "Update" : "Create"}
+        </Button>
       </Form.Item>
     </Form>
   );
