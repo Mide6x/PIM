@@ -127,13 +127,21 @@ export const getProductDetailsFromOpenAI = async (productName) => {
         productSubcategory = line.replace("ProductSubcategory:", "").trim();
       }
       if (line.startsWith("Manufacturers:")) {
-        manufacturers = line.replace("Manufacturers:", "").trim().split(',').map(item => item.trim());
+        manufacturers = line
+          .replace("Manufacturers:", "")
+          .trim()
+          .split(",")
+          .map((item) => item.trim());
       }
     });
 
     return { productCategory, productSubcategory, manufacturers };
   } catch (error) {
     console.error("Error getting product details from OpenAI:", error);
-    return { productCategory: "unknown", productSubcategory: "unknown", manufacturers: [] };
+    return {
+      productCategory: "unknown",
+      productSubcategory: "unknown",
+      manufacturers: [],
+    };
   }
 };

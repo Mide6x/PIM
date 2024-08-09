@@ -354,6 +354,28 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     setSelectedManufacturer(selectedManu);
     setBrands(selectedManu ? selectedManu.brands : []);
     form.setFieldsValue({ brand: null });
+    form.setFieldsValue({ manufacturerName: value });
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    console.log("Suggestion clicked:", suggestion); // Debugging line
+    const selectedManu = manufacturers.find(
+      (manufacturer) => manufacturer.name === suggestion
+    );
+    setSelectedManufacturer(selectedManu);
+    setBrands(selectedManu ? selectedManu.brands : []);
+    form.setFieldsValue({ brand: null });
+
+    // Directly set the value of the manufacturerName field
+    form.setFields([
+      {
+        name: "manufacturerName",
+        value: suggestion,
+      },
+    ]);
+
+    console.log("Updated form values:", form.getFieldsValue()); // Debugging line
+    setManufacturerSuggestions([]);
   };
 
   const onFinish = (values) => {
@@ -385,11 +407,6 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     }
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    form.setFieldsValue({ manufacturerName: suggestion });
-    setManufacturerSuggestions([]);
-  };
-
   return (
     <Form form={form} onFinish={onFinish} initialValues={initialValues}>
       <Form.Item
@@ -408,21 +425,8 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         ]}
       >
         <Select
+          value={form.getFieldValue("manufacturerName")}
           onChange={onManufacturerChange}
-          dropdownRender={(menu) => (
-            <div>
-              {menu}
-              <div style={{ padding: 8 }}>
-                <Button type="link" onClick={handleAIButtonClick}>
-                  <FontAwesomeIcon
-                    icon={faWandMagicSparkles}
-                    style={{ color: "#2929ff" }}
-                  />{" "}
-                  Get Product Details
-                </Button>
-              </div>
-            </div>
-          )}
         >
           {manufacturers.map((manufacturer) => (
             <Option key={manufacturer._id} value={manufacturer.name}>
@@ -433,19 +437,15 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         <div style={{ paddingTop: 8, marginBottom: "25px" }}>
           {manufacturerSuggestions.length > 0 && (
             <div style={{ display: "flex" }} className="productForm">
-              <div style={{ display: "flex" }}>
-                {manufacturerSuggestions
-                  .slice(0, 4)
-                  .map((suggestion, index) => (
-                    <Button
-                      key={index}
-                      type="link"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      {suggestion}
-                    </Button>
-                  ))}
-              </div>
+              {manufacturerSuggestions.slice(0, 4).map((suggestion, index) => (
+                <Button
+                  key={index}
+                  type="link"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </Button>
+              ))}
             </div>
           )}
         </div>
