@@ -242,7 +242,7 @@ const Images = () => {
         </div>
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>Upload Excel Sheet Here</h2>
+            <h2>Image Conversion</h2>
             <p style={{ marginBottom: "10px" }}>
               Download the template and insert your data so that we begin! Most
               processes are AI-assisted but ensure a level of data accuracy, and

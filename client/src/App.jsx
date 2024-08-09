@@ -14,6 +14,7 @@ import Approval from "./pages/Approval";
 import Images from "./pages/Images";
 import MngManufacturers from "./pages/MngManufacturers";
 import Categories from "./pages/Categories";
+import Variants from "./pages/Variants";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -54,6 +55,10 @@ const App = () => {
         <Route
           path="/images/*"
           element={isAuthenticated ? <Images /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/variants/*"
+          element={isAuthenticated ? <Variants /> : <Navigate to="/" />}
         />
       </Routes>
     </Router>

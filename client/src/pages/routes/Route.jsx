@@ -22,6 +22,10 @@ const SidebarRoutes = () => {
         path="/approval"
         element={isAuthenticated ? <Navigate to="/approval" /> : <Login />}
       />
+      <Route
+        path="/variants"
+        element={isAuthenticated ? <Navigate to="/variants" /> : <Login />}
+      />
     </Routes>
   );
 };

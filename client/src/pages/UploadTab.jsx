@@ -250,7 +250,7 @@ const UploadTab = () => {
       </div>
         <Flex vertical flex={1} className="content">
           <div >
-            <h2>Data Cleaning 🧼</h2>
+            <h2>Data Cleaning</h2>
             <p style={{ marginTop: "10px" }}>
               Here the data is cleaned using our in-built Artificial
               Intelligence system. the Product Category, Product Subcategory,

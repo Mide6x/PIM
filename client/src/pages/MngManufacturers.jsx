@@ -209,7 +209,7 @@ const MngManufacturers = () => {
         </div>
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>Manufacturer 🏭</h2>
+            <h2>Manufacturers</h2>
             <div className="details" style={{ marginTop: "20px" }}>
               <span style={{ margin: "0 8px" }} />
               <Input

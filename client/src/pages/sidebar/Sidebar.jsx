@@ -4,11 +4,12 @@ import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faDatabase,
-  faChartLine,
   faImage,
   faFileCircleCheck,
   faIndustry,
   faCartShopping,
+  faChartSimple,
+  faScaleBalanced,
 } from "@fortawesome/free-solid-svg-icons";
 import useAuth from "../../contexts/useAuth";
 import { useState, useEffect } from "react";
@@ -20,7 +21,7 @@ const items = [
     key: "1",
     icon: (
       <FontAwesomeIcon
-        icon={faChartLine}
+        icon={faChartSimple}
         size="lg"
         style={{ color: "#ffffff" }}
       />
@@ -83,6 +84,18 @@ const items = [
       />
     ),
     to: "/mngmanufacturers",
+  },
+  {
+    key: "7",
+    label: "Variant Types",
+    icon: (
+      <FontAwesomeIcon
+        icon={faScaleBalanced}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
+    to: "/variants",
   },
 ];
 
