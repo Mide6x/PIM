@@ -11,14 +11,15 @@ import {
   faChartSimple,
   faScaleBalanced,
 } from "@fortawesome/free-solid-svg-icons";
-import useAuth from "../../contexts/useAuth";
 import { useState, useEffect } from "react";
+import useAuth from "../../contexts/useAuth";
 import "./Sidebar.module.css";
 import logoImage from "../../assets/logo.png";
 
 const items = [
   {
     key: "1",
+    label: "Dashboard",
     icon: (
       <FontAwesomeIcon
         icon={faChartSimple}
@@ -26,7 +27,6 @@ const items = [
         style={{ color: "#ffffff" }}
       />
     ),
-    label: "Dashboard",
     to: "/dashboard",
   },
   {
@@ -39,6 +39,7 @@ const items = [
   },
   {
     key: "3",
+    label: "Data Cleaning",
     icon: (
       <FontAwesomeIcon
         icon={faDatabase}
@@ -46,11 +47,11 @@ const items = [
         style={{ color: "#ffffff" }}
       />
     ),
-    label: "Data Cleaning",
     to: "/uploadtab",
   },
   {
     key: "4",
+    label: "Approve Products",
     icon: (
       <FontAwesomeIcon
         icon={faFileCircleCheck}
@@ -58,11 +59,11 @@ const items = [
         style={{ color: "#ffffff" }}
       />
     ),
-    label: "Approve Products",
     to: "/approval",
   },
   {
     key: "5",
+    label: "Manage Categories",
     icon: (
       <FontAwesomeIcon
         icon={faCartShopping}
@@ -70,7 +71,6 @@ const items = [
         style={{ color: "#ffffff" }}
       />
     ),
-    label: "Manage Categories",
     to: "/categories",
   },
   {
@@ -103,7 +103,7 @@ const MenuItem = ({ item, isActive }) => (
   <Menu.Item
     key={item.key}
     icon={item.icon}
-    style={{ padding: "5px", color: "#e8efff", fontWeight: "450" }}
+    style={{ padding: "5px", color: "#ffffff", fontWeight: "450" }}
     className={isActive ? "active-menu-item" : ""}
   >
     {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
@@ -140,9 +140,6 @@ const Sidebar = () => {
         <div className="image">
           <img src={logoImage} className="logo-img" alt="Logo" />
         </div>
-        <div style={{ color: "#ffff", alignItems: "center" }}>
-          <h3>NotBackOffice.</h3>
-        </div>
       </div>
 
       <Menu
@@ -151,7 +148,7 @@ const Sidebar = () => {
         style={{
           marginTop: "20px",
           fontSize: "15px",
-          backgroundColor: "#002270",
+          backgroundColor: "#212B36",
         }}
       >
         {items.map((item) => (
@@ -162,9 +159,17 @@ const Sidebar = () => {
           />
         ))}
       </Menu>
-      <Button onClick={handleLogout} danger className="logout-button">
-        Logout
-      </Button>
+
+      <div className="logout-container">
+        <div className="logoutContainer0">
+          <span>Sabi</span>
+        </div>
+        <div className="logoutContainer1">
+          <Button onClick={handleLogout} danger className="logout-button">
+            Logout
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

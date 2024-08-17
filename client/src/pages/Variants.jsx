@@ -15,10 +15,16 @@ const Variants = () => {
         </div>
         <Flex vertical flex={1} className="content">
           <div>
-          <h2>Variants Management</h2>
-            <div className="details" style={{ marginTop: "20px" }}>
-              <span style={{ margin: "0 8px" }} />
+            <h2>Variants Management</h2>
+            <div className="detailsContainer">
+              <div className="variantDetails" style={{ marginTop: "20px" }}>
+               <h3>Add or Update Variants</h3>
               </div>
+              <div className="variantDetails" style={{ marginTop: "20px" }}>
+              <h3>Existing Variants</h3>
+              <p></p>
+              </div>
+            </div>
           </div>
         </Flex>
       </div>

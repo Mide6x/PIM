@@ -39,6 +39,7 @@ exports.bulkCreateProducts = async (req, res, next) => {
         variant: productData.variant,
         weight: productData.weightInKg,
         imageUrl: productData.imageUrl,
+        description: productData.description
       }))
     );
 

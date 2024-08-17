@@ -23,6 +23,7 @@ import {
   faWandMagicSparkles,
   faXmark,
   faFolderPlus,
+  faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 import { getProductDetailsFromOpenAI } from "../hooks/productAddWithOpenAI";
@@ -226,7 +227,7 @@ const Dashboard = () => {
                     <FontAwesomeIcon
                       icon={faBoxArchive}
                       size="2xl"
-                      style={{ color: "#023bbd" }}
+                      style={{ color: "#ffffff" }}
                       className="iconContent"
                     />
                   </div>
@@ -243,7 +244,7 @@ const Dashboard = () => {
                     <FontAwesomeIcon
                       icon={faLayerGroup}
                       size="2xl"
-                      className="iconContent2"
+                      className="iconContent"
                       style={{ color: "#ffffff" }}
                     />
                   </div>
@@ -260,7 +261,7 @@ const Dashboard = () => {
                       icon={faIndustry}
                       className="iconContent"
                       size="2xl"
-                      style={{ color: "#023bbd" }}
+                      style={{ color: "#ffffff" }}
                     />
                   </div>
                   <div className="text-content">
@@ -273,7 +274,7 @@ const Dashboard = () => {
             <div className="details">
               <span style={{ margin: "0 8px", marginTop: "60px" }} />
               <Input
-                placeholder="Search products..."
+                placeholder="Search Products by name"
                 onChange={(e) => handleSearch(e.target.value)}
                 style={{ marginBottom: "20px", width: "300px" }}
               />
@@ -427,7 +428,12 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   };
 
   return (
-    <Form form={form} onFinish={onFinish} initialValues={initialValues} layout="vertical">
+    <Form
+      form={form}
+      onFinish={onFinish}
+      initialValues={initialValues}
+      layout="vertical"
+    >
       <Form.Item
         name="productName"
         label="Product Name"
@@ -475,12 +481,22 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           )}
         </div>
       </Form.Item>
+      <div className="aiUseNotification">
+        <p>
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            style={{ color: "#023bbd" }}
+          />{" "}
+          Suggestions made by artificial intelligence may sometimes be
+          inaccurate. Please check again for data accuracy. 
+        </p>
+      </div>
       <Form.Item
         name="brand"
         label="Brand"
         rules={[{ required: true, message: "Please enter the brand" }]}
       >
-        <Select disabled={!selectedManufacturer}>
+        <Select disabled={!selectedManufacturer} >
           {brands.map((brand, index) => (
             <Option key={index} value={brand}>
               {brand}
@@ -557,13 +573,21 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       >
         <Input />
       </Form.Item>
+      <Form.Item
+        name="description"
+        label="Product Description"
+        rules={[{ required: false, message: "enter the product details." }]}
+      >
+        <Input />
+      </Form.Item>
+
       <Form.Item className="buttonContainer">
         <Button type="primary" htmlType="submit">
-        <FontAwesomeIcon icon={faFolderPlus} style={{color: "#ffffff",}} />
+          <FontAwesomeIcon icon={faFolderPlus} style={{ color: "#ffffff" }} />
           {initialValues ? "Update Product" : "Create Product"}
         </Button>
         <Button type="default" danger onClick={onCancel}>
-        <FontAwesomeIcon icon={faXmark} style={{color: "#ff2424",}} />
+          <FontAwesomeIcon icon={faXmark} style={{ color: "#ff2424" }} />
           Cancel
         </Button>
         <Button

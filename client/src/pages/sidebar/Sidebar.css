@@ -1,22 +1,19 @@
+/* Header and Topbar Styles */
 .header {
   display: flex;
   align-items: center;
   gap: 9px;
 }
 
-.image {
-  display: flex;
-}
 .topbarContent {
   display: flex;
   justify-content: space-between;
   padding: 10px;
   background-color: #ffffff;
-  border-bottom-color: #d0d0d0;
-  border-bottom-width: 0.5px;
-  border-bottom-style: solid;
+  border-bottom: 0.5px solid #d0d0d0;
   margin-bottom: 20px;
 }
+
 .topbarContent0 {
   display: flex;
   padding: 13px;
@@ -29,67 +26,59 @@
   padding: 10px;
   gap: 9px;
 }
-.iconContent3 {
-  background-color: #f5f5f5;
-  color: #4e67b2;
-  padding: 13px;
-  border-radius: 15px;
-  align-items: center;
-}
+
+/* Flex Containers */
 .flex1 {
   display: flex;
   align-items: center;
   margin-right: 10px;
 }
+
 .flex2 {
   display: flex;
   align-items: center;
 }
+
 .flex3 {
   align-items: center;
 }
 
-.logo-img {
-  height: 35px;
-  width: 35px;
-  border-radius: 5px;
+/* Image Styles */
+.image {
+  display: flex;
 }
+
+.logo-img {
+  height: 56.05px;
+  width: fit-content;
+}
+
 .logo-img2 {
   height: 45px;
   width: 45px;
   border-radius: 5px;
 }
-.teamDetails {
-  color: #d2d2d2;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-.active-menu-item {
-  background-color: #1c60ff !important;
-  color: #f2f5fc !important;
-  font-weight: bold;
-  padding: 15px !important;
-  border-radius: 13px !important;
-}
-.barbody {
-  width: fit-content;
-  height: 100%;
-  padding: 15px;
-  background-color: #002270;
+
+/* Icon and Button Styles */
+.iconContent3 {
+  background-color: #f5f5f5;
+  color: #919eab;
+  padding: 13px;
+  border-radius: 8px;
+  align-items: center;
 }
 
 .logout-button {
-  width: 200px;
+  width: 150px;
   padding: 20px;
-  border-style: none !important;
-  border-radius: 13px;
-  color: #002270 !important ;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+  background-color: #919eab !important;
   font-weight: 600;
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 40px;
 }
 
+/* Sidebar and Notification Styles */
 .notificationSidebar {
   position: fixed;
   top: 0;
@@ -101,7 +90,7 @@
   overflow-y: auto;
   transition: transform 0.6s ease-in-out;
   transform: translateX(0);
-  z-index: 1000; /* Ensures the sidebar is above other content */
+  z-index: 1000;
   display: flex;
   flex-direction: column;
 }
@@ -114,13 +103,13 @@
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #000; /* Button color */
+  color: #000;
 }
 
 .notificationSidebar .notificationContent {
   padding: 20px;
-  flex: 1; /* Ensures content takes up available space */
-  overflow-y: auto; /* Allows scrolling if content overflows */
+  flex: 1;
+  overflow-y: auto;
 }
 
 .notificationSidebar .notificationItem {
@@ -144,9 +133,64 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px; 
+  font-size: 14px;
 }
 
+/* Logout Container */
+.logout-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background-color: #213a4b;
+  border-radius: 10px;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 40px;
+  padding: 20px;
+  width: 248px;
+  height: 130px;
+}
+
+.logoutContainer0 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.logoutContainer1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Additional Styles */
+.teamDetails {
+  color: #d2d2d2;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.active-menu-item {
+  background-color: #069f7e !important;
+  color: #f2f5fc !important;
+  font-weight: bold;
+  padding: 15px !important;
+  border-radius: 8px !important;
+}
+
+.barbody {
+  width: fit-content;
+  height: 100%;
+  padding: 15px;
+  background-color: #212b36;
+}
+
+/* Notification Icon Styles */
 .bellIconWrapper {
   position: relative;
   display: inline-block;
@@ -158,7 +202,6 @@
   right: -5px;
   width: 10px;
   height: 10px;
-  background-color: red;
+  background-color: #ffab00;
   border-radius: 50%;
 }
-

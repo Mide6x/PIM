@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema(
     variant: { type: String, required: true },
     weight: { type: Number, required: true },
     imageUrl: { type: String, required: true },
+    description: {type:String, required:false}
   },
   { timestamps: true }
 );

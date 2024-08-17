@@ -9,7 +9,7 @@ const manufacturerRoutes = require("./routes/manufacturerRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const approvalRoutes = require("./routes/approvalRoutes");
 const processedImageRoutes = require('./routes/processedImageRoutes');
-const userRoutes = require('./routes/userRoute')
+const userRoutes = require('./routes/userRoute');
 const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
@@ -29,7 +29,6 @@ app.use("/api/approvals", approvalRoutes);
 app.use("/api/processedimages", processedImageRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// Error handling - Global
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
@@ -39,15 +38,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is Running on Port: ${PORT}`);
 });
 
-// MongoDB connect
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+  })
   .then(() => console.log("Connection With Database Established. 🎉"))
   .catch((error) =>
     console.error("Failed 😔 to Establish Connection With Database:", error)
