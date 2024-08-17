@@ -95,17 +95,7 @@ const MngManufacturers = () => {
     }
   };
 
-  const handleArchive = async (manufacturer) => {
-    try {
-      await axios.patch(
-        `http://localhost:3000/api/manufacturer/${manufacturer._id}/archive`
-      );
-      message.success("Manufacturer archived successfully 🎉");
-      fetchManufacturers();
-    } catch (error) {
-      message.error("Failed to archive manufacturer 😔");
-    }
-  };
+
 
   const handleUnarchive = async (manufacturer) => {
     try {
@@ -140,11 +130,7 @@ const MngManufacturers = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <Link className="nameListing" to={`/manufacturers/${record._id}`}>
-          {text}
-        </Link>
-      ),
+      render: (text, record) => <Link className="nameListing" to={`/manufacturers/${record._id}`}>{text}</Link>,
     },
     {
       title: "Date Created",
@@ -179,20 +165,24 @@ const MngManufacturers = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-          <Button className="archiveBtn" onClick={() => handleArchive(record)}>
-            Archive
-          </Button>
+         
+          <Link to={`/manufacturers/${record._id}`}>
+            <Button className="archiveBtn">
+              View Details
+            </Button>
+          </Link>
         </Space>
       ),
-    },
-  ];
+    }
+  ]
 
   const archivedColumns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      className: "nameListing",
+
+      render: (text, record) => <Link className="nameListing" to={`/manufacturers/${record._id}`}>{text}</Link>,
     },
     {
       title: "Date Created",

@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, List, message, Input, Button, Form, Modal } from "antd";
+import { Tabs, Table, message, Input, Button, Form, Modal } from "antd";
 import axios from "axios";
 import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./sidebar/Topbar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 const ManufacturerDetails = () => {
   const { id } = useParams();
   const [manufacturer, setManufacturer] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newBrand, setNewBrand] = useState("");
+  const [editingBrand, setEditingBrand] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [isArchived, setIsArchived] = useState(false);
 
   useEffect(() => {
     const fetchManufacturerDetails = async () => {
@@ -21,75 +22,85 @@ const ManufacturerDetails = () => {
           `http://localhost:3000/api/manufacturer/${id}`
         );
         setManufacturer(response.data);
+        setIsArchived(response.data.isArchived);
       } catch (error) {
         message.error("Failed to fetch manufacturer details 😔");
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchManufacturerDetails();
   }, [id]);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-    form.setFieldsValue({
-      name: manufacturer.name,
-      brands: manufacturer.brands,
-    });
+  const handleEdit = (brand) => {
+    setEditingBrand(brand);
+    setIsModalVisible(true);
   };
 
   const handleSave = async () => {
     try {
       const values = form.getFieldsValue();
-      await axios.put(`http://localhost:3000/api/manufacturer/${id}`, values);
-      setManufacturer({ ...manufacturer, ...values });
-      setIsEditing(false);
-      message.success("Manufacturer details updated successfully! 🎉");
+      const updatedBrands = manufacturer.brands.map((brand) =>
+        brand === editingBrand ? values.brandName : brand
+      );
+      await axios.put(`http://localhost:3000/api/manufacturer/${id}`, {
+        ...manufacturer,
+        brands: updatedBrands,
+      });
+      setManufacturer((prev) => ({ ...prev, brands: updatedBrands }));
+      setIsModalVisible(false);
+      message.success("Brand updated successfully! 🎉");
     } catch (error) {
-      message.error("Failed to update manufacturer details 😔");
+      message.error("Failed to update brand 😔");
     }
   };
 
-  const handleAddBrand = async () => {
-    if (newBrand.trim()) {
-      try {
-        const updatedBrands = [...manufacturer.brands, newBrand];
-        await axios.put(`http://localhost:3000/api/manufacturer/${id}`, {
-          ...manufacturer,
-          brands: updatedBrands,
-        });
-        setManufacturer((prev) => ({
-          ...prev,
-          brands: updatedBrands,
-        }));
-        setNewBrand("");
-        message.success("Brand added successfully! 🎉");
-      } catch (error) {
-        message.error("Failed to add brand 😔");
-      }
-    } else {
-      message.warning("Please enter a brand name");
+  const handleArchive = async () => {
+    try {
+      await axios.patch(`http://localhost:3000/api/manufacturer/${id}/archive`);
+      setIsArchived(true);
+      message.success("Manufacturer archived successfully 🎉");
+    } catch (error) {
+      message.error("Failed to archive manufacturer 😔");
     }
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const handleUnarchive = async () => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/manufacturer/${id}/unarchive`
+      );
+      setIsArchived(false);
+      message.success("Manufacturer unarchived successfully 🎉");
+    } catch (error) {
+      message.error("Failed to unarchive manufacturer 😔");
+    }
   };
 
-  const handleOk = () => {
-    handleAddBrand();
-    setIsModalVisible(false);
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/api/manufacturer/${id}`);
+      message.success("Manufacturer deleted successfully 🎉");
+    } catch (error) {
+      message.error("Failed to delete manufacturer 😔");
+    }
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    form.resetFields();
-  };
-
-  if (loading) {
-    return <p>Loading manufacturer details...</p>;
-  }
+  const columns = [
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Button className="editBtn" onClick={() => handleEdit(record.brand)}>
+          <FontAwesomeIcon icon={faPenToSquare} /> Edit
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div className="container">
@@ -97,91 +108,101 @@ const ManufacturerDetails = () => {
       <div className="fullcontent">
         <Topbar />
         <div className="content">
-          <Card
-            title={manufacturer?.name}
-            extra={
-              <Button className="editBtn" onClick={handleEdit}>
-                Edit
-              </Button>
-            }
-          >
-            <Form form={form} layout="vertical" onFinish={handleSave}>
-              {isEditing ? (
-                <>
-                  <Form.Item
-                    label="Manufacturer Name"
-                    name="name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter the manufacturer name",
-                      },
-                    ]}
+          <div className="intro">
+            <h2>Manufacturer Details</h2>
+          </div>
+          <div className="details" style={{ marginTop: "20px" }}>
+            <div className="infoContainer">
+              <div className="infoTitle">
+                <div className="titleContent">
+                  {manufacturer?.name}
+                  <span className="status">
+                    {isArchived ? "Archived" : "Active"}
+                  </span>
+                </div>
+
+                <div className="buttonContainer">
+                  <Button
+                    className="editBtn"
+                    onClick={() => setIsModalVisible(true)}
                   >
-                    <Input  className="userInput"/>
-                  </Form.Item>
-                  <Form.Item label="Brands">
-                    <List
-                      dataSource={manufacturer?.brands || []}
-                      renderItem={(brand) => <List.Item>{brand}</List.Item>}
-                    />
-                  </Form.Item>
-                  <Form.Item>
+                    <FontAwesomeIcon icon={faPenToSquare} /> Edit Details
+                  </Button>
+                  {isArchived ? (
                     <Button
-                      type="default"
-                      onClick={() => setIsEditing(false)}
-                      className="deleteBtn"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      className="addBtn"
-                      type="primary"
-                      htmlType="submit"
+                      className="unarchiveBtn"
+                      onClick={handleUnarchive}
                       style={{ marginLeft: "10px" }}
                     >
-                      Save
+                      Unarchive
                     </Button>
-                  </Form.Item>
-                </>
-              ) : (
-                <>
-                  <h3>Brands</h3>
-                  {manufacturer?.brands.length > 0 ? (
-                    <List
-                      dataSource={manufacturer.brands}
-                      renderItem={(brand) => <List.Item>{brand}</List.Item>}
-                    />
                   ) : (
-                    <p>No brands available.</p>
+                    <Button
+                      className="archiveBtn"
+                      onClick={handleArchive}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Archive
+                    </Button>
                   )}
-
                   <Button
-                    type="primary"
-                    onClick={showModal}
-                    style={{ marginTop: "10px" }}
-                    className="addBtn"
+                    className="deleteBtn"
+                    onClick={handleDelete}
+                    style={{ marginLeft: "10px" }}
                   >
-                    Add Brand
+                    Delete
                   </Button>
-                  <Modal
-                    title="Brand Details"
-                    open={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    okButtonProps={{ disabled: !newBrand.trim() }}
-                  >
-                    <Input
-                    className="userInput"
-                      value={newBrand}
-                      onChange={(e) => setNewBrand(e.target.value)}
-                      placeholder="Name"
-                    />
-                  </Modal>
-                </>
-              )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Tabs defaultActiveKey="1" className="table">
+            <Tabs.TabPane tab="Brands" key="1">
+              <Table
+                dataSource={manufacturer?.brands.map((brand) => ({ brand }))}
+                columns={columns}
+                rowKey="brand"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+            </Tabs.TabPane>
+          </Tabs>
+
+          <Modal
+            title="Edit Brand"
+            open={isModalVisible}
+            onCancel={() => setIsModalVisible(false)}
+            footer={null} // Removes the default footer buttons
+          >
+            <Form form={form} onFinish={handleSave}>
+              <p className="formTitle">Brand Details</p>
+              <Form.Item
+                name="brandName"
+                initialValue={editingBrand}
+                rules={[
+                  { required: true, message: "Please enter the brand name" },
+                ]}
+              >
+                <Input className="userInput" placeholder="Brand Name" />
+              </Form.Item>
+              <Form.Item className="concludeBtns">
+                <Button
+                  className="editBtn"
+                  onClick={() => setIsModalVisible(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="addBtn"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Save
+                </Button>
+              </Form.Item>
             </Form>
-          </Card>
+          </Modal>
         </div>
       </div>
     </div>
