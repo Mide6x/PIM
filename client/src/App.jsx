@@ -13,6 +13,7 @@ import UploadTab from "./pages/UploadTab";
 import Approval from "./pages/Approval";
 import Images from "./pages/Images";
 import MngManufacturers from "./pages/MngManufacturers";
+import ManufacturerDetails from "./pages/ManufacturerDetails";
 import Categories from "./pages/Categories";
 import Variants from "./pages/Variants";
 
@@ -52,6 +53,7 @@ const App = () => {
           path="/mngmanufacturers/*"
           element={isAuthenticated ? <MngManufacturers /> : <Navigate to="/" />}
         />
+         <Route path="/manufacturers/:id" element={isAuthenticated ? <ManufacturerDetails /> : <Navigate to="/"/>}/>
         <Route
           path="/images/*"
           element={isAuthenticated ? <Images /> : <Navigate to="/" />}

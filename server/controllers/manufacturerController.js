@@ -12,6 +12,23 @@ exports.getManufacturers = async (req, res) => {
   }
 };
 
+// Get a specific manufacturer by ID
+exports.getManufacturerById = async (req, res) => {
+  try {
+    console.log(`Fetching Manufacturer with ID: ${req.params.id}`);
+    const manufacturer = await Manufacturer.findById(req.params.id);
+    if (!manufacturer) {
+      console.log(`Manufacturer not found for ID: ${req.params.id}`);
+      return res.status(404).json({ message: "Manufacturer not found 😔" });
+    }
+    res.json(manufacturer);
+  } catch (err) {
+    console.error("Error fetching manufacturer:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 // Create a new manufacturer
 exports.createManufacturer = async (req, res) => {
   const manufacturer = new Manufacturer({

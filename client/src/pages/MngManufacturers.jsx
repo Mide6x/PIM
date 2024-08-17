@@ -17,6 +17,7 @@ import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./sidebar/Topbar";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
+import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -141,6 +142,7 @@ const MngManufacturers = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (text, record) => <Link to={`/manufacturers/${record._id}`}>{text}</Link>,
     },
     {
       title: "Brands",
@@ -358,7 +360,7 @@ const ManufacturerForm = ({ initialValues, onCancel, onOk }) => {
           htmlType="submit"
           style={{ marginLeft: "10px" }}
         >
-          Create Manufacturer
+          Save
         </Button>
       </Form.Item>
     </Form>
