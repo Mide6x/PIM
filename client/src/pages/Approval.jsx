@@ -515,7 +515,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
         name="productName"
         rules={[{ required: true, message: "Please input the product name" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="" />
       </Form.Item>
       <Form.Item
         label="Manufacturer (Start typing to search)"
@@ -607,7 +607,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
           { required: true, message: "Please input the product variant" },
         ]}
       >
-        <Input />
+        <Input className="userInput" placeholder="" />
       </Form.Item>
       <Form.Item
         label="Weight (Kg)"
@@ -628,7 +628,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
           },
         ]}
       >
-        <Input />
+        <Input className="userInput" placeholder="" />
       </Form.Item>
       <Form.Item label="Status" name="status">
         <Select onChange={handleStatusChange} value={status}>

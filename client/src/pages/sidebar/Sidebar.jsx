@@ -31,6 +31,18 @@ const items = [
   },
   {
     key: "2",
+    label: "Manage Manufacturers",
+    icon: (
+      <FontAwesomeIcon
+        icon={faIndustry}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
+    to: "/mngmanufacturers",
+  },
+  {
+    key: "3",
     label: "Image Conversion",
     icon: (
       <FontAwesomeIcon icon={faImage} size="lg" style={{ color: "#ffffff" }} />
@@ -38,7 +50,7 @@ const items = [
     to: "/images",
   },
   {
-    key: "3",
+    key: "4",
     label: "Data Cleaning",
     icon: (
       <FontAwesomeIcon
@@ -50,7 +62,7 @@ const items = [
     to: "/uploadtab",
   },
   {
-    key: "4",
+    key: "5",
     label: "Approve Products",
     icon: (
       <FontAwesomeIcon
@@ -62,7 +74,7 @@ const items = [
     to: "/approval",
   },
   {
-    key: "5",
+    key: "6",
     label: "Manage Categories",
     icon: (
       <FontAwesomeIcon
@@ -72,18 +84,6 @@ const items = [
       />
     ),
     to: "/categories",
-  },
-  {
-    key: "6",
-    label: "Manage Manufacturers",
-    icon: (
-      <FontAwesomeIcon
-        icon={faIndustry}
-        size="lg"
-        style={{ color: "#ffffff" }}
-      />
-    ),
-    to: "/mngmanufacturers",
   },
   {
     key: "7",

@@ -272,14 +272,14 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
         label="Category Name"
         rules={[{ required: true, message: "Please enter the category name" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="" />
       </Form.Item>
       <Form.Item
         name="subcategories"
         label="Subcategories"
         rules={[{ required: true, message: "Please enter the subcategories" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="" />
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">

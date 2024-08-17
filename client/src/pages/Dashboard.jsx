@@ -192,8 +192,13 @@ const Dashboard = () => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
+          <Button className="editBtn" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
+          <Button
+            className="deleteBtn"
+            onClick={() => handleDelete(record._id)}
+          >
             Delete
           </Button>
         </Space>
@@ -277,9 +282,14 @@ const Dashboard = () => {
                 placeholder="Search Products by name"
                 onChange={(e) => handleSearch(e.target.value)}
                 style={{ marginBottom: "20px", width: "300px" }}
+                className="searchBar"
               />
               <span style={{ margin: "0 8px" }} />
-              <Button type="primary" className="spaced" onClick={handleCreate}>
+              <Button
+                type="primary"
+                className="spaced addBtn"
+                onClick={handleCreate}
+              >
                 Add New Product
               </Button>
               <Table
@@ -428,29 +438,24 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   };
 
   return (
-    <Form
-      form={form}
-      onFinish={onFinish}
-      initialValues={initialValues}
-      layout="vertical"
-    >
+    <Form form={form} onFinish={onFinish} initialValues={initialValues}>
       <Form.Item
         name="productName"
-        label="Product Name"
         rules={[{ required: true, message: "Please enter the product name" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="Product Name" />
       </Form.Item>
 
       <Form.Item
         name="manufacturerName"
-        label="Manufacturer (Type to Search)"
         rules={[
           { required: true, message: "Please enter the manufacturer name" },
         ]}
       >
         <Select
+         className="userSelection"
           showSearch
+          placeholder="Select or type a manufacturer"
           value={form.getFieldValue("manufacturerName")}
           onChange={onManufacturerChange}
           filterOption={(input, option) =>
@@ -481,6 +486,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           )}
         </div>
       </Form.Item>
+
       <div className="aiUseNotification">
         <p>
           <FontAwesomeIcon
@@ -488,15 +494,14 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
             style={{ color: "#023bbd" }}
           />{" "}
           Suggestions made by artificial intelligence may sometimes be
-          inaccurate. Please check again for data accuracy. 
+          inaccurate. Please check again for data accuracy.
         </p>
       </div>
       <Form.Item
         name="brand"
-        label="Brand"
         rules={[{ required: true, message: "Please enter the brand" }]}
       >
-        <Select disabled={!selectedManufacturer} >
+        <Select  className="userSelection" disabled={!selectedManufacturer} placeholder="Brand">
           {brands.map((brand, index) => (
             <Option key={index} value={brand}>
               {brand}
@@ -506,13 +511,14 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item
         name="productCategory"
-        label="Category (Start typing to search)"
         rules={[
           { required: true, message: "Please input the product's category" },
         ]}
       >
         <Select
+         className="userSelection"
           showSearch
+          placeholder="Category (Start typing to search)"
           onChange={handleCategoryChange}
           filterOption={(input, option) =>
             option.children.toLowerCase().includes(input.toLowerCase())
@@ -532,12 +538,11 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item
         name="productSubcategory"
-        label="Product Subcategory"
         rules={[
           { required: true, message: "Please enter the product subcategory" },
         ]}
       >
-        <Select>
+        <Select className="userSelection" placeholder="Product Subcategory">
           {subcategories.map((subcategory) => (
             <Option key={subcategory} value={subcategory}>
               {subcategory}
@@ -547,57 +552,54 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item
         name="variantType"
-        label="Variant Type"
         rules={[{ required: true, message: "Please enter the variant type" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="Variant Type" />
       </Form.Item>
       <Form.Item
         name="variant"
-        label="Variant"
         rules={[{ required: true, message: "Please enter the variant" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="Variant" />
       </Form.Item>
       <Form.Item
         name="weight"
-        label="Weight (Kg)"
+    
         rules={[{ required: true, message: "Please enter the weight" }]}
       >
-        <Input type="number" step="0.01" />
+        <Input placeholder="Weight (Kg)" className="userInput" type="number" step="0.01" />
       </Form.Item>
       <Form.Item
         name="imageUrl"
-        label="Image URL"
         rules={[{ required: true, message: "Please enter the image URL" }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="Image Url" />
       </Form.Item>
       <Form.Item
         name="description"
-        label="Product Description"
         rules={[{ required: false, message: "enter the product details." }]}
       >
-        <Input />
+        <Input className="userInput" placeholder="Product Description" />
       </Form.Item>
 
-      <Form.Item className="buttonContainer">
-        <Button type="primary" htmlType="submit">
+      <Form.Item className="concludeBtns">
+        <Button type="primary" htmlType="submit"  className="addBtn">
           <FontAwesomeIcon icon={faFolderPlus} style={{ color: "#ffffff" }} />
           {initialValues ? "Update Product" : "Create Product"}
         </Button>
-        <Button type="default" danger onClick={onCancel}>
-          <FontAwesomeIcon icon={faXmark} style={{ color: "#ff2424" }} />
+        <Button type="default" className="editBtn" onClick={onCancel}  style={{ marginLeft: "10px" }}>
+          <FontAwesomeIcon icon={faXmark} />
           Cancel
         </Button>
         <Button
           type="default"
           onClick={handleAIButtonClick}
-          style={{ borderColor: "#023bbd", color: "#023bbd" }}
+          style={{ marginLeft: "10px"  }}
+        className="AIBtn"
         >
           <FontAwesomeIcon
             icon={faWandMagicSparkles}
-            style={{ color: "#023bbd" }}
+            style={{ color: "#b76e00" }}
           />{" "}
           AI Assist
         </Button>
