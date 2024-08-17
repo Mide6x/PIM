@@ -27,10 +27,10 @@ const ManufacturerDetails = () => {
         setLoading(false);
       }
     };
-  
+
     fetchManufacturerDetails();
   }, [id]);
-  
+
   const handleEdit = () => {
     setIsEditing(true);
     form.setFieldsValue({
@@ -98,8 +98,12 @@ const ManufacturerDetails = () => {
         <Topbar />
         <div className="content">
           <Card
-           title={manufacturer?.name}
-           extra={<Button onClick={handleEdit}>Edit</Button>}
+            title={manufacturer?.name}
+            extra={
+              <Button className="editBtn" onClick={handleEdit}>
+                Edit
+              </Button>
+            }
           >
             <Form form={form} layout="vertical" onFinish={handleSave}>
               {isEditing ? (
@@ -114,7 +118,7 @@ const ManufacturerDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input  className="userInput"/>
                   </Form.Item>
                   <Form.Item label="Brands">
                     <List
@@ -123,15 +127,20 @@ const ManufacturerDetails = () => {
                     />
                   </Form.Item>
                   <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                      Save
-                    </Button>
                     <Button
                       type="default"
                       onClick={() => setIsEditing(false)}
-                      style={{ marginLeft: "10px" }}
+                      className="deleteBtn"
                     >
                       Cancel
+                    </Button>
+                    <Button
+                      className="addBtn"
+                      type="primary"
+                      htmlType="submit"
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Save
                     </Button>
                   </Form.Item>
                 </>
@@ -151,20 +160,22 @@ const ManufacturerDetails = () => {
                     type="primary"
                     onClick={showModal}
                     style={{ marginTop: "10px" }}
+                    className="addBtn"
                   >
                     Add Brand
                   </Button>
                   <Modal
-                    title="Add New Brand"
+                    title="Brand Details"
                     open={isModalVisible}
                     onOk={handleOk}
                     onCancel={handleCancel}
                     okButtonProps={{ disabled: !newBrand.trim() }}
                   >
                     <Input
+                    className="userInput"
                       value={newBrand}
                       onChange={(e) => setNewBrand(e.target.value)}
-                      placeholder="Enter brand name"
+                      placeholder="Name"
                     />
                   </Modal>
                 </>

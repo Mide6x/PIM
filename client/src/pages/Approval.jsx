@@ -15,8 +15,6 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import Sidebar from "./sidebar/Sidebar";
 import Topbar from "./sidebar/Topbar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilePen, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 
 const { Option } = Select;
@@ -263,8 +261,13 @@ const Approval = () => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
+          <Button className="editBtn" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
+          <Button
+            className="deleteBtn"
+            onClick={() => handleDelete(record._id)}
+          >
             Delete
           </Button>
         </Space>
@@ -306,7 +309,8 @@ const Approval = () => {
             <div className="details" style={{ marginTop: "20px" }}>
               <span style={{ margin: "0 8px" }} />
               <Input
-                placeholder="Search products..."
+                placeholder="Search Products by name"
+                className="searchBar "
                 onChange={(e) => handleSearch(e.target.value)}
                 style={{ marginBottom: "20px", width: "300px" }}
               />
@@ -323,11 +327,12 @@ const Approval = () => {
                     loading={loading}
                     rowKey="_id"
                     rowSelection={rowSelection}
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                   <span style={{ margin: "0 8px" }} />
                   <Button
                     type="primary"
-                    className="archived spaced"
+                    className="spaced addBtn"
                     onClick={handleBulkApprove}
                     style={{ marginBottom: "20px" }}
                     disabled={selectedRows.length === 0}
@@ -342,11 +347,12 @@ const Approval = () => {
                     loading={loading}
                     className="spaced"
                     rowKey="_id"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                   <Button
                     type="primary"
                     onClick={handleConfirm}
-                    className="spaced"
+                    className="spaced addBtn"
                     style={{ marginBottom: "20px" }}
                   >
                     Confirm and Push to Database
@@ -359,6 +365,7 @@ const Approval = () => {
                     className="spaced"
                     loading={loading}
                     rowKey="_id"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                 </TabPane>
                 <TabPane tab="Duplicate Products" key="duplicates">
@@ -368,11 +375,12 @@ const Approval = () => {
                     loading={loading}
                     rowKey="_id"
                     className="spaced"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                   <Button
                     type="primary"
                     onClick={handleDeleteDuplicates}
-                    className="spaced"
+                    className="spaced deleteBtn"
                     style={{ marginBottom: "20px" }}
                     danger
                   >
@@ -652,12 +660,10 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
         </Form.Item>
       )}
       <Form.Item className="buttonContainer">
-        <Button type="default" danger onClick={onCancel}>
-          <FontAwesomeIcon icon={faXmark} style={{ color: "#ff2424" }} />
+        <Button type="default" className="deleteBtn" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="primary" htmlType="submit">
-          <FontAwesomeIcon icon={faFilePen} style={{ color: "#ffffff" }} />
+        <Button type="primary" className="addBtn" htmlType="submit">
           {initialValues ? "Update" : "Create"}
         </Button>
       </Form.Item>

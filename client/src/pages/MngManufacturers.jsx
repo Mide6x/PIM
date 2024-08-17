@@ -8,7 +8,6 @@ import {
   Input,
   message,
   Space,
-  List,
   Tabs,
   Card,
 } from "antd";
@@ -132,7 +131,6 @@ const MngManufacturers = () => {
     }
   }, 300);
 
-  // Calculating the counts
   const manufacturerCount = manufacturers.length + archivedManufacturers.length;
   const activeManufacturerCount = manufacturers.length;
   const inactiveManufacturerCount = archivedManufacturers.length;
@@ -142,19 +140,37 @@ const MngManufacturers = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => <Link to={`/manufacturers/${record._id}`}>{text}</Link>,
-    },
-    {
-      title: "Brands",
-      dataIndex: "brands",
-      key: "brands",
-      render: (brands) => (
-        <List
-          dataSource={brands}
-          renderItem={(brand) => <List.Item>{brand}</List.Item>}
-        />
+      render: (text, record) => (
+        <Link className="nameListing" to={`/manufacturers/${record._id}`}>
+          {text}
+        </Link>
       ),
     },
+    {
+      title: "Date Created",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (text) => {
+        if (!text) return null;
+        const date = new Date(text);
+        const options = {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        };
+        return date.toLocaleString("en-GB", options).replace(",", " |");
+      },
+    },
+    {
+      title: "Number of Brands",
+      dataIndex: "brands",
+      key: "brands",
+      render: (brands) => <span>{brands.length}</span>,
+    },
+
     {
       title: "Actions",
       key: "actions",
@@ -176,18 +192,33 @@ const MngManufacturers = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      className: "nameListing",
     },
     {
-      title: "Brands",
+      title: "Date Created",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (text) => {
+        if (!text) return null;
+        const date = new Date(text);
+        const options = {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        };
+        return date.toLocaleString("en-GB", options).replace(",", " ");
+      },
+    },
+    {
+      title: "Number of Brands",
       dataIndex: "brands",
       key: "brands",
-      render: (brands) => (
-        <List
-          dataSource={brands}
-          renderItem={(brand) => <List.Item>{brand}</List.Item>}
-        />
-      ),
+      render: (brands) => <span>{brands.length}</span>,
     },
+
     {
       title: "Actions",
       key: "actions",
@@ -196,7 +227,6 @@ const MngManufacturers = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-
           <Button
             className="unarchiveBtn"
             onClick={() => handleUnarchive(record)}
@@ -284,6 +314,7 @@ const MngManufacturers = () => {
                     dataSource={manufacturers}
                     loading={loading}
                     rowKey="_id"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                 </TabPane>
                 <TabPane tab="Archived Manufacturers" key="archived">
@@ -292,6 +323,7 @@ const MngManufacturers = () => {
                     dataSource={archivedManufacturers}
                     loading={loading}
                     rowKey="_id"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                 </TabPane>
               </Tabs>

@@ -241,15 +241,15 @@ const UploadTab = () => {
 
   return (
     <div className="container">
-      <div >
+      <div>
         <Sidebar />
       </div>
       <div className="fullcontent">
-      <div className="cont">
-       <Topbar/>
-      </div>
+        <div className="cont">
+          <Topbar />
+        </div>
         <Flex vertical flex={1} className="content">
-          <div >
+          <div>
             <h2>Data Cleaning</h2>
             <p style={{ marginTop: "10px" }}>
               Here the data is cleaned using our in-built Artificial
@@ -263,11 +263,12 @@ const UploadTab = () => {
                   columns={columns}
                   dataSource={data}
                   rowKey="productName"
-                    className="table"
+                  className="table"
+                  pagination={{ position: ["bottomCenter"] }}
                 />
                 <Button
                   type="primary"
-                  className="spaced"
+                  className="spaced editBtn"
                   onClick={handleProcess}
                   loading={loading}
                   disabled={loading || !data.length}
@@ -277,10 +278,9 @@ const UploadTab = () => {
                 <span style={{ margin: "0 8px" }} />
                 <Button
                   type="primary"
-                  className="spaced"
+                  className="spaced addBtn"
                   onClick={handleConfirm}
                   disabled={!data.length}
-                  style={{ backgroundColor: "#20d4a7" }}
                 >
                   Send to Approval
                 </Button>

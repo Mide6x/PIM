@@ -144,8 +144,10 @@ const Categories = () => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button className="archived" onClick={() => handleArchive(record)}>
+          <Button className="editBtn" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
+          <Button className="archiveBtn" onClick={() => handleArchive(record)}>
             Archive
           </Button>
         </Space>
@@ -171,15 +173,21 @@ const Categories = () => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
-            Delete
+          <Button className="editBtn" onClick={() => handleEdit(record)}>
+            Edit
           </Button>
+
           <Button
-            className="unarchived"
+            className="unarchiveBtn"
             onClick={() => handleUnarchive(record)}
           >
             Unarchive
+          </Button>
+          <Button
+            className="deleteBtn"
+            onClick={() => handleDelete(record._id)}
+          >
+            Delete
           </Button>
         </Space>
       ),
@@ -201,12 +209,17 @@ const Categories = () => {
             <div className="details" style={{ marginTop: "20px" }}>
               <span style={{ margin: "0 8px" }} />
               <Input
-                placeholder="Search categories..."
+                className="searchBar"
+                placeholder="Search Categories by name"
                 onChange={(e) => handleSearch(e.target.value)}
                 style={{ marginBottom: "20px", width: "300px" }}
               />
               <span style={{ margin: "0 8px" }} />
-              <Button className="spaced" type="primary" onClick={handleCreate}>
+              <Button
+                className="spaced addBtn"
+                type="primary"
+                onClick={handleCreate}
+              >
                 Add New Category
               </Button>
               <Tabs
@@ -221,6 +234,7 @@ const Categories = () => {
                     loading={loading}
                     rowKey="_id"
                     className="table"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                 </TabPane>
                 <TabPane tab="Archived Categories" key="archived">
@@ -229,6 +243,7 @@ const Categories = () => {
                     dataSource={archivedCategories}
                     loading={loading}
                     rowKey="_id"
+                    pagination={{ position: ["bottomCenter"] }}
                   />
                 </TabPane>
               </Tabs>
@@ -282,12 +297,12 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
         <Input className="userInput" placeholder="" />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
+        <Button className="deleteBtn" type="default" onClick={onCancel}>
+          Cancel
         </Button>
         <span style={{ margin: "0 8px" }} />
-        <Button type="default" danger onClick={onCancel}>
-          Cancel
+        <Button className="addBtn" type="primary" htmlType="submit">
+          Submit
         </Button>
       </Form.Item>
     </Form>

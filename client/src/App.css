@@ -185,6 +185,57 @@ h2 {
 Select{
   background-color: #ffffff !important;
 }
+.nameListing{
+  color: #212b36 !important;
+  font-weight: 700;
+}
+.table {
+  width: 148vh;
+}
+
+.table .ant-tabs-tab {
+  color: #344054;
+}
+
+.table .ant-tabs-tab:hover {
+  color: #008162  !important; 
+}
+
+.table .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #069f7e  !important;
+}
+
+.table .ant-tabs-ink-bar {
+  background-color: #069f7e !important;
+}
+
+.ant-table-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  border-radius: 6px !important;
+}
+
+/* Customize the pagination border */
+.ant-pagination-item {
+  border: none !important;
+  color: #637381 !important;
+}
+
+.ant-pagination-item:hover,
+.ant-pagination-item-active {
+  border-color: none !important;
+  background-color: #069f7e2a !important;
+
+}
+
+.ant-pagination-item-active a {
+  color: #069f7e !important;
+}
+
+
+
+
 
 .modal{
   border-radius: 30px !important;
@@ -277,9 +328,7 @@ Form {
   font-weight: 700;
 }
 
-.table {
-  width: 148vh;
-}
+
 
 .dash-img {
   max-width: 50%;

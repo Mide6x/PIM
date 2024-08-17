@@ -248,7 +248,7 @@ const Images = () => {
               processes are AI-assisted but ensure a level of data accuracy, and
               verify results before moving on to the next step.
             </p>
-            <Button type="primary" className="spaced" onClick={handleDownload}>
+            <Button type="primary" className="spaced addBtn" onClick={handleDownload}>
               Download Excel Template
             </Button>
 
@@ -261,7 +261,7 @@ const Images = () => {
               showUploadList={false}
               className="spaced"
             >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              <Button className="editBtn" icon={<UploadOutlined />}>Click to Upload</Button>
             </Upload>
             <div className="details">
               <span style={{ margin: "0 8px", marginTop: "60px" }} />
@@ -275,12 +275,13 @@ const Images = () => {
                     columns={columns}
                     dataSource={processedData}
                     rowKey={(record) => record["Product Name"] || record.index}
+                    pagination={{ position: ['bottomCenter'] }} 
                   />
 
                   <span style={{ margin: "0 8px" }} />
                   <Button
                     type="primary"
-                    className="spaced"
+                    className="spaced editBtn"
                     onClick={processImages}
                     loading={loading}
                     disabled={loading || !data.length}
@@ -294,12 +295,13 @@ const Images = () => {
                     dataSource={processedImages}
                     rowKey={(record) => record["Product Name"] || record.index}
                     className="spaced"
+                    pagination={{ position: ['bottomCenter'] }} 
                   />
                   <Link to="/uploadtab">
                     {" "}
                     <Button
                       type="primary"
-                      className="spaced"
+                      className="spaced editBtn"
                       style={{ marginBottom: "20px" }}
                       disabled={processedImages.length === 0}
                     >

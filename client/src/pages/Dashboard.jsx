@@ -21,8 +21,6 @@ import {
   faIndustry,
   faBoxArchive,
   faWandMagicSparkles,
-  faXmark,
-  faFolderPlus,
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
@@ -298,6 +296,7 @@ const Dashboard = () => {
                 loading={loading}
                 rowKey="_id"
                 className="table"
+                pagination={{ position: ["bottomCenter"] }}
               />
             </div>
           </div>
@@ -453,7 +452,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         ]}
       >
         <Select
-         className="userSelection"
+          className="userSelection"
           showSearch
           placeholder="Select or type a manufacturer"
           value={form.getFieldValue("manufacturerName")}
@@ -501,7 +500,11 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         name="brand"
         rules={[{ required: true, message: "Please enter the brand" }]}
       >
-        <Select  className="userSelection" disabled={!selectedManufacturer} placeholder="Brand">
+        <Select
+          className="userSelection"
+          disabled={!selectedManufacturer}
+          placeholder="Brand"
+        >
           {brands.map((brand, index) => (
             <Option key={index} value={brand}>
               {brand}
@@ -516,7 +519,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         ]}
       >
         <Select
-         className="userSelection"
+          className="userSelection"
           showSearch
           placeholder="Category (Start typing to search)"
           onChange={handleCategoryChange}
@@ -564,10 +567,14 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
       <Form.Item
         name="weight"
-    
         rules={[{ required: true, message: "Please enter the weight" }]}
       >
-        <Input placeholder="Weight (Kg)" className="userInput" type="number" step="0.01" />
+        <Input
+          placeholder="Weight (Kg)"
+          className="userInput"
+          type="number"
+          step="0.01"
+        />
       </Form.Item>
       <Form.Item
         name="imageUrl"
@@ -583,19 +590,23 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       </Form.Item>
 
       <Form.Item className="concludeBtns">
-        <Button type="primary" htmlType="submit"  className="addBtn">
-          <FontAwesomeIcon icon={faFolderPlus} style={{ color: "#ffffff" }} />
-          {initialValues ? "Update Product" : "Create Product"}
-        </Button>
-        <Button type="default" className="editBtn" onClick={onCancel}  style={{ marginLeft: "10px" }}>
-          <FontAwesomeIcon icon={faXmark} />
+        <Button type="default" className="editBtn" onClick={onCancel}>
           Cancel
         </Button>
         <Button
+          type="primary"
+          htmlType="submit"
+          className="addBtn"
+          style={{ marginLeft: "10px" }}
+        >
+          {initialValues ? "Update Product" : "Create Product"}
+        </Button>
+
+        <Button
           type="default"
           onClick={handleAIButtonClick}
-          style={{ marginLeft: "10px"  }}
-        className="AIBtn"
+          style={{ marginLeft: "10px" }}
+          className="AIBtn"
         >
           <FontAwesomeIcon
             icon={faWandMagicSparkles}

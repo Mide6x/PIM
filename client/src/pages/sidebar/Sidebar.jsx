@@ -166,7 +166,7 @@ const Sidebar = () => {
         </div>
         <div className="logoutContainer1">
           <Button onClick={handleLogout} danger className="logout-button">
-            Logout
+            Log Out
           </Button>
         </div>
       </div>
