@@ -37,7 +37,11 @@ const Register = () => {
                   },
                 ]}
               >
-                <Input size="large" placeholder="Enter your full name" />
+                <Input
+                  size="large"
+                  placeholder="Enter your full name"
+                  className="userInput"
+                />
               </Form.Item>
               <Form.Item
                 label="Sabi E-mail Address"
@@ -54,7 +58,11 @@ const Register = () => {
                   },
                 ]}
               >
-                <Input size="large" placeholder="...and your E-mail" />
+                <Input
+                  size="large"
+                  placeholder="...and your E-mail"
+                  className="userInput"
+                />
               </Form.Item>
               <Form.Item
                 label="Password"
@@ -69,6 +77,7 @@ const Register = () => {
                 <Input.Password
                   size="large"
                   placeholder="Give us a Strong Password? 🥷🏿"
+                  className="userInput"
                 />
               </Form.Item>
               <Form.Item
@@ -84,6 +93,7 @@ const Register = () => {
                 <Input.Password
                   size="large"
                   placeholder="Type your password again."
+                  className="userInput"
                 />
               </Form.Item>
 
@@ -101,14 +111,14 @@ const Register = () => {
                   type={loading ? "" : "primary"}
                   htmlType="submit"
                   size="large"
-                  className="btn"
+                  className="btn addBtn"
                 >
                   {loading ? <Spin /> : "Create Account"}
                 </Button>
               </Form.Item>
               <Form.Item>
                 <Link to="/login">
-                  <Button size="large" className="btn">
+                  <Button size="large" className="btn editBtn">
                     Sign In
                   </Button>
                 </Link>

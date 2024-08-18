@@ -41,7 +41,7 @@ const Login = () => {
                   },
                 ]}
               >
-                <Input size="large" placeholder="...and your E-mail" />
+                <Input size="large" placeholder="...and your E-mail"   className="userInput"/>
               </Form.Item>
               <Form.Item
                 label="Password"
@@ -56,6 +56,7 @@ const Login = () => {
                 <Input.Password
                   size="large"
                   placeholder="Give us a strong password? 🥷🏿"
+                  className="userInput"
                 />
               </Form.Item>
 
@@ -73,14 +74,14 @@ const Login = () => {
                   type={loading ? "default" : "primary"}
                   htmlType="submit"
                   size="large"
-                  className="btn"
+                  className="btn addBtn"
                 >
                   {loading ? <Spin /> : "Sign In"}
                 </Button>
               </Form.Item>
               <Form.Item>
                 <Link to="/">
-                  <Button size="large" className="btn">
+                  <Button size="large" className="btn editBtn">
                     Create Account
                   </Button>
                 </Link>

@@ -69,13 +69,18 @@
 }
 
 .logout-button {
-  width: 150px;
+  width: 200px;
   padding: 20px;
   border: none !important;
-  border-radius: 8px !important;
+  border-radius: 5px !important;
   color: #fff !important;
   background-color: #919eab !important;
-  font-weight: 600;
+  font-weight: bold;
+}
+
+.logout-button:hover{
+  color: #fff !important;
+  background-color: #616a73 !important;
 }
 
 /* Sidebar and Notification Styles */
@@ -174,13 +179,18 @@
   padding: 10px;
   margin-bottom: 20px;
 }
+.menuItem{
+  padding: 15px !important;
+  margin-top:10px !important ;
+}
 
 .active-menu-item {
+  padding: 15px !important;
+  margin-top:10px !important ;
   background-color: #069f7e !important;
   color: #f2f5fc !important;
   font-weight: bold;
-  padding: 15px !important;
-  border-radius: 8px !important;
+  border-radius: 5px !important;
 }
 
 .barbody {

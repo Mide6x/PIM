@@ -104,7 +104,7 @@ const MenuItem = ({ item, isActive }) => (
     key={item.key}
     icon={item.icon}
     style={{ padding: "5px", color: "#ffffff", fontWeight: "450" }}
-    className={isActive ? "active-menu-item" : ""}
+    className={isActive ? "active-menu-item" : "menuItem"}
   >
     {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
   </Menu.Item>

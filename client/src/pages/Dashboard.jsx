@@ -434,6 +434,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
       <Form.Item
         name="manufacturerName"
+        className="userSelection"
         rules={[
           { required: true, message: "Please enter the manufacturer name" },
         ]}
