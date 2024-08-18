@@ -93,6 +93,7 @@ export const getProductDetailsFromOpenAI = async (productName) => {
         - Female Shoe
 
     Product: "${productName}"
+    Format: productCategory -> productSubcategory
 
     Provide the following in your response:
     1. Product Category: [Category]
@@ -120,24 +121,25 @@ export const getProductDetailsFromOpenAI = async (productName) => {
     let manufacturers = [];
 
     lines.forEach((line) => {
-      if (line.startsWith("ProductCategory:")) {
-        productCategory = line.replace("ProductCategory:", "").trim();
+      if (line.toLowerCase().startsWith("productcategory:")) {
+        productCategory = line.split(":")[1]?.trim() || "unknown";
       }
-      if (line.startsWith("ProductSubcategory:")) {
-        productSubcategory = line.replace("ProductSubcategory:", "").trim();
+      if (line.toLowerCase().startsWith("productsubcategory:")) {
+        productSubcategory = line.split(":")[1]?.trim() || "unknown";
       }
-      if (line.startsWith("Manufacturers:")) {
-        manufacturers = line
-          .replace("Manufacturers:", "")
-          .trim()
-          .split(",")
-          .map((item) => item.trim());
+      if (line.toLowerCase().startsWith("manufacturers:")) {
+        manufacturers =
+          line
+            .split(":")[1]
+            ?.trim()
+            .split(",")
+            .map((item) => item.trim()) || [];
       }
     });
 
     return { productCategory, productSubcategory, manufacturers };
   } catch (error) {
-    console.error("Error getting product details from OpenAI:", error);
+    console.error("Error categorizing product:", error);
     return {
       productCategory: "unknown",
       productSubcategory: "unknown",

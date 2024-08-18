@@ -93,8 +93,6 @@ const MngManufacturers = () => {
     }
   };
 
-
-
   const handleUnarchive = async (manufacturer) => {
     try {
       await axios.patch(
@@ -128,7 +126,11 @@ const MngManufacturers = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => <Link className="nameListing" to={`/manufacturers/${record._id}`}>{text}</Link>,
+      render: (text, record) => (
+        <Link className="nameListing" to={`/manufacturers/${record._id}`}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: "Date Created",
@@ -163,16 +165,14 @@ const MngManufacturers = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-         
+
           <Link to={`/manufacturers/${record._id}`}>
-            <Button className="archiveBtn">
-              View Details
-            </Button>
+            <Button className="archiveBtn">View Details</Button>
           </Link>
         </Space>
       ),
-    }
-  ]
+    },
+  ];
 
   const archivedColumns = [
     {
@@ -180,7 +180,11 @@ const MngManufacturers = () => {
       dataIndex: "name",
       key: "name",
 
-      render: (text, record) => <Link className="nameListing" to={`/manufacturers/${record._id}`}>{text}</Link>,
+      render: (text, record) => (
+        <Link className="nameListing" to={`/manufacturers/${record._id}`}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: "Date Created",
@@ -233,99 +237,95 @@ const MngManufacturers = () => {
   ];
 
   return (
-        <Flex vertical flex={1} className="content">
-          <div>
-            <div className="intro">
-              <h2>Manufacturers</h2>
+    <Flex vertical flex={1} className="content">
+      <div>
+        <div className="intro">
+          <h2>Manufacturers</h2>
+        </div>
+        <div className="stats-container">
+          <Card className="stats-item0">
+            <div className="stats-item-content">
+              <div className="text-content">
+                <p className="stats-item-header">Total Manufacturer</p>
+                <p className="stats-item-body">{manufacturerCount}</p>
+              </div>
             </div>
-            <div className="stats-container">
-              <Card className="stats-item0">
-                <div className="stats-item-content">
-                  <div className="text-content">
-                    <p className="stats-item-header">Total Manufacturer</p>
-                    <p className="stats-item-body">{manufacturerCount}</p>
-                  </div>
-                </div>
-              </Card>
+          </Card>
 
-              <Card className="stats-item1">
-                <div className="stats-item-content">
-                  <div className="text-content">
-                    <p className="stats-item-header">Active Manufacturers</p>
-                    <p className="stats-item-body">{activeManufacturerCount}</p>
-                  </div>
-                </div>
-              </Card>
-              <Card className="stats-item2">
-                <div className="stats-item-content">
-                  <div className="text-content">
-                    <p className="stats-item-header">Inactive Manufacturers</p>
-                    <p className="stats-item-body">
-                      {inactiveManufacturerCount}
-                    </p>
-                  </div>
-                </div>
-              </Card>
+          <Card className="stats-item1">
+            <div className="stats-item-content">
+              <div className="text-content">
+                <p className="stats-item-header">Active Manufacturers</p>
+                <p className="stats-item-body">{activeManufacturerCount}</p>
+              </div>
             </div>
-            <div className="details">
-              <span style={{ margin: "0 8px", marginTop: "60px" }} />
-              <Input
-                placeholder="Search Manufacturers by Name"
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ marginBottom: "20px", width: "300px" }}
-                className="searchBar"
-              />
-              <span style={{ margin: "0 8px" }} />
-              <Button
-                type="primary"
-                className="spaced addBtn"
-                onClick={handleCreate}
-              >
-                Add Manufacturer
-              </Button>
-              <Tabs
-                activeKey={activeTab}
-                onChange={(key) => setActiveTab(key)}
-                className="table"
-              >
-                <TabPane tab="Live Manufacturers" key="live">
-                  <Table
-                    columns={columns}
-                    dataSource={manufacturers}
-                    loading={loading}
-                    rowKey="_id"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                </TabPane>
-                <TabPane tab="Archived Manufacturers" key="archived">
-                  <Table
-                    columns={archivedColumns}
-                    dataSource={archivedManufacturers}
-                    loading={loading}
-                    rowKey="_id"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                </TabPane>
-              </Tabs>
+          </Card>
+          <Card className="stats-item2">
+            <div className="stats-item-content">
+              <div className="text-content">
+                <p className="stats-item-header">Inactive Manufacturers</p>
+                <p className="stats-item-body">{inactiveManufacturerCount}</p>
+              </div>
             </div>
-            <Modal
-              title={
-                editingManufacturer
-                  ? "Edit Manufacturer"
-                  : "Create Manufacturer"
-              }
-              open={isModalVisible}
-              onCancel={handleCancel}
-              footer={null}
-            >
-              <ManufacturerForm
-                initialValues={editingManufacturer}
-                onCancel={handleCancel}
-                onOk={handleOk}
+          </Card>
+        </div>
+        <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
+          <Input
+            placeholder="Search Manufacturers by Name"
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ marginBottom: "20px", width: "300px" }}
+            className="searchBar"
+          />
+          <span style={{ margin: "0 8px" }} />
+          <Button
+            type="primary"
+            className="spaced addBtn"
+            onClick={handleCreate}
+          >
+            Add Manufacturer
+          </Button>
+          <Tabs
+            activeKey={activeTab}
+            onChange={(key) => setActiveTab(key)}
+            className="table"
+          >
+            <TabPane tab="Live Manufacturers" key="live">
+              <Table
+                columns={columns}
+                dataSource={manufacturers}
+                loading={loading}
+                rowKey="_id"
+                pagination={{ position: ["bottomCenter"] }}
               />
-            </Modal>
-          </div>
-        </Flex>
+            </TabPane>
+            <TabPane tab="Archived Manufacturers" key="archived">
+              <Table
+                columns={archivedColumns}
+                dataSource={archivedManufacturers}
+                loading={loading}
+                rowKey="_id"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+            </TabPane>
+          </Tabs>
+        </div>
+        <Modal
+          title={
+            editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
+          }
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <ManufacturerForm
+            initialValues={editingManufacturer}
+            onCancel={handleCancel}
+            onOk={handleOk}
+          />
+        </Modal>
+      </div>
+    </Flex>
   );
 };
 

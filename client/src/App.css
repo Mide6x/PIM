@@ -60,7 +60,10 @@ h2 {
   margin-left: 20px;
   margin-bottom: 20px;
 }
-
+.nameListing{
+  color: #212b36 !important;
+  font-weight: 700;
+}
 /* Containers */
 .cont {
   width: 100%;
@@ -152,9 +155,11 @@ h2 {
   color: #b76e00;
 }
 .aiUseNotification {
+  font-weight:500 ;
   padding: 10px;
   border-radius: 15px;
-  margin-bottom: 5px;
+  margin-top: 75px;
+  margin-bottom: 20px;
   background: rgb(6, 159, 126);
   background: linear-gradient(
     90deg,
@@ -246,14 +251,18 @@ h2 {
 
 /* Forms */
 .userInput,
-.userSelection {
+.userSelection .ant-select-selector {
   border: none !important;
   height: 45px !important;
-  background-color: #bd2424 !important;
+  background-color: #f4f4f4 !important;
 }
 
-.userSelection {
+.userSelection .ant-select-selector {
   border-color: #f4f4f4 !important;
+}
+
+.userSelection .ant-select-selection-item {
+  color: #212b36!important; 
 }
 
 .formTitle {
@@ -264,11 +273,11 @@ h2 {
 
 .productForm {
   width: fit-content !important;
-  background-color: #ebffea !important;
   right: 0% !important;
   position: absolute;
-  border-radius: 10px;
   align-items: center;
+  gap: 4px;
+  margin-top: 20px;
 }
 
 Form {

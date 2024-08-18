@@ -157,6 +157,7 @@ const Dashboard = () => {
       title: "Product Name",
       dataIndex: "productName",
       key: "productName",
+      className: "nameListing",
     },
     {
       title: "Manufacturer",
@@ -167,6 +168,7 @@ const Dashboard = () => {
       title: "Brand",
       dataIndex: "brand",
       key: "brand",
+      className: "nameListing",
     },
     {
       title: "Category",
@@ -177,6 +179,7 @@ const Dashboard = () => {
       title: "Variant",
       dataIndex: "variant",
       key: "variant",
+      className: "nameListing",
     },
     {
       title: "Weight (Kg)",
@@ -203,105 +206,105 @@ const Dashboard = () => {
   ];
 
   return (
-        <Flex vertical flex={1} className="content">
-          <div>
-            <div className="intro">
-              <h2>Dashboard </h2>
+    <Flex vertical flex={1} className="content">
+      <div>
+        <div className="intro">
+          <h2>Dashboard </h2>
 
-              <span style={{ fontSize: "15px", color: "#878787" }}>
-                {formattedDate}
-              </span>
+          <span style={{ fontSize: "15px", color: "#878787" }}>
+            {formattedDate}
+          </span>
+        </div>
+        <div className="stats-container">
+          <Card className="stats-item0">
+            <div className="stats-item-content">
+              <div>
+                <FontAwesomeIcon
+                  icon={faBoxArchive}
+                  size="2xl"
+                  style={{ color: "#ffffff" }}
+                  className="iconContent"
+                />
+              </div>
+              <div className="text-content">
+                <p className="stats-item-header">Total InProducts</p>
+                <p className="stats-item-body">{productCount}</p>
+              </div>
             </div>
-            <div className="stats-container">
-              <Card className="stats-item0">
-                <div className="stats-item-content">
-                  <div>
-                    <FontAwesomeIcon
-                      icon={faBoxArchive}
-                      size="2xl"
-                      style={{ color: "#ffffff" }}
-                      className="iconContent"
-                    />
-                  </div>
-                  <div className="text-content">
-                    <p className="stats-item-header">Total InProducts</p>
-                    <p className="stats-item-body">{productCount}</p>
-                  </div>
-                </div>
-              </Card>
+          </Card>
 
-              <Card className="stats-item1">
-                <div className="stats-item-content">
-                  <div>
-                    <FontAwesomeIcon
-                      icon={faLayerGroup}
-                      size="2xl"
-                      className="iconContent"
-                      style={{ color: "#ffffff" }}
-                    />
-                  </div>
-                  <div className="text-content">
-                    <p className="stats-item-header">Total Categories</p>
-                    <p className="stats-item-body">{categoryCount}</p>
-                  </div>
-                </div>
-              </Card>
-              <Card className="stats-item2">
-                <div className="stats-item-content">
-                  <div>
-                    <FontAwesomeIcon
-                      icon={faIndustry}
-                      className="iconContent"
-                      size="2xl"
-                      style={{ color: "#ffffff" }}
-                    />
-                  </div>
-                  <div className="text-content">
-                    <p className="stats-item-header">Total Manufacturers</p>
-                    <p className="stats-item-body">{manufacturerCount}</p>
-                  </div>
-                </div>
-              </Card>
+          <Card className="stats-item1">
+            <div className="stats-item-content">
+              <div>
+                <FontAwesomeIcon
+                  icon={faLayerGroup}
+                  size="2xl"
+                  className="iconContent"
+                  style={{ color: "#ffffff" }}
+                />
+              </div>
+              <div className="text-content">
+                <p className="stats-item-header">Total Categories</p>
+                <p className="stats-item-body">{categoryCount}</p>
+              </div>
             </div>
-            <div className="details">
-              <span style={{ margin: "0 8px", marginTop: "60px" }} />
-              <Input
-                placeholder="Search Products by name"
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ marginBottom: "20px", width: "300px" }}
-                className="searchBar"
-              />
-              <span style={{ margin: "0 8px" }} />
-              <Button
-                type="primary"
-                className="spaced addBtn"
-                onClick={handleCreate}
-              >
-                Add New Product
-              </Button>
-              <Table
-                columns={columns}
-                dataSource={products}
-                loading={loading}
-                rowKey="_id"
-                className="table"
-                pagination={{ position: ["bottomCenter"] }}
-              />
+          </Card>
+          <Card className="stats-item2">
+            <div className="stats-item-content">
+              <div>
+                <FontAwesomeIcon
+                  icon={faIndustry}
+                  className="iconContent"
+                  size="2xl"
+                  style={{ color: "#ffffff" }}
+                />
+              </div>
+              <div className="text-content">
+                <p className="stats-item-header">Total Manufacturers</p>
+                <p className="stats-item-body">{manufacturerCount}</p>
+              </div>
             </div>
-          </div>
-          <Modal
-            title={editingProduct ? "Edit Product" : "Create Product"}
-            open={isModalVisible}
-            onCancel={handleCancel}
-            footer={null}
+          </Card>
+        </div>
+        <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
+          <Input
+            placeholder="Search Products by name"
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ marginBottom: "20px", width: "300px" }}
+            className="searchBar"
+          />
+          <span style={{ margin: "0 8px" }} />
+          <Button
+            type="primary"
+            className="spaced addBtn"
+            onClick={handleCreate}
           >
-            <ProductForm
-              initialValues={editingProduct}
-              onCancel={handleCancel}
-              onOk={handleOk}
-            />
-          </Modal>
-        </Flex>
+            Add New Product
+          </Button>
+          <Table
+            columns={columns}
+            dataSource={products}
+            loading={loading}
+            rowKey="_id"
+            className="table"
+            pagination={{ position: ["bottomCenter"] }}
+          />
+        </div>
+      </div>
+      <Modal
+        title={editingProduct ? "Edit Product" : "Create Product"}
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <ProductForm
+          initialValues={editingProduct}
+          onCancel={handleCancel}
+          onOk={handleOk}
+        />
+      </Modal>
+    </Flex>
   );
 };
 
@@ -457,28 +460,28 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
               </Option>
             ))}
         </Select>
-        <div style={{ paddingTop: 8, marginBottom: "25px" }}>
-          {manufacturerSuggestions.length > 0 && (
-            <div style={{ display: "flex" }} className="productForm">
-              {manufacturerSuggestions.slice(0, 4).map((suggestion, index) => (
-                <Button
-                  key={index}
-                  type="link"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  {suggestion}
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
+
+        {manufacturerSuggestions.length > 0 && (
+          <div style={{ display: "flex" }} className="productForm">
+            {manufacturerSuggestions.slice(0, 4).map((suggestion, index) => (
+              <Button
+                key={index}
+                type="link"
+                onClick={() => handleSuggestionClick(suggestion)}
+                className="AIBtn"
+              >
+                {suggestion}
+              </Button>
+            ))}
+          </div>
+        )}
       </Form.Item>
 
       <div className="aiUseNotification">
         <p>
           <FontAwesomeIcon
             icon={faCircleExclamation}
-            style={{ color: "#023bbd" }}
+            style={{ color: "#212b36" }}
           />{" "}
           Suggestions made by artificial intelligence may sometimes be
           inaccurate. Please check again for data accuracy.

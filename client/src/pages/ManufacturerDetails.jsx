@@ -91,6 +91,7 @@ const ManufacturerDetails = () => {
       title: "Brand",
       dataIndex: "brand",
       key: "brand",
+      className: "nameListing"
     },
     {
       title: "Actions",
