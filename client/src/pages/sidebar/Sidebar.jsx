@@ -43,6 +43,18 @@ const items = [
   },
   {
     key: "3",
+    label: "Manage Categories",
+    icon: (
+      <FontAwesomeIcon
+        icon={faCartShopping}
+        size="lg"
+        style={{ color: "#ffffff" }}
+      />
+    ),
+    to: "/categories",
+  },
+  {
+    key: "4",
     label: "Image Conversion",
     icon: (
       <FontAwesomeIcon icon={faImage} size="lg" style={{ color: "#ffffff" }} />
@@ -50,7 +62,7 @@ const items = [
     to: "/images",
   },
   {
-    key: "4",
+    key: "5",
     label: "Data Cleaning",
     icon: (
       <FontAwesomeIcon
@@ -62,7 +74,7 @@ const items = [
     to: "/uploadtab",
   },
   {
-    key: "5",
+    key: "6",
     label: "Approve Products",
     icon: (
       <FontAwesomeIcon
@@ -72,18 +84,6 @@ const items = [
       />
     ),
     to: "/approval",
-  },
-  {
-    key: "6",
-    label: "Manage Categories",
-    icon: (
-      <FontAwesomeIcon
-        icon={faCartShopping}
-        size="lg"
-        style={{ color: "#ffffff" }}
-      />
-    ),
-    to: "/categories",
   },
   {
     key: "7",

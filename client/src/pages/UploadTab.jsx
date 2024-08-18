@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Flex, Button, message, Table, Modal } from "antd";
-import Sidebar from "./sidebar/Sidebar";
-import Topbar from "./sidebar/Topbar";
 import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 
@@ -240,14 +238,6 @@ const UploadTab = () => {
   ];
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="fullcontent">
-        <div className="cont">
-          <Topbar />
-        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Data Cleaning</h2>
@@ -298,8 +288,6 @@ const UploadTab = () => {
             </>
           </div>
         </Flex>
-      </div>
-    </div>
   );
 };
 

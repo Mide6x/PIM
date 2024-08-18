@@ -10,8 +10,6 @@ import {
   Space,
   Tabs,
 } from "antd";
-import Sidebar from "./sidebar/Sidebar";
-import Topbar from "./sidebar/Topbar";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
@@ -195,14 +193,6 @@ const Categories = () => {
   ];
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="fullcontent">
-        <div className="cont">
-          <Topbar />
-        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Categories </h2>
@@ -264,8 +254,6 @@ const Categories = () => {
             />
           </Modal>
         </Flex>
-      </div>
-    </div>
   );
 };
 

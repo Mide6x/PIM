@@ -1,18 +1,7 @@
 import { Flex } from "antd";
-import Sidebar from "./sidebar/Sidebar";
-import Topbar from "./sidebar/Topbar";
 
 const Variants = () => {
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
-      </div>
-
-      <div className="fullcontent">
-        <div className="cont">
-          <Topbar />
-        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Variants Management</h2>
@@ -27,8 +16,6 @@ const Variants = () => {
             </div>
           </div>
         </Flex>
-      </div>
-    </div>
   );
 };
 

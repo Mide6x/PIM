@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Flex, Button, message, Upload, Table, Tabs } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import Sidebar from "./sidebar/Sidebar";
-import Topbar from "./sidebar/Topbar";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
@@ -232,14 +230,6 @@ const Images = () => {
   ];
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="fullcontent">
-        <div className="cont">
-          <Topbar />
-        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Image Conversion</h2>
@@ -313,8 +303,6 @@ const Images = () => {
             </div>
           </div>
         </Flex>
-      </div>
-    </div>
   );
 };
 

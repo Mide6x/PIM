@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Tabs, Table, message, Input, Button, Form, Modal } from "antd";
+import { Tabs, Table, message, Input, Button, Form, Flex, Modal } from "antd";
 import axios from "axios";
-import Sidebar from "./sidebar/Sidebar";
-import Topbar from "./sidebar/Topbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const ManufacturerDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [manufacturer, setManufacturer] = useState(null);
   const [editingBrand, setEditingBrand] = useState(null);
@@ -103,12 +104,16 @@ const ManufacturerDetails = () => {
   ];
 
   return (
-    <div className="container">
-      <Sidebar />
-      <div className="fullcontent">
-        <Topbar />
-        <div className="content">
+        <Flex vertical flex={1} className="content">
           <div className="intro">
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate(-1)}
+              className="backButton"
+            >
+              {" "}
+              Manufacturers
+            </Button>
             <h2>Manufacturer Details</h2>
           </div>
           <div className="details" style={{ marginTop: "20px" }}>
@@ -203,9 +208,7 @@ const ManufacturerDetails = () => {
               </Form.Item>
             </Form>
           </Modal>
-        </div>
-      </div>
-    </div>
+        </Flex>
   );
 };
 

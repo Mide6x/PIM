@@ -12,8 +12,6 @@ import {
   Card,
 } from "antd";
 import axios from "axios";
-import Sidebar from "./sidebar/Sidebar";
-import Topbar from "./sidebar/Topbar";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
 import { Link } from "react-router-dom";
@@ -235,14 +233,6 @@ const MngManufacturers = () => {
   ];
 
   return (
-    <div className="container">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="fullcontent">
-        <div className="cont">
-          <Topbar />
-        </div>
         <Flex vertical flex={1} className="content">
           <div>
             <div className="intro">
@@ -336,8 +326,6 @@ const MngManufacturers = () => {
             </Modal>
           </div>
         </Flex>
-      </div>
-    </div>
   );
 };
 
