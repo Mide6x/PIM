@@ -41,12 +41,12 @@ h2 {
 }
 
 .sidebar {
-  width: 250px; /* Adjust width as needed */
+  width: 250px; 
 }
 
 .content {
   flex: 1;
-  padding: 20px; /* Adjust padding as needed */
+  padding: 20px;
 }
 
 .content {
@@ -109,6 +109,13 @@ h2 {
   width: 100%;
   height: fit-content;
   margin-bottom: 20px;
+}
+
+.detailsTable{
+  background-color: #ffffff;
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 10px;
 }
 
 /* Titles and Status */
@@ -177,15 +184,21 @@ h2 {
 .addBtn {
   background-color: #069f7e !important;
 }
+.addBtn:hover{
+  background-color: #008162 !important;
+}
 
 .unarchiveBtn {
   background: #ffaa0028;
   color: #b76e00 !important;
   border: none;
 }
+.archiveBtn:hover{
+  color: #008162 !important;
+  border-color: #008162 !important;
+}
 
 .unarchiveBtn:hover,
-.archiveBtn:hover,
 .editBtn:hover,
 .deleteBtn:hover,
 .AIBtn:hover {
@@ -249,6 +262,13 @@ h2 {
 .searchBar:hover {
   border-color: #069f7e !important;
 }
+.searchBarContainer {
+  margin-bottom: 15px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px;
+}
+
 
 /* Forms */
 .userInput,

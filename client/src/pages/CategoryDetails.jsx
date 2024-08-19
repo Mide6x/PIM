@@ -3,18 +3,22 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Tabs, Table, message, Input, Button, Form, Flex, Modal } from "antd";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileArrowUp,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const CategoryDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [category, setCategory] = useState(null);
-  const [editingItem, setEditingItem] = useState(null); // can be a category or subcategory
+  const [editingItem, setEditingItem] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
-  const [isCategoryEdit, setIsCategoryEdit] = useState(false); // Flag to track if it's category edit
+  const [isCategoryEdit, setIsCategoryEdit] = useState(false);
+  const [subcategoriesList, setSubcategoriesList] = useState([]);
 
   useEffect(() => {
     const fetchCategoryDetails = async () => {
@@ -22,6 +26,7 @@ const CategoryDetails = () => {
         const response = await axios.get(`http://localhost:3000/api/categories/${id}`);
         setCategory(response.data);
         setIsArchived(response.data.isArchived);
+        setSubcategoriesList(response.data.subcategories);
       } catch (error) {
         message.error("Failed to fetch category details 😔");
       }
@@ -41,7 +46,6 @@ const CategoryDetails = () => {
     try {
       const values = form.getFieldsValue();
       if (isCategoryEdit) {
-        // Update Category Name
         await axios.put(`http://localhost:3000/api/categories/${id}`, {
           ...category,
           name: values.categoryName,
@@ -49,7 +53,6 @@ const CategoryDetails = () => {
         setCategory((prev) => ({ ...prev, name: values.categoryName }));
         message.success("Category updated successfully! 🎉");
       } else {
-        // Update Subcategory Name
         const updatedSubcategories = category.subcategories.map((sub) =>
           sub === editingItem ? values.subcategoryName : sub
         );
@@ -84,6 +87,21 @@ const CategoryDetails = () => {
     } catch (error) {
       message.error("Failed to unarchive category 😔");
     }
+  };
+
+
+  const handleSearch = (value) => {
+    if (value.length >= 3) {
+      const filteredSubcategories = category.subcategories.filter((subcategories) =>
+        subcategories.toLowerCase().includes(value.toLowerCase())
+      );
+      setSubcategoriesList(filteredSubcategories);
+    } else {
+      setSubcategoriesList(category.subcategories);
+    }
+  };
+  const handleCreate = () => {
+    // Placeholder for the function to create a new subcategory
   };
 
   const handleDelete = async () => {
@@ -166,18 +184,45 @@ const CategoryDetails = () => {
           </div>
         </div>
       </div>
-
+      <div className="detailsTable">
       <Tabs defaultActiveKey="1" className="table">
         <Tabs.TabPane tab="Subcategories" key="1">
+        <div className="searchBarContainer">
+              <Input
+                placeholder="Search Subcategories by name"
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ width: "100%" }}
+                className="searchBar"
+              />
+              <Button
+                type="primary"
+                className="archiveBtn"
+                onClick={handleCreate}
+              >
+                <FontAwesomeIcon
+                  icon={faFileArrowUp}
+                  size="lg"
+                  style={{ color: "#008162" }}
+                />
+                Bulk Upload Subcategory
+              </Button>
+              <Button
+                type="primary"
+                className="addBtn"
+                onClick={handleCreate}
+              >
+                Add New Subcategory
+              </Button>
+            </div>
           <Table
-            dataSource={category?.subcategories.map((subcategory) => ({ subcategory }))}
+            dataSource={subcategoriesList.map((subcategory) => ({ subcategory }))}
             columns={columns}
             rowKey="subcategory"
             pagination={{ position: ["bottomCenter"] }}
           />
         </Tabs.TabPane>
       </Tabs>
-
+</div>
       <Modal
         title={isCategoryEdit ? "Edit Category" : "Edit Subcategory"}
         open={isModalVisible}

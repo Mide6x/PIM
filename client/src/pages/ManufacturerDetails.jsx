@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Tabs, Table, message, Input, Button, Form, Flex, Modal } from "antd";
+import { Tabs, Table, message, Input, Button, Form, Modal } from "antd";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faFileArrowUp,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const ManufacturerDetails = () => {
@@ -15,6 +18,7 @@ const ManufacturerDetails = () => {
   const [form] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
   const [isEditingManufacturer, setIsEditingManufacturer] = useState(false);
+  const [brandsList, setBrandsList] = useState([]);
 
   useEffect(() => {
     const fetchManufacturerDetails = async () => {
@@ -24,6 +28,7 @@ const ManufacturerDetails = () => {
         );
         setManufacturer(response.data);
         setIsArchived(response.data.isArchived);
+        setBrandsList(response.data.brands);
       } catch (error) {
         message.error("Failed to fetch manufacturer details 😔");
       }
@@ -64,6 +69,7 @@ const ManufacturerDetails = () => {
           brands: updatedBrands,
         });
         setManufacturer((prev) => ({ ...prev, brands: updatedBrands }));
+        setBrandsList(updatedBrands);
         message.success("Brand updated successfully! 🎉");
       }
 
@@ -95,14 +101,29 @@ const ManufacturerDetails = () => {
     }
   };
 
+  const handleSearch = (value) => {
+    if (value.length >= 3) {
+      const filteredBrands = manufacturer.brands.filter((brand) =>
+        brand.toLowerCase().includes(value.toLowerCase())
+      );
+      setBrandsList(filteredBrands);
+    } else {
+      setBrandsList(manufacturer.brands);
+    }
+  };
+
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3000/api/manufacturer/${id}`);
       message.success("Manufacturer deleted successfully 🎉");
-      navigate("/manufacturers"); // Navigate back to the manufacturers list after deletion
+      navigate("/manufacturers");
     } catch (error) {
       message.error("Failed to delete manufacturer 😔");
     }
+  };
+
+  const handleCreate = () => {
+    // Placeholder for the function to create a new brand
   };
 
   const columns = [
@@ -124,14 +145,16 @@ const ManufacturerDetails = () => {
   ];
 
   return (
-    <Flex vertical flex={1} className="content">
+    <div
+      style={{ display: "flex", flexDirection: "column", flex: 1 }}
+      className="content"
+    >
       <div className="intro">
         <Button
           icon={<ArrowLeftOutlined />}
           onClick={() => navigate(-1)}
           className="backButton"
         >
-          {" "}
           Manufacturers
         </Button>
         <h2>Manufacturer Details</h2>
@@ -182,17 +205,46 @@ const ManufacturerDetails = () => {
         </div>
       </div>
 
-      <Tabs defaultActiveKey="1" className="table">
-        <Tabs.TabPane tab="Brands" key="1">
-          <Table
-            dataSource={manufacturer?.brands.map((brand) => ({ brand }))}
-            columns={columns}
-            rowKey="brand"
-            pagination={{ position: ["bottomCenter"] }}
-          />
-        </Tabs.TabPane>
-      </Tabs>
+      <div className="detailsTable">
+        <Tabs defaultActiveKey="1" className="table">
+          <Tabs.TabPane tab="Brands" key="1">
+            <div className="searchBarContainer">
+              <Input
+                placeholder="Search Brands by name"
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ width: "100%" }}
+                className="searchBar"
+              />
+              <Button
+                type="primary"
+                className="archiveBtn"
+                onClick={handleCreate}
+              >
+                <FontAwesomeIcon
+                  icon={faFileArrowUp}
+                  size="lg"
+                  style={{ color: "#008162" }}
+                />
+                Bulk Upload Brand
+              </Button>
+              <Button
+                type="primary"
+                className="addBtn"
+                onClick={handleCreate}
+              >
+                Add New Brand
+              </Button>
+            </div>
 
+            <Table
+              dataSource={brandsList.map((brand) => ({ brand }))}
+              columns={columns}
+              rowKey="brand"
+              pagination={{ position: ["bottomCenter"] }}
+            />
+          </Tabs.TabPane>
+        </Tabs>
+      </div>
       <Modal
         title={isEditingManufacturer ? "Edit Manufacturer" : "Edit Brand"}
         open={isModalVisible}
@@ -205,7 +257,6 @@ const ManufacturerDetails = () => {
           </p>
           <Form.Item
             name={isEditingManufacturer ? "manufacturerName" : "brandName"}
-            initialValue={isEditingManufacturer ? manufacturer?.name : editingBrand}
             rules={[
               {
                 required: true,
@@ -231,7 +282,6 @@ const ManufacturerDetails = () => {
             </Button>
             <Button
               className="addBtn"
-              type="primary"
               htmlType="submit"
               style={{ marginLeft: "10px" }}
             >
@@ -240,7 +290,7 @@ const ManufacturerDetails = () => {
           </Form.Item>
         </Form>
       </Modal>
-    </Flex>
+    </div>
   );
 };
 

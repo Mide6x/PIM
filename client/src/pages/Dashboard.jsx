@@ -428,13 +428,14 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
   return (
     <Form form={form} onFinish={onFinish} initialValues={initialValues}>
+      <p className="formTitle">Product Name</p>
       <Form.Item
         name="productName"
         rules={[{ required: true, message: "Please enter the product name" }]}
       >
         <Input className="userInput" placeholder="Product Name" />
       </Form.Item>
-
+      <p className="formTitle">Manufacturer Name</p>
       <Form.Item
         name="manufacturerName"
         className="userSelection"
@@ -487,6 +488,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           inaccurate. Please check again for data accuracy.
         </p>
       </div>
+      <p className="formTitle">Brand</p>
       <Form.Item
         name="brand"
         rules={[{ required: true, message: "Please enter the brand" }]}
@@ -503,6 +505,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           ))}
         </Select>
       </Form.Item>
+      <p className="formTitle">Product Category</p>
       <Form.Item
         name="productCategory"
         rules={[
@@ -530,6 +533,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
             ))}
         </Select>
       </Form.Item>
+      <p className="formTitle">Product Subcategory</p>
       <Form.Item
         name="productSubcategory"
         rules={[
@@ -544,18 +548,21 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           ))}
         </Select>
       </Form.Item>
+      <p className="formTitle">Variant Type</p>
       <Form.Item
         name="variantType"
         rules={[{ required: true, message: "Please enter the variant type" }]}
       >
         <Input className="userInput" placeholder="Variant Type" />
       </Form.Item>
+      <p className="formTitle">Variant</p>
       <Form.Item
         name="variant"
         rules={[{ required: true, message: "Please enter the variant" }]}
       >
         <Input className="userInput" placeholder="Variant" />
       </Form.Item>
+      <p className="formTitle">Weight (in KG)</p>
       <Form.Item
         name="weight"
         rules={[{ required: true, message: "Please enter the weight" }]}
@@ -567,12 +574,14 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           step="0.01"
         />
       </Form.Item>
+      <p className="formTitle">Image Url (Cloudinary)</p>
       <Form.Item
         name="imageUrl"
         rules={[{ required: true, message: "Please enter the image URL" }]}
       >
         <Input className="userInput" placeholder="Image Url" />
       </Form.Item>
+      <p className="formTitle"> Product Description</p>
       <Form.Item
         name="description"
         rules={[{ required: false, message: "enter the product details." }]}
