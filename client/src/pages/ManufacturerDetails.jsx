@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Tabs, Table, message, Input, Button, Form, Flex, Modal } from "antd";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,7 @@ const ManufacturerDetails = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
+  const [isEditingManufacturer, setIsEditingManufacturer] = useState(false);
 
   useEffect(() => {
     const fetchManufacturerDetails = async () => {
@@ -31,26 +32,44 @@ const ManufacturerDetails = () => {
     fetchManufacturerDetails();
   }, [id]);
 
-  const handleEdit = (brand) => {
-    setEditingBrand(brand);
+  const handleEdit = (brand, isManufacturer = false) => {
+    if (isManufacturer) {
+      setIsEditingManufacturer(true);
+      form.setFieldsValue({ manufacturerName: manufacturer?.name });
+    } else {
+      setIsEditingManufacturer(false);
+      setEditingBrand(brand);
+      form.setFieldsValue({ brandName: brand });
+    }
     setIsModalVisible(true);
   };
 
   const handleSave = async () => {
     try {
       const values = form.getFieldsValue();
-      const updatedBrands = manufacturer.brands.map((brand) =>
-        brand === editingBrand ? values.brandName : brand
-      );
-      await axios.put(`http://localhost:3000/api/manufacturer/${id}`, {
-        ...manufacturer,
-        brands: updatedBrands,
-      });
-      setManufacturer((prev) => ({ ...prev, brands: updatedBrands }));
+
+      if (isEditingManufacturer) {
+        await axios.put(`http://localhost:3000/api/manufacturer/${id}`, {
+          ...manufacturer,
+          name: values.manufacturerName,
+        });
+        setManufacturer((prev) => ({ ...prev, name: values.manufacturerName }));
+        message.success("Manufacturer details updated successfully! 🎉");
+      } else {
+        const updatedBrands = manufacturer.brands.map((brand) =>
+          brand === editingBrand ? values.brandName : brand
+        );
+        await axios.put(`http://localhost:3000/api/manufacturer/${id}`, {
+          ...manufacturer,
+          brands: updatedBrands,
+        });
+        setManufacturer((prev) => ({ ...prev, brands: updatedBrands }));
+        message.success("Brand updated successfully! 🎉");
+      }
+
       setIsModalVisible(false);
-      message.success("Brand updated successfully! 🎉");
     } catch (error) {
-      message.error("Failed to update brand 😔");
+      message.error("Failed to update details 😔");
     }
   };
 
@@ -80,6 +99,7 @@ const ManufacturerDetails = () => {
     try {
       await axios.delete(`http://localhost:3000/api/manufacturer/${id}`);
       message.success("Manufacturer deleted successfully 🎉");
+      navigate("/manufacturers"); // Navigate back to the manufacturers list after deletion
     } catch (error) {
       message.error("Failed to delete manufacturer 😔");
     }
@@ -90,7 +110,7 @@ const ManufacturerDetails = () => {
       title: "Brand",
       dataIndex: "brand",
       key: "brand",
-      className: "nameListing"
+      className: "nameListing",
     },
     {
       title: "Actions",
@@ -104,111 +124,123 @@ const ManufacturerDetails = () => {
   ];
 
   return (
-        <Flex vertical flex={1} className="content">
-          <div className="intro">
-            <Button
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate(-1)}
-              className="backButton"
-            >
-              {" "}
-              Manufacturers
-            </Button>
-            <h2>Manufacturer Details</h2>
-          </div>
-          <div className="details" style={{ marginTop: "20px" }}>
-            <div className="infoContainer">
-              <div className="infoTitle">
-                <div className="titleContent">
-                  {manufacturer?.name}
-                  <span className="status">
-                    {isArchived ? "Archived" : "Active"}
-                  </span>
-                </div>
-
-                <div className="buttonContainer">
-                  <Button
-                    className="editBtn"
-                    onClick={() => setIsModalVisible(true)}
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} /> Edit Details
-                  </Button>
-                  {isArchived ? (
-                    <Button
-                      className="unarchiveBtn"
-                      onClick={handleUnarchive}
-                      style={{ marginLeft: "10px" }}
-                    >
-                      Unarchive
-                    </Button>
-                  ) : (
-                    <Button
-                      className="archiveBtn"
-                      onClick={handleArchive}
-                      style={{ marginLeft: "10px" }}
-                    >
-                      Archive
-                    </Button>
-                  )}
-                  <Button
-                    className="deleteBtn"
-                    onClick={handleDelete}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </div>
+    <Flex vertical flex={1} className="content">
+      <div className="intro">
+        <Button
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate(-1)}
+          className="backButton"
+        >
+          {" "}
+          Manufacturers
+        </Button>
+        <h2>Manufacturer Details</h2>
+      </div>
+      <div className="details" style={{ marginTop: "20px" }}>
+        <div className="infoContainer">
+          <div className="infoTitle">
+            <div className="titleContent">
+              {manufacturer?.name}
+              <span className="status">
+                {isArchived ? "Archived" : "Active"}
+              </span>
             </div>
-          </div>
 
-          <Tabs defaultActiveKey="1" className="table">
-            <Tabs.TabPane tab="Brands" key="1">
-              <Table
-                dataSource={manufacturer?.brands.map((brand) => ({ brand }))}
-                columns={columns}
-                rowKey="brand"
-                pagination={{ position: ["bottomCenter"] }}
-              />
-            </Tabs.TabPane>
-          </Tabs>
-
-          <Modal
-            title="Edit Brand"
-            open={isModalVisible}
-            onCancel={() => setIsModalVisible(false)}
-            footer={null} // Removes the default footer buttons
-          >
-            <Form form={form} onFinish={handleSave}>
-              <p className="formTitle">Brand Details</p>
-              <Form.Item
-                name="brandName"
-                initialValue={editingBrand}
-                rules={[
-                  { required: true, message: "Please enter the brand name" },
-                ]}
+            <div className="buttonContainer">
+              <Button
+                className="editBtn"
+                onClick={() => handleEdit(manufacturer, true)}
               >
-                <Input className="userInput" placeholder="Brand Name" />
-              </Form.Item>
-              <Form.Item className="concludeBtns">
+                <FontAwesomeIcon icon={faPenToSquare} /> Edit Details
+              </Button>
+              {isArchived ? (
                 <Button
-                  className="editBtn"
-                  onClick={() => setIsModalVisible(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="addBtn"
-                  type="primary"
-                  htmlType="submit"
+                  className="unarchiveBtn"
+                  onClick={handleUnarchive}
                   style={{ marginLeft: "10px" }}
                 >
-                  Save
+                  Unarchive
                 </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
-        </Flex>
+              ) : (
+                <Button
+                  className="archiveBtn"
+                  onClick={handleArchive}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Archive
+                </Button>
+              )}
+              <Button
+                className="deleteBtn"
+                onClick={handleDelete}
+                style={{ marginLeft: "10px" }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Tabs defaultActiveKey="1" className="table">
+        <Tabs.TabPane tab="Brands" key="1">
+          <Table
+            dataSource={manufacturer?.brands.map((brand) => ({ brand }))}
+            columns={columns}
+            rowKey="brand"
+            pagination={{ position: ["bottomCenter"] }}
+          />
+        </Tabs.TabPane>
+      </Tabs>
+
+      <Modal
+        title={isEditingManufacturer ? "Edit Manufacturer" : "Edit Brand"}
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <Form form={form} onFinish={handleSave}>
+          <p className="formTitle">
+            {isEditingManufacturer ? "Manufacturer Details" : "Brand Details"}
+          </p>
+          <Form.Item
+            name={isEditingManufacturer ? "manufacturerName" : "brandName"}
+            initialValue={isEditingManufacturer ? manufacturer?.name : editingBrand}
+            rules={[
+              {
+                required: true,
+                message: isEditingManufacturer
+                  ? "Please enter the manufacturer name"
+                  : "Please enter the brand name",
+              },
+            ]}
+          >
+            <Input
+              className="userInput"
+              placeholder={
+                isEditingManufacturer ? "Manufacturer Name" : "Brand Name"
+              }
+            />
+          </Form.Item>
+          <Form.Item className="concludeBtns">
+            <Button
+              className="editBtn"
+              onClick={() => setIsModalVisible(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="addBtn"
+              type="primary"
+              htmlType="submit"
+              style={{ marginLeft: "10px" }}
+            >
+              Save
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Flex>
   );
 };
 

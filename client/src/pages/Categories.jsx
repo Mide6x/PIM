@@ -266,19 +266,20 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
 
   return (
     <Form form={form} onFinish={onFinish} initialValues={initialValues}>
+      <p className="formTitle">Category Name</p>
       <Form.Item
         name="name"
-        label="Category Name"
+       
         rules={[{ required: true, message: "Please enter the category name" }]}
       >
-        <Input className="userInput" placeholder="" />
+        <Input className="userInput" placeholder=" Category Name" />
       </Form.Item>
+      <p className="formTitle">Subcategories</p>
       <Form.Item
         name="subcategories"
-        label="Subcategories"
         rules={[{ required: true, message: "Please enter the subcategories" }]}
       >
-        <Input className="userInput" placeholder="" />
+        <Input className="userInput" placeholder="Subcategories" />
       </Form.Item>
       <Form.Item>
         <Button className="deleteBtn" type="default" onClick={onCancel}>

@@ -10,10 +10,11 @@ const CategoryDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [category, setCategory] = useState(null);
-  const [editingSubcategory, setEditingSubcategory] = useState(null);
+  const [editingItem, setEditingItem] = useState(null); // can be a category or subcategory
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
+  const [isCategoryEdit, setIsCategoryEdit] = useState(false); // Flag to track if it's category edit
 
   useEffect(() => {
     const fetchCategoryDetails = async () => {
@@ -29,26 +30,39 @@ const CategoryDetails = () => {
     fetchCategoryDetails();
   }, [id]);
 
-  const handleEdit = (subcategory) => {
-    setEditingSubcategory(subcategory);
+  const handleEdit = (item, isCategory = false) => {
+    setEditingItem(item);
+    setIsCategoryEdit(isCategory);
     setIsModalVisible(true);
+    form.setFieldsValue(isCategory ? { categoryName: item.name } : { subcategoryName: item });
   };
 
   const handleSave = async () => {
     try {
       const values = form.getFieldsValue();
-      const updatedSubcategories = category.subcategories.map((sub) =>
-        sub === editingSubcategory ? values.subcategoryName : sub
-      );
-      await axios.put(`http://localhost:3000/api/categories/${id}`, {
-        ...category,
-        subcategories: updatedSubcategories,
-      });
-      setCategory((prev) => ({ ...prev, subcategories: updatedSubcategories }));
+      if (isCategoryEdit) {
+        // Update Category Name
+        await axios.put(`http://localhost:3000/api/categories/${id}`, {
+          ...category,
+          name: values.categoryName,
+        });
+        setCategory((prev) => ({ ...prev, name: values.categoryName }));
+        message.success("Category updated successfully! 🎉");
+      } else {
+        // Update Subcategory Name
+        const updatedSubcategories = category.subcategories.map((sub) =>
+          sub === editingItem ? values.subcategoryName : sub
+        );
+        await axios.put(`http://localhost:3000/api/categories/${id}`, {
+          ...category,
+          subcategories: updatedSubcategories,
+        });
+        setCategory((prev) => ({ ...prev, subcategories: updatedSubcategories }));
+        message.success("Subcategory updated successfully! 🎉");
+      }
       setIsModalVisible(false);
-      message.success("Subcategory updated successfully! 🎉");
     } catch (error) {
-      message.error("Failed to update subcategory 😔");
+      message.error("Failed to update item 😔");
     }
   };
 
@@ -121,10 +135,7 @@ const CategoryDetails = () => {
             </div>
 
             <div className="buttonContainer">
-              <Button
-                className="editBtn"
-                onClick={() => setIsModalVisible(true)}
-              >
+              <Button className="editBtn" onClick={() => handleEdit(category, true)}>
                 <FontAwesomeIcon icon={faPenToSquare} /> Edit Details
               </Button>
               {isArchived ? (
@@ -168,22 +179,33 @@ const CategoryDetails = () => {
       </Tabs>
 
       <Modal
-        title="Edit Subcategory"
+        title={isCategoryEdit ? "Edit Category" : "Edit Subcategory"}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
         <Form form={form} onFinish={handleSave}>
-          <p className="formTitle">Subcategory Details</p>
-          <Form.Item
-            name="subcategoryName"
-            initialValue={editingSubcategory}
-            rules={[
-              { required: true, message: "Please enter the subcategory name" },
-            ]}
-          >
-            <Input className="userInput" placeholder="Subcategory Name" />
-          </Form.Item>
+          <p className="formTitle">{isCategoryEdit ? "Category Details" : "Subcategory Details"}</p>
+          {isCategoryEdit ? (
+            <Form.Item
+              name="categoryName"
+              rules={[
+                { required: true, message: "Please enter the category name" },
+              ]}
+            >
+              <Input className="userInput" placeholder="Category Name" />
+            </Form.Item>
+          ) : (
+            <Form.Item
+              name="subcategoryName"
+              initialValue={editingItem}
+              rules={[
+                { required: true, message: "Please enter the subcategory name" },
+              ]}
+            >
+              <Input className="userInput" placeholder="Subcategory Name" />
+            </Form.Item>
+          )}
           <Form.Item className="concludeBtns">
             <Button
               className="editBtn"
