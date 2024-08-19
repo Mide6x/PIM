@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Tabs, Table, message, Input, Button, Form, Modal } from "antd";
+import { Tabs, Table, message, Input, Button, Form,Flex, Modal } from "antd";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,11 +17,13 @@ const ManufacturerDetails = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isEditingManufacturer, setIsEditingManufacturer] = useState(false);
   const [brandsList, setBrandsList] = useState([]);
 
   useEffect(() => {
     const fetchManufacturerDetails = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `http://localhost:3000/api/manufacturer/${id}`
@@ -31,6 +33,8 @@ const ManufacturerDetails = () => {
         setBrandsList(response.data.brands);
       } catch (error) {
         message.error("Failed to fetch manufacturer details 😔");
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -145,10 +149,7 @@ const ManufacturerDetails = () => {
   ];
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", flex: 1 }}
-      className="content"
-    >
+    <Flex vertical flex={1} className="content">
       <div className="intro">
         <Button
           icon={<ArrowLeftOutlined />}
@@ -239,6 +240,7 @@ const ManufacturerDetails = () => {
             <Table
               dataSource={brandsList.map((brand) => ({ brand }))}
               columns={columns}
+              loading={loading}
               rowKey="brand"
               pagination={{ position: ["bottomCenter"] }}
             />
@@ -290,7 +292,7 @@ const ManufacturerDetails = () => {
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </Flex>
   );
 };
 

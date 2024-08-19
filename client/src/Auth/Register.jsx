@@ -113,7 +113,7 @@ const Register = () => {
                   size="large"
                   className="btn addBtn"
                 >
-                  {loading ? <Spin /> : "Create Account"}
+                  {loading ? <Spin className="spinner"/> : "Create Account"}
                 </Button>
               </Form.Item>
               <Form.Item>

@@ -9,14 +9,15 @@ import "./App.css";
 import Register from "./Auth/Register";
 import Login from "./Auth/Login";
 import Dashboard from "./pages/Dashboard";
+import ProductDetails from "./pages/details/ProductDetails";
 import useAuth from "./contexts/useAuth";
 import UploadTab from "./pages/UploadTab";
 import Approval from "./pages/Approval";
 import Images from "./pages/Images";
 import MngManufacturers from "./pages/MngManufacturers";
-import ManufacturerDetails from "./pages/ManufacturerDetails";
+import ManufacturerDetails from "./pages/details/ManufacturerDetails";
 import Categories from "./pages/Categories";
-import CategoryDetails from "./pages/CategoryDetails";
+import CategoryDetails from "./pages/details/CategoryDetails";
 import Variants from "./pages/Variants";
 import Sidebar from "./pages/sidebar/Sidebar";
 import Topbar from "./pages/sidebar/Topbar";
@@ -47,6 +48,10 @@ const App = () => {
             <Route
               path="/dashboard/*"
               element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+            />
+             <Route
+              path="/products/:id"
+              element={isAuthenticated ? <ProductDetails /> : <Navigate to="/" />}
             />
             <Route
               path="/uploadtab/*"

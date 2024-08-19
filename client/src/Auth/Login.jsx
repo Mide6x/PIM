@@ -76,7 +76,7 @@ const Login = () => {
                   size="large"
                   className="btn addBtn"
                 >
-                  {loading ? <Spin /> : "Sign In"}
+                  {loading ? <Spin  className="spinner" /> : "Sign In"}
                 </Button>
               </Form.Item>
               <Form.Item>

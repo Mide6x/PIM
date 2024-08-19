@@ -17,11 +17,13 @@ const CategoryDetails = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isCategoryEdit, setIsCategoryEdit] = useState(false);
   const [subcategoriesList, setSubcategoriesList] = useState([]);
 
   useEffect(() => {
     const fetchCategoryDetails = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`http://localhost:3000/api/categories/${id}`);
         setCategory(response.data);
@@ -29,6 +31,8 @@ const CategoryDetails = () => {
         setSubcategoriesList(response.data.subcategories);
       } catch (error) {
         message.error("Failed to fetch category details 😔");
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -88,7 +92,6 @@ const CategoryDetails = () => {
       message.error("Failed to unarchive category 😔");
     }
   };
-
 
   const handleSearch = (value) => {
     if (value.length >= 3) {
@@ -217,6 +220,7 @@ const CategoryDetails = () => {
           <Table
             dataSource={subcategoriesList.map((subcategory) => ({ subcategory }))}
             columns={columns}
+            loading={loading}
             rowKey="subcategory"
             pagination={{ position: ["bottomCenter"] }}
           />

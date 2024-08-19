@@ -111,12 +111,28 @@ h2 {
   margin-bottom: 20px;
 }
 
-.detailsTable{
+.detailsImage{
+  height: 100px;
+  width: 200px;
+  margin-right: 10px;
+}
+
+.detailsTable {
   background-color: #ffffff;
-  padding: 10px;
+  padding: 20px;
   margin-top: 20px;
   border-radius: 10px;
 }
+
+.productDetails {
+  padding: 20px;
+}
+
+.productItem {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
 
 /* Titles and Status */
 .infoTitle {
@@ -186,6 +202,7 @@ h2 {
 }
 .addBtn:hover{
   background-color: #008162 !important;
+  color: #ffffff !important;
 }
 
 .unarchiveBtn {
@@ -312,6 +329,17 @@ Form {
   border-radius: 15px;
   height: 35px;
 }
+
+.ant-spin-dot {
+  font-size: 32px;
+  color: #212b36!important;
+}
+
+.ant-spin-dot-item {
+  background-color: #212b36 !important;
+}
+
+
 
 .stats-item0,
 .stats-item1,

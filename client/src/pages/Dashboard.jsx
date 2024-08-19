@@ -21,6 +21,7 @@ import {
   faWandMagicSparkles,
   faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 import { getProductDetailsFromOpenAI } from "../hooks/productAddWithOpenAI";
 
@@ -194,6 +195,9 @@ const Dashboard = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
+          <Link to={`/products/${record._id}`}>
+            <Button className="archiveBtn">View Details</Button>
+          </Link>
           <Button
             className="deleteBtn"
             onClick={() => handleDelete(record._id)}
