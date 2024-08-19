@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
+import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -64,17 +65,6 @@ const Categories = () => {
     }
   };
 
-  const handleArchive = async (category) => {
-    try {
-      await axios.patch(
-        `http://localhost:3000/api/categories/${category._id}/archive`
-      );
-      message.success("Category archived successfully 🎉");
-      fetchCategories();
-    } catch (error) {
-      message.error("Failed to archive category 😔");
-    }
-  };
 
   const handleUnarchive = async (category) => {
     try {
@@ -129,6 +119,11 @@ const Categories = () => {
       title: "Category Name",
       dataIndex: "name",
       key: "name",
+      render: (text, record) => (
+        <Link className="nameListing" to={`/categories/${record._id}`}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: "Subcategories",
@@ -145,9 +140,10 @@ const Categories = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-          <Button className="archiveBtn" onClick={() => handleArchive(record)}>
-            Archive
-          </Button>
+          <Link to={`/categories/${record._id}`}>
+            <Button className="archiveBtn">View Details</Button>
+          </Link>
+
         </Space>
       ),
     },
@@ -174,7 +170,7 @@ const Categories = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-
+         
           <Button
             className="unarchiveBtn"
             onClick={() => handleUnarchive(record)}

@@ -16,6 +16,7 @@ import Images from "./pages/Images";
 import MngManufacturers from "./pages/MngManufacturers";
 import ManufacturerDetails from "./pages/ManufacturerDetails";
 import Categories from "./pages/Categories";
+import CategoryDetails from "./pages/CategoryDetails";
 import Variants from "./pages/Variants";
 import Sidebar from "./pages/sidebar/Sidebar";
 import Topbar from "./pages/sidebar/Topbar";
@@ -54,6 +55,10 @@ const App = () => {
             <Route
               path="/categories/*"
               element={isAuthenticated ? <Categories /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/categories/:id"
+              element={isAuthenticated ? <CategoryDetails /> : <Navigate to="/" />}
             />
             <Route
               path="/approval/*"
