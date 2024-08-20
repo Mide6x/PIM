@@ -212,6 +212,7 @@ h2 {
 }
 .archiveBtn:hover{
   color: #008162 !important;
+  background-color: #ffffff !important;
   border-color: #008162 !important;
 }
 
@@ -226,7 +227,6 @@ h2 {
 .archiveBtn {
   background: #069f7e30;
   color: #008162;
-  border: none;
 }
 
 .editBtn {
@@ -294,6 +294,15 @@ h2 {
   height: 45px !important;
   background-color: #f4f4f4 !important;
 }
+.userInputDesc {
+  border: none !important;
+  min-height: 45px !important;
+  background-color: #f4f4f4 !important;
+  resize: vertical !important;
+  overflow: auto !important;
+
+}
+
 
 .userSelection .ant-select-selector {
   border-color: #f4f4f4 !important;

@@ -1,12 +1,10 @@
-const express = require("express");
-const {
-  processImages,
-  getProcessedImages,
-} = require("../controllers/imageController");
-
+const express = require('express');
 const router = express.Router();
+const imageController = require('../controllers/imageController');
 
-router.post("/process", processImages);
-router.get("/processedimages", getProcessedImages);
+router.post('/upload', imageController.uploadImage);
+router.post('/process', imageController.processImages);
+router.get('/processed', imageController.getProcessedImages);
+router.delete('/processed', imageController.deleteAllProcessedImages);
 
 module.exports = router;

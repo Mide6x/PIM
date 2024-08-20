@@ -1,4 +1,4 @@
-require("dotenv").config();
+const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const axios = require("axios");
 const fs = require("fs");
@@ -13,6 +13,46 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// Set up multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'temp/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+// Controller to handle image upload
+exports.uploadImage = async (req, res) => {
+  try {
+    // Use multer to handle the file upload
+    upload.single('image')(req, res, async (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Failed to upload image', error: err.message });
+      }
+
+      const filePath = req.file.path;  // Get the path of the uploaded file
+
+      try {
+        const transformedUrl = await uploadAndTransformImage(filePath, req.body.amount);
+
+        fs.unlinkSync(filePath);  // Delete the temp file after processing
+
+        res.status(200).json({ imageUrl: transformedUrl });
+      } catch (error) {
+        console.error(`Failed to upload image: ${error.message}`);
+        res.status(500).json({ message: 'Failed to upload image', error: error.message });
+      }
+    });
+  } catch (error) {
+    console.error(`Failed to upload image: ${error.message}`);
+    res.status(500).json({ message: 'Failed to upload image', error: error.message });
+  }
+};
 
 const downloadImage = async (url, savePath) => {
   try {
@@ -31,7 +71,6 @@ const uploadAndTransformImage = async (filePath, amount) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       transformation: [
-        //{effect: "background_removal"},
         {
           background: "#FFFFFF",
           gravity: "center",
@@ -49,7 +88,7 @@ const uploadAndTransformImage = async (filePath, amount) => {
             text: `x${amount}`,
           },
         },
-        { background: "#040057" },
+        { background: "#069f7e" },
         { quality: "auto:best" },
         { fetch_format: "auto" },
         { effect: "sharpen:90" },

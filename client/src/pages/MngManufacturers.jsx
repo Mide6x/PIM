@@ -13,6 +13,10 @@ import {
 } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFileArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { debounce } from "lodash";
 import { Link } from "react-router-dom";
 
@@ -271,20 +275,33 @@ const MngManufacturers = () => {
         </div>
         <div className="details">
           <span style={{ margin: "0 8px", marginTop: "60px" }} />
-          <Input
-            placeholder="Search Manufacturers by Name"
-            onChange={(e) => handleSearch(e.target.value)}
-            style={{ marginBottom: "20px", width: "300px" }}
-            className="searchBar"
-          />
-          <span style={{ margin: "0 8px" }} />
-          <Button
-            type="primary"
-            className="spaced addBtn"
-            onClick={handleCreate}
-          >
-            Add Manufacturer
-          </Button>
+          <div className="searchBarContainer">
+              <Input
+                placeholder="Search Manufacturer by name"
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ width: "100%" }}
+                className="searchBar"
+              />
+              <Button
+                type="primary"
+                className="archiveBtn"
+                onClick={handleCreate}
+              >
+                <FontAwesomeIcon
+                  icon={faFileArrowUp}
+                  size="lg"
+                  style={{ color: "#008162" }}
+                />
+                Bulk Upload Manufacturers
+              </Button>
+              <Button
+                type="primary"
+                className="addBtn"
+                onClick={handleCreate}
+              >
+                Add Manufacturer
+              </Button>
+            </div>
           <Tabs
             activeKey={activeTab}
             onChange={(key) => setActiveTab(key)}

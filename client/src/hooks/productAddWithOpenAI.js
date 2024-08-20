@@ -116,8 +116,8 @@ export const getProductDetailsFromOpenAI = async (productName) => {
     const result = response.choices[0].message.content.trim();
     const lines = result.split("\n");
 
-    let productCategory = "unknown";
-    let productSubcategory = "unknown";
+    let productCategory = "Unknown";
+    let productSubcategory = "Unknown";
     let manufacturers = [];
 
     lines.forEach((line) => {
@@ -141,8 +141,8 @@ export const getProductDetailsFromOpenAI = async (productName) => {
   } catch (error) {
     console.error("Error categorizing product:", error);
     return {
-      productCategory: "unknown",
-      productSubcategory: "unknown",
+      productCategory: "Unknown",
+      productSubcategory: "Unknown",
       manufacturers: [],
     };
   }

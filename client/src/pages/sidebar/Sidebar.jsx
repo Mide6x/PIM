@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import React from 'react';
 import { Menu, Button } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +12,7 @@ import {
   faChartSimple,
   faScaleBalanced,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useCallback } from "react";
 import useAuth from "../../contexts/useAuth";
 import "./Sidebar.module.css";
 import logoImage from "../../assets/logo.png";
@@ -99,16 +100,20 @@ const items = [
   },
 ];
 
-const MenuItem = ({ item, isActive }) => (
-  <Menu.Item
-    key={item.key}
-    icon={item.icon}
-    style={{ padding: "5px", color: "#ffffff", fontWeight: "450" }}
-    className={isActive ? "active-menu-item" : "menuItem"}
-  >
-    {item.to ? <Link to={item.to}>{item.label}</Link> : item.label}
-  </Menu.Item>
-);
+const MenuItem = React.memo(function MenuItem({ item, isActive }) {
+  const { key, icon, label, to } = item;
+  const isLink = Boolean(to);
+  return (
+    <Menu.Item
+      key={key}
+      icon={icon}
+      style={{ padding: "5px", color: "#ffffff", fontWeight: "450" }}
+      className={isActive ? "active-menu-item" : "menuItem"}
+    >
+      {isLink ? <Link to={to}>{label}</Link> : label}
+    </Menu.Item>
+  );
+});
 
 MenuItem.propTypes = {
   item: PropTypes.shape({
@@ -130,9 +135,9 @@ const Sidebar = () => {
     setCurrentKey(currentItem ? currentItem.key : "");
   }, [location.pathname]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
-  };
+  }, [logout]);
 
   return (
     <div className="barbody">

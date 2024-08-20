@@ -90,7 +90,18 @@ const ProductDetails = () => {
   
 
   if (!product) {
-    return <div>Product not found</div>;
+    return   <Flex vertical flex={1} className="content">
+    <div className="intro">
+      <Button
+        icon={<ArrowLeftOutlined />}
+        onClick={() => navigate(-1)}
+        className="backButton"
+      >
+        Dashboard
+      </Button>
+      <h2>Product Not Found</h2>
+    </div>;
+    </Flex>
   }
 
   return (
