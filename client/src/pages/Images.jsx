@@ -230,79 +230,88 @@ const Images = () => {
   ];
 
   return (
-        <Flex vertical flex={1} className="content">
-          <div>
-            <h2>Image Conversion</h2>
-            <p style={{ marginBottom: "10px" }}>
-              Download the template and insert your data so that we begin! Most
-              processes are AI-assisted but ensure a level of data accuracy, and
-              verify results before moving on to the next step.
-            </p>
-            <Button type="primary" className="spaced addBtn" onClick={handleDownload}>
-              Download Excel Template
+    <Flex vertical flex={1} className="content">
+      <div>
+        <div className="intro">
+          <h2>Image Conversion</h2>
+          <p style={{ marginBottom: "10px" }}>
+            Download the template and insert your data so that we begin! Most
+            processes are AI-assisted but ensure a level of data accuracy, and
+            verify results before moving on to the next step.
+          </p>
+          <Button
+            type="primary"
+            className="spaced addBtn"
+            onClick={handleDownload}
+          >
+            Download Excel Template
+          </Button>
+
+          <span style={{ margin: "0 8px" }} />
+          <Upload
+            name="file"
+            accept=".xlsx, .xls"
+            beforeUpload={() => false}
+            onChange={handleUpload}
+            showUploadList={false}
+            className="spaced"
+          >
+            <Button className="editBtn" icon={<UploadOutlined />}>
+              Click to Upload
             </Button>
+          </Upload>
+        </div>
 
-            <span style={{ margin: "0 8px" }} />
-            <Upload
-              name="file"
-              accept=".xlsx, .xls"
-              beforeUpload={() => false}
-              onChange={handleUpload}
-              showUploadList={false}
-              className="spaced"
-            >
-              <Button className="editBtn" icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <div className="details">
-              <span style={{ margin: "0 8px", marginTop: "60px" }} />
-              <Tabs
-                activeKey={activeTab}
-                onChange={(key) => setActiveTab(key)}
-                className="table"
+        <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
+          <Tabs
+            activeKey={activeTab}
+            onChange={(key) => setActiveTab(key)}
+            className="table"
+          >
+            <TabPane tab="Uploaded Sheet" key="1">
+              <Table
+                columns={columns}
+                dataSource={processedData}
+                rowKey={(record) => record["Product Name"] || record.index}
+                pagination={{ position: ["bottomCenter"] }}
+              />
+
+              <span style={{ margin: "0 8px" }} />
+              <Button
+                type="primary"
+                className="spaced editBtn"
+                onClick={processImages}
+                loading={loading}
+                disabled={loading || !data.length}
               >
-                <TabPane tab="Uploaded Sheet" key="1">
-                  <Table
-                    columns={columns}
-                    dataSource={processedData}
-                    rowKey={(record) => record["Product Name"] || record.index}
-                    pagination={{ position: ['bottomCenter'] }} 
-                  />
-
-                  <span style={{ margin: "0 8px" }} />
-                  <Button
-                    type="primary"
-                    className="spaced editBtn"
-                    onClick={processImages}
-                    loading={loading}
-                    disabled={loading || !data.length}
-                  >
-                    Process Data
-                  </Button>
-                </TabPane>
-                <TabPane tab="Processed Images" key="2">
-                  <Table
-                    columns={processedColumns}
-                    dataSource={processedImages}
-                    rowKey={(record) => record["Product Name"] || record.index}
-                    className="spaced"
-                    pagination={{ position: ['bottomCenter'] }} 
-                  />
-                  <Link to="/uploadtab">
-                    {" "}
-                    <Button
-                      type="primary"
-                      className="spaced editBtn"
-                      style={{ marginBottom: "20px" }}
-                      disabled={processedImages.length === 0}
-                    >
-                      Next
-                    </Button>
-                  </Link>
-                </TabPane>
-              </Tabs>
-            </div>
-          </div>
-        </Flex>
+                Process Data
+              </Button>
+            </TabPane>
+            <TabPane tab="Processed Images" key="2">
+              <Table
+                columns={processedColumns}
+                dataSource={processedImages}
+                rowKey={(record) => record["Product Name"] || record.index}
+                className="spaced"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+              <Link to="/uploadtab">
+                {" "}
+                <Button
+                  type="primary"
+                  className="spaced editBtn"
+                  style={{ marginBottom: "20px" }}
+                  disabled={processedImages.length === 0}
+                >
+                  Next
+                </Button>
+              </Link>
+            </TabPane>
+          </Tabs>
+        </div>
+      </div>
+    </Flex>
   );
 };
 

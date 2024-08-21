@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flex, Button, message, Table, Modal } from "antd";
+import { Flex, Button, message, Table, Modal, Form } from "antd";
 import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
 import useAuth from "../contexts/useAuth";
@@ -12,6 +12,7 @@ const UploadTab = () => {
   });
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     localStorage.setItem("processedData", JSON.stringify(data));
@@ -19,21 +20,21 @@ const UploadTab = () => {
 
   useEffect(() => {
     if (userData && userData._id) {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/processedimages"
-        );
-        setData(response.data);
-      } catch (error) {
-        message.error("Failed to fetch data 😔");
-        console.error("Error fetching data:", error);
-      }
-    };
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:3000/api/processedimages"
+          );
+          setData(response.data);
+        } catch (error) {
+          message.error("Failed to fetch data 😔");
+          console.error("Error fetching data:", error);
+        }
+      };
 
-    fetchData();
-  }
-}, [userData]);
+      fetchData();
+    }
+  }, [userData]);
 
   const extractSize = (weightStr) => {
     try {
@@ -249,58 +250,76 @@ const UploadTab = () => {
 
   return (
     <>
-    {userData && (
+      {userData && (
         <Flex vertical flex={1} className="content">
           <div>
-            <h2>Data Cleaning</h2>
-            <p style={{ marginTop: "10px" }}>
-              Here the data is cleaned using our in-built Artificial
-              Intelligence system. the Product Category, Product Subcategory,
-              and other relvant details are automatically inputted.
-            </p>
-            <>
-              <div className="details" style={{ marginTop: "20px" }}>
-                <span style={{ margin: "0 8px", marginTop: "60px" }} />
-                <Table
-                  columns={columns}
-                  dataSource={data}
-                  rowKey="productName"
-                  className="table"
-                  pagination={{ position: ["bottomCenter"] }}
-                />
-                <Button
-                  type="primary"
-                  className="spaced editBtn"
-                  onClick={handleProcess}
-                  loading={loading}
-                  disabled={loading || !data.length}
-                >
-                  Process Data
-                </Button>
-                <span style={{ margin: "0 8px" }} />
-                <Button
-                  type="primary"
-                  className="spaced addBtn"
-                  onClick={handleConfirm}
-                  disabled={!data.length}
-                >
-                  Send to Approval
-                </Button>
-              </div>
-              <Modal
-                title="Confirm Send to Approval"
-                open={isModalVisible}
-                onOk={handleModalOk}
-                onCancel={handleModalCancel}
-                okText="Confirm"
-                cancelText="Cancel"
+            <div className="intro">
+              <h2>Data Cleaning</h2>
+              <p style={{ marginTop: "10px" }}>
+                Here the data is cleaned using our in-built Artificial
+                Intelligence system. the Product Category, Product Subcategory,
+                and other relvant details are automatically inputted.
+              </p>
+            </div>
+            <div className="details" style={{ marginTop: "20px" }}>
+              <span style={{ margin: "0 8px", marginTop: "60px" }} />
+              <Table
+                columns={columns}
+                dataSource={data}
+                rowKey="productName"
+                className="table"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+              <Button
+                type="primary"
+                className="spaced editBtn"
+                onClick={handleProcess}
+                loading={loading}
+                disabled={loading || !data.length}
               >
+                Process Data
+              </Button>
+              <span style={{ margin: "0 8px" }} />
+              <Button
+                type="primary"
+                className="spaced addBtn"
+                onClick={handleConfirm}
+                disabled={!data.length}
+              >
+                Send to Approval
+              </Button>
+            </div>
+            <Modal
+              title="Confirm Send to Approval"
+              open={isModalVisible}
+              onCancel={handleModalCancel}
+              okText="Confirm"
+              cancelText="Cancel"
+              footer={null}
+            >
+              <Form form={form} onFinish={handleModalOk}>
                 <p>Are you sure you want to send the data for approval?</p>
-              </Modal>
-            </>
+                <Form.Item className="concludeBtns">
+                  <Button
+                    className="editBtn"
+                    onClick={() => setIsModalVisible(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="addBtn"
+                    type="primary"
+                    htmlType="submit"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Save
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Modal>
           </div>
         </Flex>
-    )}
+      )}
     </>
   );
 };

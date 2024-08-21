@@ -19,9 +19,11 @@ import {
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 import ProductForm from "./forms/ProductForm";
+import useAuth from "../contexts/useAuth";
 
 
 const Dashboard = () => {
+  const { userData } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -60,24 +62,31 @@ const Dashboard = () => {
   };
 
   const fetchProducts = async (search = "") => {
+    console.log("fetchProducts called with search:", search);
     setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:3000/api/products?search=${encodeURIComponent(search)}`
       );
+      console.log("Response:", response);
       setProducts(response.data);
     } catch (error) {
+      console.log("Error fetching products:", error);
       setProducts([]);
       message.error("Failed to fetch products 😔");
     } finally {
+      console.log("Setting loading to false");
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
+    if (userData && userData._id) {
     fetchCounts();
     fetchProducts();
-  }, []);
+  }
+}, [userData]);
 
   const handleEdit = useCallback((product) => {
     setEditingProduct(product);
@@ -206,6 +215,8 @@ const Dashboard = () => {
   ];
 
   return (
+    <>
+    {userData && (
     <Flex vertical flex={1} className="content">
       <div>
         <div className="intro">
@@ -306,7 +317,9 @@ const Dashboard = () => {
         />
       </Modal>
     </Flex>
-  );
+ )}
+ </>
+);
 };
 
 export default Dashboard;

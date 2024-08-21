@@ -20,17 +20,14 @@ exports.bulkCreateProducts = async (req, res, next) => {
   try {
     const products = req.body;
 
-    // Ensure the data is an array
     if (!Array.isArray(products)) {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
-    // Filter out products with an unknown category
     const validProducts = products.filter(
       (productData) => productData.productCategory.toLowerCase() !== "unknown"
     );
 
-    // Insert valid products into the database
     const createdProducts = await Product.insertMany(
       validProducts.map((productData) => ({
         manufacturerName: productData.manufacturerName,
@@ -129,26 +126,5 @@ exports.deleteProduct = async (req, res, next) => {
     res.status(204).json({ message: "Product deleted 🫢" });
   } catch (error) {
     next(error);
-  }
-};
-
-
-// for logged in user (not admin)
-// Get all products created by the logged-in user
-exports.getUserProducts = async (req, res, next) => {
-  try {
-    const { search } = req.query;
-    const query = {
-      createdBy: req.user.email, 
-    };
-    if (search) {
-      query.productName = { $regex: search, $options: "i" };
-    }
-
-    const products = await Product.find(query);
-    res.status(200).json(products);
-  } catch (error) {
-    next(error);
-    res.status(500).json({ message: error.message });
   }
 };

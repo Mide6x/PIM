@@ -176,6 +176,7 @@ const ProductDetails = () => {
             { label: "Variant Type", value: product.variantType },
             { label: "Weight", value: `${product.weight} Kg` },
             { label: "Description", value: product.description || "No description available" },
+            { label: "Created By", value: product.createdBy || "Not available, please contact admin." },
           ].map((item, index) => (
             <p className="productItem" key={index}>
               <strong>{item.label}:</strong> {item.value}
@@ -225,8 +226,15 @@ const ProductDetails = () => {
             }} />
           </Form.Item>
           <p className="formTitle">Product Description</p>
-          <Form.Item name="description">
-            <Input.TextArea className="userInput" />
+          <Form.Item
+            name="description"
+            rules={[{ required: false, message: "Enter the product details." }]}
+          >
+            <Input.TextArea
+              className="userInputDesc"
+              placeholder="Product Description"
+              autoSize={{ minRows: 3, maxRows: 6 }}
+            />
           </Form.Item>
           <Form.Item className="concludeBtns">
             <Button

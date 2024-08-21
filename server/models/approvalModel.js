@@ -10,6 +10,10 @@ const approvalSchema = new mongoose.Schema({
   variant: { type: String, required: true },
   weightInKg: { type: Number, required: true },
   imageUrl: { type: String, required: true },
+  createdBy: {
+    type: String,
+    required: true
+  },
   status: {
     type: String,
     enum: ["pending", "approved", "rejected"],

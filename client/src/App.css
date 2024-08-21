@@ -75,7 +75,6 @@ h2 {
 }
 
 .details,
-.detailsContainer,
 .variantDetails {
   box-shadow: 0px 0px 8px -2px #c2c2c24d;
   border-radius: 10px;
@@ -225,17 +224,21 @@ h2 {
 }
 
 .archiveBtn {
-  background: #069f7e30;
+  background-color: #069f7e30!important;
   color: #008162;
+  border-color: #00816300 !important;
 }
 
 .editBtn {
   color: #212b36 !important;
+  border-color: #069f7e30 !important;
+  background-color: #ffffff!important;
 }
 
 .editBtn:hover {
   color: #008162 !important;
   border-color: #008162 !important;
+  background-color: #ffffff!important;
 }
 
 .deleteBtn {

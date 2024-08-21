@@ -13,6 +13,8 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
@@ -64,7 +66,6 @@ const Categories = () => {
       message.error("Failed to delete category 😔");
     }
   };
-
 
   const handleUnarchive = async (category) => {
     try {
@@ -143,7 +144,6 @@ const Categories = () => {
           <Link to={`/categories/${record._id}`}>
             <Button className="archiveBtn">View Details</Button>
           </Link>
-
         </Space>
       ),
     },
@@ -170,7 +170,7 @@ const Categories = () => {
           <Button className="editBtn" onClick={() => handleEdit(record)}>
             Edit
           </Button>
-         
+
           <Button
             className="unarchiveBtn"
             onClick={() => handleUnarchive(record)}
@@ -189,67 +189,78 @@ const Categories = () => {
   ];
 
   return (
-        <Flex vertical flex={1} className="content">
-          <div>
-            <h2>Categories </h2>
-            <div className="details" style={{ marginTop: "20px" }}>
-              <span style={{ margin: "0 8px" }} />
-              <Input
-                className="searchBar"
-                placeholder="Search Categories by name"
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ marginBottom: "20px", width: "300px" }}
-              />
-              <span style={{ margin: "0 8px" }} />
-              <Button
-                className="spaced addBtn"
-                type="primary"
-                onClick={handleCreate}
-              >
-                Add New Category
-              </Button>
-              <Tabs
-                activeKey={activeTab}
-                onChange={(key) => setActiveTab(key)}
-                className="table"
-              >
-                <TabPane tab="Live Categories" key="live">
-                  <Table
-                    columns={columns}
-                    dataSource={categories}
-                    loading={loading}
-                    rowKey="_id"
-                    className="table"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                </TabPane>
-                <TabPane tab="Archived Categories" key="archived">
-                  <Table
-                    columns={archivedColumns}
-                    dataSource={archivedCategories}
-                    loading={loading}
-                    rowKey="_id"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                </TabPane>
-              </Tabs>
-            </div>
-          </div>
-          {categories.length === 0 && !loading && <p>No categories found.</p>}
-
-          <Modal
-            title={editingCategory ? "Edit Category" : "Create Category"}
-            open={isModalVisible}
-            onCancel={handleCancel}
-            footer={null}
-          >
-            <CategoryForm
-              initialValues={editingCategory}
-              onCancel={handleCancel}
-              onOk={handleOk}
+    <Flex vertical flex={1} className="content">
+      <div>
+        <div className="intro">
+          <h2>Categories</h2>
+        </div>
+        <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
+          <div className="searchBarContainer">
+            <Input
+              className="searchBar"
+              placeholder="Search Categories by name"
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ width: "100%" }}
             />
-          </Modal>
-        </Flex>
+            <Button
+              type="primary"
+              className="archiveBtn"
+              onClick={handleCreate}
+            >
+              <FontAwesomeIcon
+                icon={faFileArrowUp}
+                size="lg"
+                style={{ color: "#008162" }}
+              />
+              Bulk Upload Categories
+            </Button>
+            <Button className="addBtn" type="primary" onClick={handleCreate}>
+              Add New Category
+            </Button>
+          </div>
+          <Tabs
+            activeKey={activeTab}
+            onChange={(key) => setActiveTab(key)}
+            className="table"
+          >
+            <TabPane tab="Live Categories" key="live">
+              <Table
+                columns={columns}
+                dataSource={categories}
+                loading={loading}
+                rowKey="_id"
+                className="table"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+            </TabPane>
+            <TabPane tab="Archived Categories" key="archived">
+              <Table
+                columns={archivedColumns}
+                dataSource={archivedCategories}
+                loading={loading}
+                rowKey="_id"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+            </TabPane>
+          </Tabs>
+        </div>
+      </div>
+      {categories.length === 0 && !loading && <p>No categories found.</p>}
+
+      <Modal
+        title={editingCategory ? "Edit Category" : "Create Category"}
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <CategoryForm
+          initialValues={editingCategory}
+          onCancel={handleCancel}
+          onOk={handleOk}
+        />
+      </Modal>
+    </Flex>
   );
 };
 
@@ -269,7 +280,6 @@ const CategoryForm = ({ initialValues, onCancel, onOk }) => {
       <p className="formTitle">Category Name</p>
       <Form.Item
         name="name"
-       
         rules={[{ required: true, message: "Please enter the category name" }]}
       >
         <Input className="userInput" placeholder=" Category Name" />

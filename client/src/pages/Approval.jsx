@@ -14,11 +14,13 @@ import {
 import axios from "axios";
 import PropTypes from "prop-types";
 import { debounce } from "lodash";
+import useAuth from "../contexts/useAuth";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
 
 const Approval = () => {
+  const { userData } = useAuth();
   const [approvals, setApprovals] = useState([]);
   const [rejectedApprovals, setRejectedApprovals] = useState([]);
   const [approvedApprovals, setApprovedApprovals] = useState([]);
@@ -30,8 +32,10 @@ const Approval = () => {
   const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
+    if (userData && userData._id) {
     fetchApprovals();
-  }, []);
+    }
+  }, [userData]);
 
   const fetchApprovals = async (search = "") => {
     setLoading(true);
@@ -52,22 +56,30 @@ const Approval = () => {
     }
   };
   const handleBulkApprove = async () => {
+    console.log("Selected rows to be approved:", selectedRows);
     setLoading(true);
     try {
       const approvedItems = selectedRows.map((item) => ({
         ...item,
         status: "approved",
+        createdBy: userData.email ? userData.email.toString() : userData._id,
       }));
+      console.log("Approved items to be sent to server:", approvedItems);
       await Promise.all(
-        approvedItems.map((item) =>
-          axios.put(`http://localhost:3000/api/approvals/${item._id}`, item)
-        )
+        approvedItems.map(async (item) => {
+          console.log("Sending request to server for item:", item);
+          await axios.put(`http://localhost:3000/api/approvals/${item._id}`, item);
+          console.log("Request sent successfully for item:", item);
+        })
       );
+      console.log("All requests sent successfully");
       message.success("Selected items approved successfully 🎉");
       fetchApprovals();
     } catch (error) {
+      console.error("Error occurred while approving selected items:", error);
       message.error("Failed to approve selected items 😔");
     } finally {
+      console.log("Operation completed");
       setLoading(false);
     }
   };
@@ -90,6 +102,7 @@ const Approval = () => {
   const handleOk = async (values) => {
     try {
       if (editingItem) {
+       
         await axios.put(
           `http://localhost:3000/api/approvals/${editingItem._id}`,
           values
@@ -162,6 +175,7 @@ const Approval = () => {
       setApprovedApprovals([]);
       fetchApprovals();
     } catch (error) {
+      console.error("Failed to process approved products:", error);
       message.error("Failed to process approved products");
     } finally {
       setLoading(false);
@@ -294,8 +308,10 @@ const Approval = () => {
 
   return (
         <Flex vertical flex={1} className="content">
-          <div>
+         <div>
+         <div className="intro">
             <h2>Product Approval </h2>
+            </div>
             <div className="details" style={{ marginTop: "20px" }}>
               <span style={{ margin: "0 8px" }} />
               <Input
@@ -322,7 +338,7 @@ const Approval = () => {
                   <span style={{ margin: "0 8px" }} />
                   <Button
                     type="primary"
-                    className="spaced addBtn"
+                    className="spaced archiveBtn"
                     onClick={handleBulkApprove}
                     style={{ marginBottom: "20px" }}
                     disabled={selectedRows.length === 0}
@@ -334,6 +350,7 @@ const Approval = () => {
                   <Table
                     columns={columns}
                     dataSource={approvedApprovals}
+                    rowSelection={rowSelection}
                     loading={loading}
                     className="spaced"
                     rowKey="_id"
@@ -344,6 +361,7 @@ const Approval = () => {
                     onClick={handleConfirm}
                     className="spaced addBtn"
                     style={{ marginBottom: "20px" }}
+                    disabled={selectedRows.length === 0}
                   >
                     Confirm and Push to Database
                   </Button>
