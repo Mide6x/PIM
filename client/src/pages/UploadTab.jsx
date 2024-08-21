@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Flex, Button, message, Table, Modal } from "antd";
 import axios from "axios";
 import { categorizeProductWithOpenAI } from "../hooks/openaiCategorizer";
+import useAuth from "../contexts/useAuth";
 
 const UploadTab = () => {
+  const { userData } = useAuth();
   const [data, setData] = useState(() => {
     const savedData = localStorage.getItem("processedData");
     return savedData ? JSON.parse(savedData) : [];
@@ -16,6 +18,7 @@ const UploadTab = () => {
   }, [data]);
 
   useEffect(() => {
+    if (userData && userData._id) {
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -29,7 +32,8 @@ const UploadTab = () => {
     };
 
     fetchData();
-  }, []);
+  }
+}, [userData]);
 
   const extractSize = (weightStr) => {
     try {
@@ -122,6 +126,7 @@ const UploadTab = () => {
           variantType: "Size",
           amount: amount,
           weightInKg: weightInKg ? Math.round(weightInKg) : null,
+          createdBy: userData.email ? userData.email.toString() : userData._id,
         };
       })
     );
@@ -235,9 +240,16 @@ const UploadTab = () => {
       dataIndex: "imageUrl",
       key: "image_url",
     },
+    {
+      title: "Created By",
+      dataIndex: "createdBy",
+      key: "created_by",
+    },
   ];
 
   return (
+    <>
+    {userData && (
         <Flex vertical flex={1} className="content">
           <div>
             <h2>Data Cleaning</h2>
@@ -288,6 +300,8 @@ const UploadTab = () => {
             </>
           </div>
         </Flex>
+    )}
+    </>
   );
 };
 

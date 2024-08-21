@@ -20,14 +20,17 @@ exports.bulkCreateProducts = async (req, res, next) => {
   try {
     const products = req.body;
 
+    // Ensure the data is an array
     if (!Array.isArray(products)) {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
+    // Filter out products with an unknown category
     const validProducts = products.filter(
       (productData) => productData.productCategory.toLowerCase() !== "unknown"
     );
 
+    // Insert valid products into the database
     const createdProducts = await Product.insertMany(
       validProducts.map((productData) => ({
         manufacturerName: productData.manufacturerName,
@@ -39,7 +42,8 @@ exports.bulkCreateProducts = async (req, res, next) => {
         variant: productData.variant,
         weight: productData.weightInKg,
         imageUrl: productData.imageUrl,
-        description: productData.description
+        description: productData.description,
+        createdBy: productData.createdBy,
       }))
     );
 
@@ -49,6 +53,7 @@ exports.bulkCreateProducts = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // Cgeck for duplicates
 exports.checkForDuplicates = async (req, res) => {
@@ -94,39 +99,6 @@ exports.createProduct = async (req, res, next) => {
     res.status(201).json(newProduct);
   } catch (error) {
     next(error);
-  }
-};
-
-// Create multiple products (Bulk creation)
-exports.createProducts = async (req, res, next) => {
-  try {
-    const products = req.body;
-    if (!Array.isArray(products)) {
-      return res.status(400).json({ error: "Invalid data format" });
-    }
-
-    const createdProducts = [];
-    for (const productData of products) {
-      const product = new Product({
-        manufacturerName: productData["Manufacturer Name"],
-        brand: productData["Brand"],
-        productCategory: productData["Product Category"],
-        productName: productData["Product Name"],
-        variantType: productData["Variant Type"],
-        variant: productData["Variant"],
-        weight: productData["Weight"],
-        imageUrl: productData["Image URL"],
-        createdBy: productData["Created By"],
-      });
-
-      const savedProduct = await product.save();
-      createdProducts.push(savedProduct);
-    }
-
-    res.status(201).json(createdProducts);
-  } catch (error) {
-    console.error("Error saving products:", error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
