@@ -17,6 +17,7 @@
     "cloudinary": "^2.3.0",
     "dotenv": "^16.4.5",
     "file-saver": "^2.0.5",
+    "jwt-decode": "^4.0.0",
     "lodash.debounce": "^4.0.8",
     "openai": "^4.53.0",
     "prop-types": "^15.8.1",

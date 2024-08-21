@@ -9,10 +9,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { getProductDetailsFromOpenAI } from "../../hooks/productAddWithOpenAI";
 import useAutoPopulateDescription from "../../hooks/useAutoPopulateDescription";
+import useAuth from "../../contexts/useAuth";
 
 const { Option } = Select;
 
 const ProductForm = ({ initialValues, onCancel, onOk }) => {
+    const { userData } = useAuth();
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
@@ -26,9 +28,11 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const { description, loading, error } = useAutoPopulateDescription(productName, manufacturerName);
 
   useEffect(() => {
+    if (userData && userData._id) {
     fetchCategories();
     fetchManufacturers();
-  }, []);
+}
+}, [userData]);
 
   useEffect(() => {
     if (initialValues) {
@@ -112,6 +116,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     onOk({
       ...values,
       weight: parseFloat(values.weight),
+      createdBy: userData.email ? userData.email.toString() : userData._id,
     });
   };
 
@@ -142,6 +147,8 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   };
 
   return (
+    <>
+    {userData && (
     <Form form={form} onFinish={onFinish} initialValues={initialValues}>
       <p className="formTitle">Product Name</p>
       <Form.Item
@@ -339,8 +346,12 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         <p style={{ color: "red" }}>Error: {error}</p>
       )}
     </Form>
+    )}
+    </>
   );
 };
+
+
 
 ProductForm.propTypes = {
   initialValues: PropTypes.object,

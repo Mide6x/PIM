@@ -97,14 +97,18 @@ const Dashboard = () => {
   const handleCreate = () => setIsModalVisible(true);
 
   const handleOk = async (values) => {
+    console.log("Dashboard.handleOk: editingProduct=", editingProduct);
+    console.log("Dashboard.handleOk: values=", values);
     try {
       if (editingProduct) {
+        console.log("Dashboard.handleOk: updating product", editingProduct._id);
         await axios.put(
           `http://localhost:3000/api/products/${editingProduct._id}`,
           values
         );
         message.success("Product updated successfully 🎉");
       } else {
+        console.log("Dashboard.handleOk: creating new product");
         await axios.post("http://localhost:3000/api/products", values);
         message.success("Product created successfully 🎉");
       }
@@ -112,6 +116,7 @@ const Dashboard = () => {
       fetchProducts();
       setIsModalVisible(false);
     } catch (error) {
+      console.error("Dashboard.handleOk: error", error);
       message.error("Failed to save product 😔");
     }
   };

@@ -116,6 +116,7 @@ exports.createProducts = async (req, res, next) => {
         variant: productData["Variant"],
         weight: productData["Weight"],
         imageUrl: productData["Image URL"],
+        createdBy: productData["Created By"],
       });
 
       const savedProduct = await product.save();
@@ -156,5 +157,26 @@ exports.deleteProduct = async (req, res, next) => {
     res.status(204).json({ message: "Product deleted 🫢" });
   } catch (error) {
     next(error);
+  }
+};
+
+
+// for logged in user (not admin)
+// Get all products created by the logged-in user
+exports.getUserProducts = async (req, res, next) => {
+  try {
+    const { search } = req.query;
+    const query = {
+      createdBy: req.user.email, 
+    };
+    if (search) {
+      query.productName = { $regex: search, $options: "i" };
+    }
+
+    const products = await Product.find(query);
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+    res.status(500).json({ message: error.message });
   }
 };
