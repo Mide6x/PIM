@@ -33,7 +33,7 @@ const Approval = () => {
 
   useEffect(() => {
     if (userData && userData._id) {
-    fetchApprovals();
+      fetchApprovals();
     }
   }, [userData]);
 
@@ -68,7 +68,10 @@ const Approval = () => {
       await Promise.all(
         approvedItems.map(async (item) => {
           console.log("Sending request to server for item:", item);
-          await axios.put(`http://localhost:3000/api/approvals/${item._id}`, item);
+          await axios.put(
+            `http://localhost:3000/api/approvals/${item._id}`,
+            item
+          );
           console.log("Request sent successfully for item:", item);
         })
       );
@@ -102,7 +105,6 @@ const Approval = () => {
   const handleOk = async (values) => {
     try {
       if (editingItem) {
-       
         await axios.put(
           `http://localhost:3000/api/approvals/${editingItem._id}`,
           values
@@ -307,112 +309,111 @@ const Approval = () => {
   ];
 
   return (
-        <Flex vertical flex={1} className="content">
-         <div>
-         <div className="intro">
-            <h2>Product Approval </h2>
-            </div>
-            <div className="details" style={{ marginTop: "20px" }}>
-              <span style={{ margin: "0 8px" }} />
-              <Input
-                placeholder="Search Products by name"
-                className="searchBar "
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ marginBottom: "20px", width: "300px" }}
-              />
-
-              <Tabs
-                activeKey={activeTab}
-                onChange={(key) => setActiveTab(key)}
-                className="table"
-              >
-                <TabPane tab="Pending Approvals" key="pending">
-                  <Table
-                    columns={columns}
-                    dataSource={approvals}
-                    loading={loading}
-                    rowKey="_id"
-                    rowSelection={rowSelection}
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                  <span style={{ margin: "0 8px" }} />
-                  <Button
-                    type="primary"
-                    className="spaced archiveBtn"
-                    onClick={handleBulkApprove}
-                    style={{ marginBottom: "20px" }}
-                    disabled={selectedRows.length === 0}
-                  >
-                    Approve Selected
-                  </Button>
-                </TabPane>
-                <TabPane tab="Approved Products" key="approved">
-                  <Table
-                    columns={columns}
-                    dataSource={approvedApprovals}
-                    rowSelection={rowSelection}
-                    loading={loading}
-                    className="spaced"
-                    rowKey="_id"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                  <Button
-                    type="primary"
-                    onClick={handleConfirm}
-                    className="spaced addBtn"
-                    style={{ marginBottom: "20px" }}
-                    disabled={selectedRows.length === 0}
-                  >
-                    Confirm and Push to Database
-                  </Button>
-                </TabPane>
-                <TabPane tab="Rejected Products" key="rejected">
-                  <Table
-                    columns={rejectedColumns}
-                    dataSource={rejectedApprovals}
-                    className="spaced"
-                    loading={loading}
-                    rowKey="_id"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                </TabPane>
-                <TabPane tab="Duplicate Products" key="duplicates">
-                  <Table
-                    columns={duplicateColumns}
-                    dataSource={duplicateApprovals}
-                    loading={loading}
-                    rowKey="_id"
-                    className="spaced"
-                    pagination={{ position: ["bottomCenter"] }}
-                  />
-                  <Button
-                    type="primary"
-                    onClick={handleDeleteDuplicates}
-                    className="spaced deleteBtn"
-                    style={{ marginBottom: "20px" }}
-                    danger
-                  >
-                    Delete Duplicates
-                  </Button>
-                </TabPane>
-              </Tabs>
-            </div>
-            <Modal
-              title={
-                editingItem ? "Edit Approval Entry" : "Create Approval Entry"
-              }
-              open={isModalVisible}
-              onCancel={handleCancel}
-              footer={null}
-            >
-              <ApprovalForm
-                initialValues={editingItem}
-                onCancel={handleCancel}
-                onOk={handleOk}
-              />
-            </Modal>
+    <Flex vertical flex={1} className="content">
+      <div>
+        <div className="intro">
+          <h2>Approvals</h2>
+        </div>
+        <div className="details">
+          <span style={{ margin: "0 8px", marginTop: "60px" }} />
+          <div className="searchBarContainer">
+            <Input
+              placeholder="Search Products by name"
+              className="searchBar "
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ width: "100%" }}
+            />
           </div>
-        </Flex>
+          <Tabs
+            activeKey={activeTab}
+            onChange={(key) => setActiveTab(key)}
+            className="table"
+          >
+            <TabPane tab="Pending Approvals" key="pending">
+              <Table
+                columns={columns}
+                dataSource={approvals}
+                loading={loading}
+                rowKey="_id"
+                rowSelection={rowSelection}
+                pagination={{ position: ["bottomCenter"] }}
+              />
+              <span style={{ margin: "0 8px" }} />
+              <Button
+                type="primary"
+                className="spaced archiveBtn"
+                onClick={handleBulkApprove}
+                style={{ marginBottom: "20px" }}
+                disabled={selectedRows.length === 0}
+              >
+                Approve Selected
+              </Button>
+            </TabPane>
+            <TabPane tab="Approved Products" key="approved">
+              <Table
+                columns={columns}
+                dataSource={approvedApprovals}
+                rowSelection={rowSelection}
+                loading={loading}
+                className="spaced"
+                rowKey="_id"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+              <Button
+                type="primary"
+                onClick={handleConfirm}
+                className="spaced addBtn"
+                style={{ marginBottom: "20px" }}
+                disabled={selectedRows.length === 0}
+              >
+                Confirm and Push to Database
+              </Button>
+            </TabPane>
+            <TabPane tab="Rejected Products" key="rejected">
+              <Table
+                columns={rejectedColumns}
+                dataSource={rejectedApprovals}
+                className="spaced"
+                loading={loading}
+                rowKey="_id"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+            </TabPane>
+            <TabPane tab="Duplicate Products" key="duplicates">
+              <Table
+                columns={duplicateColumns}
+                dataSource={duplicateApprovals}
+                loading={loading}
+                rowKey="_id"
+                className="spaced"
+                pagination={{ position: ["bottomCenter"] }}
+              />
+              <Button
+                type="primary"
+                onClick={handleDeleteDuplicates}
+                className="spaced deleteBtn"
+                style={{ marginBottom: "20px" }}
+                danger
+              >
+                Delete Duplicates
+              </Button>
+            </TabPane>
+          </Tabs>
+        </div>
+        <Modal
+          title={editingItem ? "Edit Approval Entry" : "Create Approval Entry"}
+          open={isModalVisible}
+          onCancel={handleCancel}
+          footer={null}
+        >
+          <ApprovalForm
+            initialValues={editingItem}
+            onCancel={handleCancel}
+            onOk={handleOk}
+          />
+        </Modal>
+      </div>
+    </Flex>
   );
 };
 

@@ -41,7 +41,7 @@ const ProductDetails = () => {
   const handleOk = async () => {
     try {
       const updatedProduct = await form.validateFields();
-      const productWithImage = { ...updatedProduct, imageUrl: product.imageUrl };
+      const productWithImage = { ...updatedProduct, imageUrl: product.imageUrl, createdBy: product.createdBy };
       await axios.put(
         `http://localhost:3000/api/products/${id}`,
         productWithImage
