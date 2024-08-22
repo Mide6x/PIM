@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Flex, Button, message, Upload, Table, Tabs } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { saveAs } from "file-saver";
@@ -239,27 +240,28 @@ const Images = () => {
             processes are AI-assisted but ensure a level of data accuracy, and
             verify results before moving on to the next step.
           </p>
-          <Button
-            type="primary"
-            className="spaced addBtn"
-            onClick={handleDownload}
-          >
-            Download Excel Template
-          </Button>
-
-          <span style={{ margin: "0 8px" }} />
-          <Upload
-            name="file"
-            accept=".xlsx, .xls"
-            beforeUpload={() => false}
-            onChange={handleUpload}
-            showUploadList={false}
-            className="spaced"
-          >
-            <Button className="editBtn" icon={<UploadOutlined />}>
-              Click to Upload
+          <div className="searchBarContainer">
+            <Button type="primary" className="addBtn" onClick={handleDownload}>
+              Download Excel Template
             </Button>
-          </Upload>
+
+            <Upload
+              name="file"
+              accept=".xlsx, .xls"
+              beforeUpload={() => false}
+              onChange={handleUpload}
+              showUploadList={false}
+            >
+              <Button type="primary" className="editBtn">
+                <FontAwesomeIcon
+                  icon={faFileArrowUp}
+                  size="lg"
+                  style={{ color: "#008162" }}
+                />
+                Click to Upload
+              </Button>
+            </Upload>
+          </div>
         </div>
 
         <div className="details">

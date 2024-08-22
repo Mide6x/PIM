@@ -10,13 +10,14 @@ import {
   Space,
   Tabs,
   Card,
+  Upload,
 } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFileArrowUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 import { debounce } from "lodash";
 import { Link } from "react-router-dom";
 
@@ -51,6 +52,60 @@ const MngManufacturers = () => {
       message.error("Failed to fetch manufacturers 😔");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpload = (info) => {
+    const file = info.file;
+    if (!file) {
+      message.error("No file selected");
+      return;
+    }
+    if (
+      !file.type.includes("spreadsheetml.sheet") &&
+      !file.type.includes("excel")
+    ) {
+      message.error("Invalid file type. Please upload an Excel file. 🤔");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const arrayBuffer = e.target.result;
+      try {
+        const wb = XLSX.read(arrayBuffer, { type: "array" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const parsedData = XLSX.utils.sheet_to_json(ws);
+
+        const hasEmptyVariants = parsedData.some(
+          (item) => !item["Manufacturer"]
+        );
+        if (hasEmptyVariants) {
+          message.error(
+            "Some rows have empty Manufacturer values. Please check your file. 🤔"
+          );
+          return;
+        }
+        console.log("Parsed data:", parsedData);
+      } catch (error) {
+        message.error(
+          "Failed to read the file. Ensure it is a valid Excel (XLSX) file. 😔"
+        );
+        console.error("Error reading file:", error);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch("/BulkUploadManufacturers.xlsx");
+      if (!response.ok) throw new Error("File not found");
+
+      const blob = await response.blob();
+      saveAs(blob, "BulkUploadManufacturers.xlsx");
+    } catch (error) {
+      message.error(`Failed to download template: ${error.message} 😔`);
     }
   };
 
@@ -276,17 +331,23 @@ const MngManufacturers = () => {
         <div className="details">
           <span style={{ margin: "0 8px", marginTop: "60px" }} />
           <div className="searchBarContainer">
-              <Input
-                placeholder="Search Manufacturer by name"
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ width: "100%" }}
-                className="searchBar"
-              />
-              <Button
-                type="primary"
-                className="archiveBtn"
-                onClick={handleCreate}
-              >
+            <Input
+              placeholder="Search Manufacturer by name"
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ width: "100%" }}
+              className="searchBar"
+            />
+            <Button type="primary" className="addBtn" onClick={handleDownload}>
+              Download Excel Template
+            </Button>
+            <Upload
+              name="file"
+              accept=".xlsx, .xls"
+              beforeUpload={() => false}
+              onChange={handleUpload}
+              showUploadList={false}
+            >
+              <Button type="primary" className="archiveBtn">
                 <FontAwesomeIcon
                   icon={faFileArrowUp}
                   size="lg"
@@ -294,14 +355,12 @@ const MngManufacturers = () => {
                 />
                 Bulk Upload Manufacturers
               </Button>
-              <Button
-                type="primary"
-                className="addBtn"
-                onClick={handleCreate}
-              >
-                Add Manufacturer
-              </Button>
-            </div>
+            </Upload>
+
+            <Button type="primary" className="addBtn" onClick={handleCreate}>
+              Add Manufacturer
+            </Button>
+          </div>
           <Tabs
             activeKey={activeTab}
             onChange={(key) => setActiveTab(key)}
