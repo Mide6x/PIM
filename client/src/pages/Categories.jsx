@@ -9,6 +9,7 @@ import {
   message,
   Space,
   Tabs,
+  Upload,
 } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
@@ -16,6 +17,8 @@ import { debounce } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const { TabPane } = Tabs;
 
@@ -45,6 +48,60 @@ const Categories = () => {
       message.error("Failed to fetch categories 😔");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpload = (info) => {
+    const file = info.file;
+    if (!file) {
+      message.error("No file selected");
+      return;
+    }
+    if (
+      !file.type.includes("spreadsheetml.sheet") &&
+      !file.type.includes("excel")
+    ) {
+      message.error("Invalid file type. Please upload an Excel file. 🤔");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const arrayBuffer = e.target.result;
+      try {
+        const wb = XLSX.read(arrayBuffer, { type: "array" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const parsedData = XLSX.utils.sheet_to_json(ws);
+
+        const hasEmptyVariants = parsedData.some(
+          (item) => !item["Manufacturer"]
+        );
+        if (hasEmptyVariants) {
+          message.error(
+            "Some rows have empty Manufacturer values. Please check your file. 🤔"
+          );
+          return;
+        }
+        console.log("Parsed data:", parsedData);
+      } catch (error) {
+        message.error(
+          "Failed to read the file. Ensure it is a valid Excel (XLSX) file. 😔"
+        );
+        console.error("Error reading file:", error);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch("/BulkUploadManufacturers.xlsx");
+      if (!response.ok) throw new Error("File not found");
+
+      const blob = await response.blob();
+      saveAs(blob, "BulkUploadManufacturers.xlsx");
+    } catch (error) {
+      message.error(`Failed to download template: ${error.message} 😔`);
     }
   };
 
@@ -203,18 +260,28 @@ const Categories = () => {
               onChange={(e) => handleSearch(e.target.value)}
               style={{ width: "100%" }}
             />
-            <Button
-              type="primary"
-              className="archiveBtn"
-              onClick={handleCreate}
-            >
-              <FontAwesomeIcon
-                icon={faFileArrowUp}
-                size="lg"
-                style={{ color: "#008162" }}
-              />
-              Bulk Upload Categories
+            <Button type="primary" className="addBtn" onClick={handleDownload}>
+              Download Excel Template
             </Button>
+            <Upload
+              name="file"
+              accept=".xlsx, .xls"
+              beforeUpload={() => false}
+              onChange={handleUpload}
+              showUploadList={false}
+            >
+              <Button
+                type="primary"
+                className="archiveBtn"
+              >
+                <FontAwesomeIcon
+                  icon={faFileArrowUp}
+                  size="lg"
+                  style={{ color: "#008162" }}
+                />
+                Bulk Upload Categories
+              </Button>
+            </Upload>
             <Button className="addBtn" type="primary" onClick={handleCreate}>
               Add New Category
             </Button>
