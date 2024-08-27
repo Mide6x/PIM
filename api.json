@@ -1,0 +1,403 @@
+{
+    "baseURL": "http://localhost:3000/api/v1",
+    "endpoints": {
+      "approvals": {
+        "getApprovals": {
+          "method": "GET",
+          "url": "/approvals",
+          "description": "Fetches all approval records. Can include query parameters for search."
+        },
+        "postApproval": {
+          "method": "POST",
+          "url": "/approvals",
+          "description": "Creates a new approval record.",
+          "body": {
+            "productName": "string",
+            "manufacturerName": "string",
+            "brand": "string",
+            "productCategory": "string",
+            "productSubcategory": "string",
+            "variant": "string",
+            "weightInKg": "number",
+            "imageUrl": "string",
+            "status": "string",
+            "rejectionReason": "string (optional)"
+          }
+        },
+        "putApproval": {
+          "method": "PUT",
+          "url": "/approvals/{id}",
+          "description": "Updates an existing approval record.",
+          "body": {
+            "productName": "string",
+            "manufacturerName": "string",
+            "brand": "string",
+            "productCategory": "string",
+            "productSubcategory": "string",
+            "variant": "string",
+            "weightInKg": "number",
+            "imageUrl": "string",
+            "status": "string",
+            "rejectionReason": "string (optional)"
+          }
+        },
+        "deleteApproval": {
+          "method": "DELETE",
+          "url": "/approvals/{id}",
+          "description": "Deletes an approval record."
+        },
+        "deleteApproved": {
+          "method": "DELETE",
+          "url": "/approvals/delete-approved",
+          "description": "Deletes all approved approval records."
+        },
+        "deleteDuplicates": {
+          "method": "POST",
+          "url": "/approvals/delete-duplicates",
+          "description": "Deletes duplicate approval records.",
+          "body": {
+            "ids": "array of strings (IDs of the duplicate records)"
+          }
+        }
+      },
+      "products": {
+        "checkDuplicates": {
+          "method": "POST",
+          "url": "/products/check-duplicates",
+          "description": "Checks if the provided products have duplicates in the database.",
+          "body": {
+            "products": "array of product objects"
+          }
+        },
+        "bulkInsert": {
+          "method": "POST",
+          "url": "/products/bulk",
+          "description": "Inserts multiple products into the database.",
+          "body": {
+            "products": "array of product objects"
+          }
+        }
+      },
+      "manufacturers": {
+        "getManufacturers": {
+          "method": "GET",
+          "url": "/manufacturer",
+          "description": "Fetches all manufacturers."
+        }
+      },
+      "categories": {
+        "getCategories": {
+          "method": "GET",
+          "url": "/categories",
+          "description": "Fetches all product categories."
+        },
+        "getSubcategories": {
+          "method": "GET",
+          "url": "/categories/{categoryName}/subcategories",
+          "description": "Fetches subcategories for a given category."
+        }
+      }
+    },
+    "api": {
+      "categories": {
+        "baseUrl": "http://localhost:3000/api/v1/categories",
+        "endpoints": {
+          "fetchCategories": {
+            "method": "GET",
+            "url": "/",
+            "description": "Fetches a list of categories. Can filter by search query.",
+            "queryParams": {
+              "search": {
+                "type": "string",
+                "description": "Search term to filter categories by name."
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Successful response with a list of categories.",
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Unique identifier for the category."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the category."
+                      },
+                      "subcategories": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of subcategories."
+                      },
+                      "isArchived": {
+                        "type": "boolean",
+                        "description": "Indicates if the category is archived."
+                      }
+                    }
+                  }
+                }
+              },
+              "400": {
+                "description": "Invalid request parameters.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              },
+              "500": {
+                "description": "Server error.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "createCategory": {
+            "method": "POST",
+            "url": "/",
+            "description": "Creates a new category.",
+            "body": {
+              "name": {
+                "type": "string",
+                "description": "Name of the new category."
+              },
+              "subcategories": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of subcategories for the new category."
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Category created successfully.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "description": "Unique identifier for the new category."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the new category."
+                    },
+                    "subcategories": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of subcategories."
+                    },
+                    "isArchived": {
+                      "type": "boolean",
+                      "description": "Indicates if the category is archived."
+                    }
+                  }
+                }
+              },
+              "400": {
+                "description": "Invalid request body.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              },
+              "500": {
+                "description": "Server error.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "updateCategory": {
+            "method": "PUT",
+            "url": "/{id}",
+            "description": "Updates an existing category.",
+            "parameters": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the category to be updated."
+              }
+            },
+            "body": {
+              "name": {
+                "type": "string",
+                "description": "Updated name of the category."
+              },
+              "subcategories": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Updated list of subcategories."
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Category updated successfully.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "description": "Unique identifier for the updated category."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Updated name of the category."
+                    },
+                    "subcategories": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Updated list of subcategories."
+                    },
+                    "isArchived": {
+                      "type": "boolean",
+                      "description": "Indicates if the category is archived."
+                    }
+                  }
+                }
+              },
+              "400": {
+                "description": "Invalid request body.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              },
+              "500": {
+                "description": "Server error.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "deleteCategory": {
+            "method": "DELETE",
+            "url": "/{id}",
+            "description": "Deletes a category.",
+            "parameters": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the category to be deleted."
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Category deleted successfully."
+              },
+              "400": {
+                "description": "Invalid category ID.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              },
+              "500": {
+                "description": "Server error.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "unarchiveCategory": {
+            "method": "PATCH",
+            "url": "/{id}/unarchive",
+            "description": "Unarchives a category.",
+            "parameters": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the category to be unarchived."
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Category unarchived successfully."
+              },
+              "400": {
+                "description": "Invalid category ID.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              },
+              "500": {
+                "description": "Server error.",
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

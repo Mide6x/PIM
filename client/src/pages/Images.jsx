@@ -71,11 +71,11 @@ const Images = () => {
   const processImages = async () => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/api/images/process", {
+      await axios.post("http://localhost:3000/api/v1/images/process", {
         images: processedData,
       });
       const response = await axios.get(
-        "http://localhost:3000/api/processedimages"
+        "http://localhost:3000/api/v1/processedimages"
       );
       console.log("Fetched processed images:", response.data);
       setProcessedImages(response.data);

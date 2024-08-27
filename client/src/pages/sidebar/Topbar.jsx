@@ -14,7 +14,7 @@ const Topbar = () => {
 
   useEffect(() => {
     if (userData && userData._id) {
-      axios.get(`http://localhost:3000/api/notifications/`)
+      axios.get(`http://localhost:3000/api/v1/notifications/`)
         .then((response) => {
           const unreadNotifications = response.data.data.some(notification => !notification.read);
           setHasNotifications(unreadNotifications);

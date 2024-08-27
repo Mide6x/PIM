@@ -9,7 +9,7 @@ const NotificationSidebar = ({ onClose }) => {
   useEffect(() => {
     console.log("Fetching all notifications");
     axios
-      .get("http://localhost:3000/api/notifications/")
+      .get("http://localhost:3000/api/v1/notifications/")
       .then((response) => {
         setNotifications(response.data.data || []);
       })
@@ -21,7 +21,7 @@ const NotificationSidebar = ({ onClose }) => {
 
   const handleNotificationClick = (id) => {
     axios
-      .patch(`http://localhost:3000/api/notifications/${id}/read`)
+      .patch(`http://localhost:3000/api/v1/notifications/${id}/read`)
       .then(() => {
         setNotifications((prev) =>
           prev.map((notification) =>
@@ -38,7 +38,7 @@ const NotificationSidebar = ({ onClose }) => {
 
   const handleNotificationDelete = (id) => {
     axios
-      .delete(`http://localhost:3000/api/notifications/${id}`)
+      .delete(`http://localhost:3000/api/v1/notifications/${id}`)
       .then(() => {
         setNotifications((prev) =>
           prev.filter((notification) => notification._id !== id)

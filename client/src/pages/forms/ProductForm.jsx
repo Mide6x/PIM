@@ -53,7 +53,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/categories");
+      const response = await axios.get("http://localhost:3000/api/v1/categories");
       setCategories(response.data);
     } catch (error) {
       message.error("Failed to fetch categories 😔");
@@ -63,7 +63,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const fetchSubcategories = useCallback(async (categoryName) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/categories/${categoryName}/subcategories`
+        `http://localhost:3000/api/v1/categories/${categoryName}/subcategories`
       );
       if (Array.isArray(response.data.subcategories)) {
         setSubcategories(response.data.subcategories);
@@ -78,7 +78,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const fetchManufacturers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/manufacturer"
+        "http://localhost:3000/api/v1/manufacturer"
       );
       setManufacturers(response.data);
     } catch (error) {
