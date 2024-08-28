@@ -40,7 +40,7 @@ const Approval = () => {
   const fetchApprovals = async (search = "") => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/approvals", {
+      const response = await axios.get("https://prod-nnal.onrender.com/api/v1/approvals", {
         params: { search },
       });
 
@@ -69,7 +69,7 @@ const Approval = () => {
         approvedItems.map(async (item) => {
           console.log("Sending request to server for item:", item);
           await axios.put(
-            `http://localhost:3000/api/v1/approvals/${item._id}`,
+            `https://prod-nnal.onrender.com/api/v1/approvals/${item._id}`,
             item
           );
           console.log("Request sent successfully for item:", item);
@@ -94,7 +94,7 @@ const Approval = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/approvals/${id}`);
+      await axios.delete(`https://prod-nnal.onrender.com/api/v1/approvals/${id}`);
       message.success("Approval entry deleted successfully 🎉");
       fetchApprovals();
     } catch (error) {
@@ -106,12 +106,12 @@ const Approval = () => {
     try {
       if (editingItem) {
         await axios.put(
-          `http://localhost:3000/api/v1/approvals/${editingItem._id}`,
+          `https://prod-nnal.onrender.com/api/v1/approvals/${editingItem._id}`,
           values
         );
         message.success("Approval entry updated successfully 🎉");
       } else {
-        await axios.post("http://localhost:3000/api/v1/approvals", values);
+        await axios.post("https://prod-nnal.onrender.com/api/v1/approvals", values);
         message.success("Approval entry created successfully 🎉");
       }
       fetchApprovals();
@@ -124,7 +124,7 @@ const Approval = () => {
   const checkForDuplicates = async (products) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/products/check-duplicates",
+        "https://prod-nnal.onrender.com/api/v1/products/check-duplicates",
         products
       );
       return response.data;
@@ -151,7 +151,7 @@ const Approval = () => {
 
         if (uniqueProducts.length > 0) {
           await axios.post(
-            "http://localhost:3000/api/v1/products/bulk",
+            "https://prod-nnal.onrender.com/api/v1/products/bulk",
             uniqueProducts
           );
           message.success(
@@ -162,11 +162,11 @@ const Approval = () => {
           "Some products are already in the database. Duplicates have been moved to the 'Duplicate Products' tab."
         );
         await axios.delete(
-          "http://localhost:3000/api/v1/approvals/delete-approved"
+          "https://prod-nnal.onrender.com/api/v1/approvals/delete-approved"
         );
       } else {
         await axios.post(
-          "http://localhost:3000/api/v1/products/bulk",
+          "https://prod-nnal.onrender.com/api/v1/products/bulk",
           approvedApprovals
         );
         message.success(
@@ -201,7 +201,7 @@ const Approval = () => {
     try {
       const ids = duplicateApprovals.map((product) => product._id);
       await axios.post(
-        "http://localhost:3000/api/v1/approvals/delete-duplicates",
+        "https://prod-nnal.onrender.com/api/v1/approvals/delete-duplicates",
         { ids }
       );
       message.success("Duplicate products have been deleted 🎉");
@@ -428,7 +428,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
   const fetchManufacturers = useCallback(async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/manufacturer"
+        "https://prod-nnal.onrender.com/api/v1/manufacturer"
       );
       if (Array.isArray(response.data)) {
         setManufacturers(response.data);
@@ -460,7 +460,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/categories");
+      const response = await axios.get("https://prod-nnal.onrender.com/api/v1/categories");
       if (Array.isArray(response.data)) {
         setCategories(response.data);
       } else {
@@ -474,7 +474,7 @@ const ApprovalForm = ({ initialValues, onCancel, onOk }) => {
   const fetchSubcategories = useCallback(async (categoryName) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/categories/${categoryName}/subcategories`
+        `https://prod-nnal.onrender.com/api/v1/categories/${categoryName}/subcategories`
       );
       if (Array.isArray(response.data.subcategories)) {
         setSubcategories(response.data.subcategories);

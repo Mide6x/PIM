@@ -14,10 +14,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Set up multer storage
+
+const tempDir = path.join(__dirname, "temp");
+
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
+// Set up multer storage with dynamic folder creation
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'temp/');
+    cb(null, tempDir);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
@@ -35,12 +42,12 @@ exports.uploadImage = async (req, res) => {
         return res.status(500).json({ message: 'Failed to upload image', error: err.message });
       }
 
-      const filePath = req.file.path;  // Get the path of the uploaded file
+      const filePath = req.file.path;
 
       try {
         const transformedUrl = await uploadAndTransformImage(filePath, req.body.amount);
 
-        fs.unlinkSync(filePath);  // Delete the temp file after processing
+        fs.unlinkSync(filePath); 
 
         res.status(200).json({ imageUrl: transformedUrl });
       } catch (error) {

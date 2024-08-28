@@ -6,7 +6,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *   - name: Images
+ *   - name: Processed Images
  *     description: API endpoints for managing processed images
  */
 
@@ -15,7 +15,7 @@ const router = express.Router();
  * /api/v1/images:
  *   get:
  *     tags:
- *       - Images
+ *       - Processed Images
  *     summary: Get processed images
  *     description: Retrieve a list of all processed images.
  *     responses:
@@ -42,7 +42,7 @@ router.get("/", getProcessedImages);
  * /api/v1/images/deleteProcessedImages:
  *   delete:
  *     tags:
- *       - Images
+ *       - Processed Images
  *     summary: Delete all processed images
  *     description: Delete all processed images from the database.
  *     responses:

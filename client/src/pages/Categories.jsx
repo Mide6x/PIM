@@ -33,7 +33,7 @@ const Categories = () => {
   const fetchCategories = async (search = "") => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/categories", {
+      const response = await axios.get("https://prod-nnal.onrender.com/api/v1/categories", {
         params: { search },
       });
       if (Array.isArray(response.data)) {
@@ -116,7 +116,7 @@ const Categories = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/categories/${id}`);
+      await axios.delete(`https://prod-nnal.onrender.com/api/v1/categories/${id}`);
       message.success("Category deleted successfully 🎉");
       fetchCategories();
     } catch (error) {
@@ -127,7 +127,7 @@ const Categories = () => {
   const handleUnarchive = async (category) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/v1/categories/${category._id}/unarchive`
+        `https://prod-nnal.onrender.com/api/v1/categories/${category._id}/unarchive`
       );
       message.success("Category unarchived successfully 🎉");
       fetchCategories();
@@ -145,12 +145,12 @@ const Categories = () => {
     try {
       if (editingCategory) {
         await axios.put(
-          `http://localhost:3000/api/v1/categories/${editingCategory._id}`,
+          `https://prod-nnal.onrender.com/api/v1/categories/${editingCategory._id}`,
           values
         );
         message.success("Category updated successfully 🎉");
       } else {
-        await axios.post("http://localhost:3000/api/v1/categories", values);
+        await axios.post("https://prod-nnal.onrender.com/api/v1/categories", values);
         message.success("Category created successfully 🎉");
       }
       fetchCategories();

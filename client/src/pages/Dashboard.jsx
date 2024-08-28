@@ -43,17 +43,17 @@ const Dashboard = () => {
   const fetchCounts = async () => {
     try {
       const productResponse = await axios.get(
-        "http://localhost:3000/api/v1/products"
+        "https://prod-nnal.onrender.com/api/v1/products"
       );
       setProductCount(productResponse.data.length);
 
       const categoryResponse = await axios.get(
-        "http://localhost:3000/api/v1/categories"
+        "https://prod-nnal.onrender.com/api/v1/categories"
       );
       setCategoryCount(categoryResponse.data.length);
 
       const manufacturerResponse = await axios.get(
-        "http://localhost:3000/api/v1/manufacturer"
+        "https://prod-nnal.onrender.com/api/v1/manufacturer"
       );
       setManufacturerCount(manufacturerResponse.data.length);
     } catch (error) {
@@ -66,7 +66,7 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/products?search=${encodeURIComponent(search)}`
+        `https://prod-nnal.onrender.com/api/v1/products?search=${encodeURIComponent(search)}`
       );
       console.log("Response:", response);
       setProducts(response.data);
@@ -95,7 +95,7 @@ const Dashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/products/${id}`);
+      await axios.delete(`https://prod-nnal.onrender.com/api/v1/products/${id}`);
       message.success("Product deleted successfully 🎉");
       fetchProducts();
     } catch (error) {
@@ -112,13 +112,13 @@ const Dashboard = () => {
       if (editingProduct) {
         console.log("Dashboard.handleOk: updating product", editingProduct._id);
         await axios.put(
-          `http://localhost:3000/api/v1/products/${editingProduct._id}`,
+          `https://prod-nnal.onrender.com/api/v1/products/${editingProduct._id}`,
           values
         );
         message.success("Product updated successfully 🎉");
       } else {
         console.log("Dashboard.handleOk: creating new product");
-        await axios.post("http://localhost:3000/api/v1/products", values);
+        await axios.post("https://prod-nnal.onrender.com/api/v1/products", values);
         message.success("Product created successfully 🎉");
       }
       fetchCounts();

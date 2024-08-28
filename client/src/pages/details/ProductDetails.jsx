@@ -20,7 +20,7 @@ const ProductDetails = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/v1/products/${id}`
+          `https://prod-nnal.onrender.com/api/v1/products/${id}`
         );
         setProduct(response.data);
       } catch (error) {
@@ -43,7 +43,7 @@ const ProductDetails = () => {
       const updatedProduct = await form.validateFields();
       const productWithImage = { ...updatedProduct, imageUrl: product.imageUrl, createdBy: product.createdBy };
       await axios.put(
-        `http://localhost:3000/api/v1/products/${id}`,
+        `https://prod-nnal.onrender.com/api/v1/products/${id}`,
         productWithImage
       );
       setProduct(productWithImage);
@@ -60,7 +60,7 @@ const ProductDetails = () => {
 
   const handleArchive = async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/products/${id}/archive`);
+      await axios.patch(`https://prod-nnal.onrender.com/api/v1/products/${id}/archive`);
       setIsArchived(true);
       message.success("Product archived successfully 🎉");
     } catch (error) {
@@ -70,7 +70,7 @@ const ProductDetails = () => {
 
   const handleUnarchive = async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/products/${id}/unarchive`);
+      await axios.patch(`https://prod-nnal.onrender.com/api/v1/products/${id}/unarchive`);
       setIsArchived(false);
       message.success("Product unarchived successfully 🎉");
     } catch (error) {
@@ -80,7 +80,7 @@ const ProductDetails = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/products/${id}`);
+      await axios.delete(`https://prod-nnal.onrender.com/api/v1/products/${id}`);
       message.success("Product deleted successfully 🎉");
       navigate(-1);
     } catch (error) {

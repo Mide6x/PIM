@@ -100,10 +100,33 @@ router.route("/:id")
  *             items:
  *               type: object
  *               properties:
- *                 name:
+ *                 productCategory:
  *                   type: string
- *                 price:
+ *                   description: The category of the product
+ *                 productSubcategory:
+ *                   type: string
+ *                   description: The subcategory of the product
+ *                 productName:
+ *                   type: string
+ *                   description: The name of the product
+ *                 variantType:
+ *                   type: string
+ *                   description: The type of variant
+ *                 variant:
+ *                   type: string
+ *                   description: The specific variant of the product
+ *                 weight:
  *                   type: number
+ *                   description: The weight of the product
+ *                 imageUrl:
+ *                   type: string
+ *                   description: The URL of the product's image
+ *                 description:
+ *                   type: string
+ *                   description: A description of the product (optional)
+ *                 createdBy:
+ *                   type: string
+ *                   description: The user who created the product
  *     responses:
  *       201:
  *         description: Products created successfully
@@ -160,8 +183,6 @@ router.post("/check-duplicates", productController.checkForDuplicates);
  *             properties:
  *               name:
  *                 type: string
- *               price:
- *                 type: number
  *     responses:
  *       201:
  *         description: Product created successfully

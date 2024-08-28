@@ -23,7 +23,7 @@ const UploadTab = () => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/v1/processedimages"
+            "https://prod-nnal.onrender.com/api/v1/processedimages"
           );
           setData(response.data);
         } catch (error) {
@@ -148,7 +148,7 @@ const UploadTab = () => {
 
   const handlePushToApproval = async () => {
     try {
-      await axios.post("http://localhost:3000/api/v1/approvals", data);
+      await axios.post("https://prod-nnal.onrender.com/api/v1/approvals", data);
       message.success("Data successfully sent for approval.");
       await deleteProcessedImages(getImageIdsFromData(data));
       localStorage.removeItem("processedData");
@@ -172,7 +172,7 @@ const UploadTab = () => {
   const deleteProcessedImages = async (imageIds) => {
     try {
       await axios.delete(
-        "http://localhost:3000/api/v1/processedimages/deleteProcessedImages",
+        "https://prod-nnal.onrender.com/api/v1/processedimages/deleteProcessedImages",
         {
           data: { imageIds },
         }
