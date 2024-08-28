@@ -34,6 +34,8 @@ const router = express.Router();
  *                   url:
  *                     type: string
  *                     description: URL of the processed image
+ *       500:
+ *         description: Internal server error
  */
 router.get("/", getProcessedImages);
 
@@ -48,6 +50,8 @@ router.get("/", getProcessedImages);
  *     responses:
  *       204:
  *         description: All processed images deleted successfully
+ *       500:
+ *         description: Internal server error
  */
 router.delete("/deleteProcessedImages", deleteAllProcessedImages);
 

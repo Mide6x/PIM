@@ -56,13 +56,13 @@ const options = {
       version: '1.0.0',
       description: 'PIM API Documentation for SABI',
       contact: {
-        name: 'AI Team',
+        name: 'Mide',
         email: 'olumide.adewole@sabi.am',
       }
     },
     servers:[
       {
-        url: 'https://prod-nnal.onrender.com/'
+        url: 'http://localhost:3000/'
       }
     ]
   },

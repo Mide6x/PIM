@@ -1,7 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const imageController = require('../controllers/imageController');
 
+const router = express.Router();
 
 /**
  * @swagger
@@ -12,10 +12,12 @@ const imageController = require('../controllers/imageController');
 
 /**
  * @swagger
- * /upload:
+ * /api/v1/upload:
  *   post:
+ *     tags:
+ *       - Images
  *     summary: Upload an image to Cloudinary
- *     tags: Images
+ *     description: Upload an image to Cloudinary and receive its URL.
  *     requestBody:
  *       required: true
  *       content:
@@ -26,6 +28,7 @@ const imageController = require('../controllers/imageController');
  *               image:
  *                 type: string
  *                 format: binary
+ *                 description: The image file to upload
  *     responses:
  *       200:
  *         description: The image was successfully uploaded
@@ -37,26 +40,39 @@ const imageController = require('../controllers/imageController');
  *                 imageUrl:
  *                   type: string
  *                   description: The URL of the uploaded image
+ *       400:
+ *         description: Invalid image format
+ *       500:
+ *         description: Internal server error
  */
-router.post('/upload', imageController.uploadImage);
+router.route('/upload')
+  .post(imageController.uploadImage);
 
 /**
  * @swagger
- * /process:
+ * /api/v1/process:
  *   post:
+ *     tags:
+ *       - Images
  *     summary: Process multiple images
- *     tags: Images
+ *     description: Process a list of images and apply transformations.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               images:
- *                 type: array
- *                 items:
- *                   type: object
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 imageUrl:
+ *                   type: string
+ *                   description: The URL of the image to process
+ *                 transformations:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                     description: The transformation to apply (e.g., "resize:200x200")
  *     responses:
  *       200:
  *         description: The images were processed successfully
@@ -66,33 +82,31 @@ router.post('/upload', imageController.uploadImage);
  *               type: array
  *               items:
  *                 type: object
+ *                 properties:
+ *                   processedImageUrl:
+ *                     type: string
+ *                     description: The URL of the processed image
+ *       400:
+ *         description: Invalid image URL or transformations
+ *       500:
+ *         description: Internal server error
  */
-router.post('/process', imageController.processImages);
+router.route('/process')
+  .post(imageController.processImages);
 
 /**
  * @swagger
- * /processed:
+ * /api/v1/processed:
  *   get:
+ *     tags:
+ *       - Images
  *     summary: Get all processed images
- *     tags: Images
- *     responses:
- *       200:
- *         description: List of processed images
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- */
-router.get('/processed', imageController.getProcessedImages);
-
-/**
- * @swagger
- * /processed:
+ *     description: Retrieve a list of all processed images.
  *   delete:
+ *     tags:
+ *       - Images
  *     summary: Delete all processed images
- *     tags: Images
+ *     description: Delete all processed images by providing their IDs.
  *     requestBody:
  *       required: true
  *       content:
@@ -104,10 +118,17 @@ router.get('/processed', imageController.getProcessedImages);
  *                 type: array
  *                 items:
  *                   type: string
+ *                 description: Array of image IDs to delete
  *     responses:
  *       200:
  *         description: All processed images were deleted
+ *       400:
+ *         description: Invalid image IDs
+ *       500:
+ *         description: Internal server error
  */
-router.delete('/processed', imageController.deleteAllProcessedImages);
+router.route('/processed')
+  .get(imageController.getProcessedImages)
+  .delete(imageController.deleteAllProcessedImages);
 
 module.exports = router;

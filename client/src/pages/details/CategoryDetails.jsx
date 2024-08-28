@@ -25,7 +25,7 @@ const CategoryDetails = () => {
     const fetchCategoryDetails = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`https://prod-nnal.onrender.com/api/v1/categories/${id}`);
+        const response = await axios.get(`http://localhost:3000/api/v1/categories/${id}`);
         setCategory(response.data);
         setIsArchived(response.data.isArchived);
         setSubcategoriesList(response.data.subcategories);
@@ -50,7 +50,7 @@ const CategoryDetails = () => {
     try {
       const values = form.getFieldsValue();
       if (isCategoryEdit) {
-        await axios.put(`https://prod-nnal.onrender.com/api/v1/categories/${id}`, {
+        await axios.put(`http://localhost:3000/api/v1/categories/${id}`, {
           ...category,
           name: values.categoryName,
         });
@@ -60,7 +60,7 @@ const CategoryDetails = () => {
         const updatedSubcategories = category.subcategories.map((sub) =>
           sub === editingItem ? values.subcategoryName : sub
         );
-        await axios.put(`https://prod-nnal.onrender.com/api/v1/categories/${id}`, {
+        await axios.put(`http://localhost:3000/api/v1/categories/${id}`, {
           ...category,
           subcategories: updatedSubcategories,
         });
@@ -75,7 +75,7 @@ const CategoryDetails = () => {
 
   const handleArchive = async () => {
     try {
-      await axios.patch(`https://prod-nnal.onrender.com/api/v1/categories/${id}/archive`);
+      await axios.patch(`http://localhost:3000/api/v1/categories/${id}/archive`);
       setIsArchived(true);
       message.success("Category archived successfully 🎉");
     } catch (error) {
@@ -85,7 +85,7 @@ const CategoryDetails = () => {
 
   const handleUnarchive = async () => {
     try {
-      await axios.patch(`https://prod-nnal.onrender.com/api/v1/categories/${id}/unarchive`);
+      await axios.patch(`http://localhost:3000/api/v1/categories/${id}/unarchive`);
       setIsArchived(false);
       message.success("Category unarchived successfully 🎉");
     } catch (error) {
@@ -109,7 +109,7 @@ const CategoryDetails = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://prod-nnal.onrender.com/api/v1/categories/${id}`);
+      await axios.delete(`http://localhost:3000/api/v1/categories/${id}`);
       message.success("Category deleted successfully 🎉");
     } catch (error) {
       message.error("Failed to delete category 😔");

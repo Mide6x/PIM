@@ -35,7 +35,7 @@ const MngManufacturers = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://prod-nnal.onrender.com/api/v1/manufacturer",
+        "http://localhost:3000/api/v1/manufacturer",
         {
           params: { search },
         }
@@ -120,7 +120,7 @@ const MngManufacturers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://prod-nnal.onrender.com/api/v1/manufacturer/${id}`);
+      await axios.delete(`http://localhost:3000/api/v1/manufacturer/${id}`);
       message.success("Manufacturer deleted successfully 🎉");
       fetchManufacturers();
     } catch (error) {
@@ -137,12 +137,12 @@ const MngManufacturers = () => {
     try {
       if (editingManufacturer) {
         await axios.put(
-          `https://prod-nnal.onrender.com/api/v1/manufacturer/${editingManufacturer._id}`,
+          `http://localhost:3000/api/v1/manufacturer/${editingManufacturer._id}`,
           values
         );
         message.success("Manufacturer updated successfully 🎉");
       } else {
-        await axios.post("https://prod-nnal.onrender.com/api/v1/manufacturer", values);
+        await axios.post("http://localhost:3000/api/v1/manufacturer", values);
         message.success("Manufacturer created successfully 🎉");
       }
       fetchManufacturers();
@@ -155,7 +155,7 @@ const MngManufacturers = () => {
   const handleUnarchive = async (manufacturer) => {
     try {
       await axios.patch(
-        `https://prod-nnal.onrender.com/api/v1/manufacturer/${manufacturer._id}/unarchive`
+        `http://localhost:3000/api/v1/manufacturer/${manufacturer._id}/unarchive`
       );
       message.success("Manufacturer unarchived successfully 🎉");
       fetchManufacturers();
