@@ -24,6 +24,9 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [manufacturerSuggestions, setManufacturerSuggestions] = useState([]);
   const productName = Form.useWatch("productName", form);
   const manufacturerName = Form.useWatch("manufacturerName", form);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [step1Data, setStep1Data] = useState({});
+  const [step2Data, setStep2Data] = useState({});
 
   const { description, loading, error } = useAutoPopulateDescription(
     productName,
@@ -35,25 +38,23 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       fetchCategories();
       fetchManufacturers();
     }
-  }, [userData]);
 
-  useEffect(() => {
     if (initialValues) {
       form.setFieldsValue(initialValues);
     } else {
       form.resetFields();
     }
-  }, [initialValues, form]);
 
-  useEffect(() => {
     if (description) {
       form.setFieldsValue({ description });
     }
-  }, [description, form]);
+  }, [userData, initialValues, form, description]);
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/categories");
+      const response = await axios.get(
+        "http://localhost:3000/api/v1/categories"
+      );
       setCategories(response.data);
     } catch (error) {
       message.error("Failed to fetch categories 😔");
@@ -114,14 +115,6 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     setManufacturerSuggestions([]);
   };
 
-  const onFinish = (values) => {
-    onOk({
-      ...values,
-      weight: parseFloat(values.weight),
-      createdBy: userData.email ? userData.email.toString() : userData._id,
-    });
-  };
-
   const handleCategoryChange = (value) => {
     fetchSubcategories(value);
   };
@@ -144,221 +137,296 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       setManufacturerSuggestions(manufacturers);
       message.success("Product details populated using AI 🎉");
     } catch (error) {
-      message.error("Failed to fetch product details using AI 😔");
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to fetch product details using AI 😔";
+      message.error(errorMessage);
     }
+  };
+
+  const handleNext = () => {
+    const currentValues = form.getFieldsValue();
+    setStep1Data(currentValues);
+    setCurrentStep(2);
+  };
+
+  const handlePrevious = () => {
+    const currentValues = form.getFieldsValue();
+    setStep2Data(currentValues);
+    setCurrentStep(1);
+  };
+
+  const onFinish = (values) => {
+    const finalData = {
+      ...step1Data,
+      ...step2Data,
+      ...values,
+      weight: parseFloat(values.weight),
+      createdBy: userData.email ? userData.email.toString() : userData._id,
+    };
+    onOk(finalData);
+    console.log("Final Form Data:", finalData);
+    // Send finalData to your backend or other processing functions
   };
 
   return (
     <>
       {userData && (
         <Form form={form} onFinish={onFinish} initialValues={initialValues}>
-          <p className="formTitle">Product Name</p>
-          <Form.Item
-            name="productName"
-            rules={[
-              { required: true, message: "Please enter the product name" },
-            ]}
-          >
-            <Input className="userInput" placeholder="Product Name" />
-          </Form.Item>
-          <p className="formTitle">Manufacturer Name</p>
-          <Form.Item
-            name="manufacturerName"
-            className="userSelection"
-            rules={[
-              { required: true, message: "Please enter the manufacturer name" },
-            ]}
-          >
-            <Select
-              className="userSelection"
-              showSearch
-              placeholder="Select or type a manufacturer"
-              value={form.getFieldValue("manufacturerName")}
-              onChange={onManufacturerChange}
-              filterOption={(input, option) =>
-                option.children.toLowerCase().includes(input.toLowerCase())
-              }
-            >
-              {manufacturers
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((manufacturer) => (
-                  <Option key={manufacturer._id} value={manufacturer.name}>
-                    {manufacturer.name}
-                  </Option>
-                ))}
-            </Select>
+          {currentStep === 1 && (
+            <>
+              <p className="formTitle">Product Name</p>
+              <Form.Item
+                name="productName"
+                rules={[
+                  { required: true, message: "Please enter the product name" },
+                ]}
+              >
+                <Input className="userInput" placeholder="Product Name" />
+              </Form.Item>
+              <p className="formTitle">Manufacturer Name</p>
+              <Form.Item
+                name="manufacturerName"
+                className="userSelection"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the manufacturer name",
+                  },
+                ]}
+              >
+                <Select
+                  className="userSelection"
+                  showSearch
+                  placeholder="Nestle"
+                  value={form.getFieldValue("manufacturerName")}
+                  onChange={onManufacturerChange}
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().includes(input.toLowerCase())
+                  }
+                >
+                  {manufacturers
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((manufacturer) => (
+                      <Option key={manufacturer._id} value={manufacturer.name}>
+                        {manufacturer.name}
+                      </Option>
+                    ))}
+                </Select>
 
-            {manufacturerSuggestions.length > 0 && (
-              <div style={{ display: "flex" }} className="productForm">
-                {manufacturerSuggestions
-                  .slice(0, 4)
-                  .map((suggestion, index) => (
-                    <Button
-                      key={index}
-                      type="link"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="AIBtn"
-                    >
-                      {suggestion}
-                    </Button>
-                  ))}
+                {manufacturerSuggestions.length > 0 && (
+                  <div style={{ display: "flex" }} className="productForm">
+                    {manufacturerSuggestions
+                      .slice(0, 4)
+                      .map((suggestion, index) => (
+                        <Button
+                          key={index}
+                          type="link"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className="AIBtn"
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                  </div>
+                )}
+              </Form.Item>
+
+              <div className="aiUseNotification">
+                <p>
+                  <FontAwesomeIcon
+                    icon={faCircleExclamation}
+                    style={{ color: "#212b36" }}
+                  />{" "}
+                  Suggestions made by artificial intelligence may sometimes be
+                  inaccurate. Please check again for data accuracy.
+                </p>
               </div>
-            )}
-          </Form.Item>
+              <p className="formTitle">Brand</p>
+              <Form.Item
+                name="brand"
+                rules={[{ required: true, message: "Please enter the brand" }]}
+              >
+                <Select
+                  className="userSelection"
+                  disabled={!selectedManufacturer}
+                  placeholder="Milo"
+                >
+                  {brands.map((brand, index) => (
+                    <Option key={index} value={brand}>
+                      {brand}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <p className="formTitle">Image Url (Cloudinary)</p>
+              <Form.Item
+                name="imageUrl"
+                rules={[
+                  { required: true, message: "Please enter the image URL" },
+                ]}
+              >
+                <Input className="userInput" placeholder="Image Url" />
+              </Form.Item>
+            </>
+          )}
 
-          <div className="aiUseNotification">
-            <p>
-              <FontAwesomeIcon
-                icon={faCircleExclamation}
-                style={{ color: "#212b36" }}
-              />{" "}
-              Suggestions made by artificial intelligence may sometimes be
-              inaccurate. Please check again for data accuracy.
-            </p>
-          </div>
-          <p className="formTitle">Brand</p>
-          <Form.Item
-            name="brand"
-            rules={[{ required: true, message: "Please enter the brand" }]}
-          >
-            <Select
-              className="userSelection"
-              disabled={!selectedManufacturer}
-              placeholder="Brand"
-            >
-              {brands.map((brand, index) => (
-                <Option key={index} value={brand}>
-                  {brand}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <p className="formTitle">Product Category</p>
-          <Form.Item
-            name="productCategory"
-            rules={[
-              {
-                required: true,
-                message: "Please input the product's category",
-              },
-            ]}
-          >
-            <Select
-              className="userSelection"
-              showSearch
-              placeholder="Category (Start typing to search)"
-              onChange={handleCategoryChange}
-              filterOption={(input, option) =>
-                option.children.toLowerCase().includes(input.toLowerCase())
-              }
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the product category",
-                },
-              ]}
-            >
-              {categories
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((category) => (
-                  <Option key={category._id} value={category.name}>
-                    {category.name}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-          <p className="formTitle">Product Subcategory</p>
-          <Form.Item
-            name="productSubcategory"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the product subcategory",
-              },
-            ]}
-          >
-            <Select className="userSelection" placeholder="Product Subcategory">
-              {subcategories.map((subcategory) => (
-                <Option key={subcategory} value={subcategory}>
-                  {subcategory}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <p className="formTitle">Variant Type</p>
-          <Form.Item
-            name="variantType"
-            rules={[
-              { required: true, message: "Please enter the variant type" },
-            ]}
-          >
-            <Input className="userInput" placeholder="Variant Type" />
-          </Form.Item>
-          <p className="formTitle">Variant</p>
-          <Form.Item
-            name="variant"
-            rules={[{ required: true, message: "Please enter the variant" }]}
-          >
-            <Input className="userInput" placeholder="Variant" />
-          </Form.Item>
-          <p className="formTitle">Weight (in KG)</p>
-          <Form.Item
-            name="weight"
-            rules={[{ required: true, message: "Please enter the weight" }]}
-          >
-            <Input
-              placeholder="Weight (Kg)"
-              className="userInput"
-              type="number"
-              step="0.01"
-            />
-          </Form.Item>
-          <p className="formTitle">Image Url (Cloudinary)</p>
-          <Form.Item
-            name="imageUrl"
-            rules={[{ required: true, message: "Please enter the image URL" }]}
-          >
-            <Input className="userInput" placeholder="Image Url" />
-          </Form.Item>
-          <p className="formTitle">Product Description</p>
-          <Form.Item
-            name="description"
-            rules={[{ required: false, message: "Enter the product details." }]}
-          >
-            <Input.TextArea
-              className="userInputDesc"
-              placeholder="Product Description"
-              autoSize={{ minRows: 3, maxRows: 6 }}
-            />
-          </Form.Item>
+          {currentStep === 2 && (
+            <>
+              <p className="formTitle">Product Category</p>
+              <Form.Item
+                name="productCategory"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input the product's category",
+                  },
+                ]}
+              >
+                <Select
+                  className="userSelection"
+                  showSearch
+                  placeholder="Category (Start typing to search)"
+                  onChange={handleCategoryChange}
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().includes(input.toLowerCase())
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the product category",
+                    },
+                  ]}
+                >
+                  {categories
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((category) => (
+                      <Option key={category._id} value={category.name}>
+                        {category.name}
+                      </Option>
+                    ))}
+                </Select>
+              </Form.Item>
+              <p className="formTitle">Product Subcategory</p>
+              <Form.Item
+                name="productSubcategory"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the product subcategory",
+                  },
+                ]}
+              >
+                <Select
+                  className="userSelection"
+                  placeholder="Product Subcategory"
+                >
+                  {subcategories.map((subcategory) => (
+                    <Option key={subcategory} value={subcategory}>
+                      {subcategory}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <p className="formTitle">Variant Type</p>
+              <Form.Item
+                name="variantType"
+                rules={[
+                  { required: true, message: "Please enter the variant type" },
+                ]}
+              >
+                <Input className="userInput" placeholder="Variant Type" />
+              </Form.Item>
+              <p className="formTitle">Variant</p>
+              <Form.Item
+                name="variant"
+                rules={[
+                  { required: true, message: "Please enter the variant" },
+                ]}
+              >
+                <Input className="userInput" placeholder="Variant" />
+              </Form.Item>
 
-          <Form.Item className="concludeBtns">
-            <Button type="default" className="editBtn" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="addBtn"
-              style={{ marginLeft: "10px" }}
-            >
-              {initialValues ? "Update Product" : "Create Product"}
-            </Button>
+              <p className="formTitle">Weight</p>
+              <Form.Item
+                name="weight"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the weight of the product",
+                  },
+                ]}
+              >
+                <Input
+                  type="number"
+                  className="userInput"
+                  placeholder="Weight"
+                />
+              </Form.Item>
 
-            <Button
-              type="default"
-              loading={loading}
-              onClick={handleAIButtonClick}
-              style={{ marginLeft: "10px" }}
-              className="AIBtn"
-            >
-              <FontAwesomeIcon
-                icon={faWandMagicSparkles}
-                style={{ color: "#b76e00" }}
-              />{" "}
-              AI Assist
-            </Button>
-          </Form.Item>
+              <p className="formTitle">Product Description</p>
+              <Form.Item name="description">
+                <Input.TextArea
+                  className="userInput"
+                  placeholder="Description"
+                />
+              </Form.Item>
+            </>
+          )}
+          <>
+            <Form.Item className="concludeBtns">
+              {currentStep === 1 && (
+                <Button type="default" className="editBtn" onClick={onCancel}>
+                  Cancel
+                </Button>
+              )}
+              {currentStep === 2 && (
+                <Button
+                  type="default"
+                  loading={loading}
+                  onClick={handleAIButtonClick}
+                  style={{ marginLeft: "5px" }}
+                  className="AIBtn"
+                >
+                  <FontAwesomeIcon
+                    icon={faWandMagicSparkles}
+                    style={{ color: "#b76e00" }}
+                  />{" "}
+                  AI Assist
+                </Button>
+              )}
+              {currentStep === 1 && (
+                <Button
+                  type="primary"
+                  onClick={handleNext}
+                  style={{ marginLeft: "10px" }}
+                  className="addBtn"
+                >
+                  Next
+                </Button>
+              )}
+              {currentStep === 2 && (
+                <Button
+                  type="default"
+                  className="editBtn"
+                  style={{ marginLeft: "5px" }}
+                  onClick={handlePrevious}
+                >
+                  Previous
+                </Button>
+              )}
+              {currentStep === 2 && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="addBtn"
+                  style={{ marginLeft: "5px" }}
+                >
+                  {initialValues ? "Update Product" : "Create Product"}
+                </Button>
+              )}
+            </Form.Item>
+          </>
           {error && <p style={{ color: "red" }}>Error: {error}</p>}
         </Form>
       )}

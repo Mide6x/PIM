@@ -106,7 +106,6 @@ const Dashboard = () => {
   const handleCreate = () => setIsModalVisible(true);
 
   const handleOk = async (values) => {
-    console.log("Dashboard.handleOk: editingProduct=", editingProduct);
     console.log("Dashboard.handleOk: values=", values);
     try {
       if (editingProduct) {
