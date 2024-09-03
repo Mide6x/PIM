@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 import { getProductDetailsFromOpenAI } from "../../hooks/productAddWithOpenAI";
 import useAutoPopulateDescription from "../../hooks/useAutoPopulateDescription";
 import useAuth from "../../contexts/useAuth";
+import ImageUploadSection from "./ImageUpload";
 
 const { Option } = Select;
 
@@ -179,6 +180,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         <Form form={form} onFinish={onFinish} initialValues={initialValues}>
           {currentStep === 1 && (
             <>
+              <ImageUploadSection/>
               <p className="formTitle">Product Name</p>
               <Form.Item
                 name="productName"
@@ -262,15 +264,6 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
-              <p className="formTitle">Image Url (Cloudinary)</p>
-              <Form.Item
-                name="imageUrl"
-                rules={[
-                  { required: true, message: "Please enter the image URL" },
-                ]}
-              >
-                <Input className="userInput" placeholder="Image Url" />
               </Form.Item>
             </>
           )}
@@ -378,58 +371,59 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
             </>
           )}
           <>
-          <Form.Item className="concludeBtns">
-            {currentStep === 1 && (
-              <Button type="default" className="editBtn" onClick={onCancel}>
-                Cancel
-              </Button>
-            )}
-             {currentStep === 2 && (
-            <Button
-              type="default"
-              loading={loading}
-              onClick={handleAIButtonClick}
-              style={{ marginLeft: "5px" }}
-              className="AIBtn"
-            >
-              <FontAwesomeIcon
-                icon={faWandMagicSparkles}
-                style={{ color: "#b76e00" }}
-              />{" "}
-              AI Assist
-            </Button>
-             )}
-            {currentStep === 1 && (
-              <Button
-                type="primary"
-                onClick={handleNext}
-                style={{ marginLeft: "10px" }}
-                className="addBtn"
-              >
-                Next
-              </Button>
-            )}
-            {currentStep === 2 && (
-              <Button
-                type="default"
-                className="editBtn"
-                style={{ marginLeft: "5px" }}
-                onClick={handlePrevious}
-              >
-                Previous
-              </Button>
-            )}
-            {currentStep === 2 && (
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="addBtn"
-                style={{ marginLeft: "5px" }}
-              >
-                {initialValues ? "Update Product" : "Create Product"}
-              </Button>
-            )}
-          </Form.Item>
+            <Form.Item className="concludeBtns">
+              {currentStep === 1 && (
+                <Button type="default" className="editBtn"   style={{ marginLeft: "5px" }} onClick={onCancel}>
+                  Cancel
+                </Button>
+              )}
+              {currentStep === 2 && (
+                <Button
+                  type="default"
+                  className="editBtn"
+                  style={{ marginLeft: "5px" }}
+                  onClick={handlePrevious}
+                >
+                  Previous
+                </Button>
+              )}
+              {currentStep === 2 && (
+                <Button
+                  type="default"
+                  loading={loading}
+                  onClick={handleAIButtonClick}
+                  style={{ marginLeft: "5px" }}
+                  className="AIBtn"
+                >
+                  <FontAwesomeIcon
+                    icon={faWandMagicSparkles}
+                    style={{ color: "#b76e00" }}
+                  />{" "}
+                  AI Assist
+                </Button>
+              )}
+              {currentStep === 1 && (
+                <Button
+                  type="primary"
+                  onClick={handleNext}
+                  style={{ marginLeft: "5px" }}
+                  className="addBtn"
+                >
+                  Next
+                </Button>
+              )}
+              
+              {currentStep === 2 && (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="addBtn"
+                  style={{ marginLeft: "5px", marginTop: "10px" }}
+                >
+                  {initialValues ? "Update Product" : "Create Product"}
+                </Button>
+              )}
+            </Form.Item>
           </>
           {error && <p style={{ color: "red" }}>Error: {error}</p>}
         </Form>

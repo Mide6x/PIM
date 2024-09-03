@@ -1,7 +1,7 @@
 import { Alert, Button, Card, Flex, Form, Input, Spin, Typography } from "antd";
 import { Link } from "react-router-dom";
 import registerImage from "../assets/login.png";
-import useSignUp from "../hooks/useSignUp";
+import useSignUp from "../hooks/useSignup";
 import "./authbody.css";
 
 const Register = () => {

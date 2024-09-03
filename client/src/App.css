@@ -379,6 +379,28 @@ Form {
   font-size: 20px;
   color: #637381;
 }
+.imgUpload {
+  color: #637381;
+  background-color: #069f7e24;
+  border-radius: 7px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.imgbtn {
+  margin-bottom: 0 !important;
+  color: #069f7e;
+  background-color: transparent;
+  font-weight: bold;
+  border: none;
+}
+.imgbtn:hover{
+  color: #03644f !important;
+  background-color: transparent !important;
+}
 
 .stats-item-body {
   font-size: 40px;
