@@ -16,6 +16,7 @@ const approvalRoutes = require("./routes/approvalRoutes");
 const processedImageRoutes = require('./routes/processedImageRoutes');
 const userRoutes = require('./routes/userRoute');
 const notificationRoutes = require('./routes/notificationRoutes');
+const processUploadedImageRoutes = require("./routes/processUploadedImageRoute");
 
 const app = express();
 const _dirname = path.resolve();
@@ -36,6 +37,9 @@ app.use("/api/v1/images", imageRoutes);
 app.use("/api/v1/approvals", approvalRoutes);
 app.use("/api/v1/processedimages", processedImageRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
+app.use("/api/v1/processedproductformimages", processUploadedImageRoutes);
+
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
