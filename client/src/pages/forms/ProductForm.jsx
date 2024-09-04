@@ -28,6 +28,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [step1Data, setStep1Data] = useState({});
   const [step2Data, setStep2Data] = useState({});
+  const [imageUrl, setImageUrl] = useState(null);
 
   const { description, loading, error } = useAutoPopulateDescription(
     productName,
@@ -161,17 +162,21 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
     setCurrentStep(1);
   };
 
+  const handleImageUpload = (uploadedImageUrl) => {
+    setImageUrl(uploadedImageUrl);
+  };
+
   const onFinish = (values) => {
     const finalData = {
       ...step1Data,
       ...step2Data,
+      imageUrl,
       ...values,
       weight: parseFloat(values.weight),
       createdBy: userData.email ? userData.email.toString() : userData._id,
     };
     onOk(finalData);
     console.log("Final Form Data:", finalData);
-    // Send finalData to your backend or other processing functions
   };
 
   return (
@@ -180,7 +185,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
         <Form form={form} onFinish={onFinish} initialValues={initialValues}>
           {currentStep === 1 && (
             <>
-              <ImageUploadSection/>
+              <ImageUploadSection setImageUrl={handleImageUpload} />
               <p className="formTitle">Product Name</p>
               <Form.Item
                 name="productName"
@@ -373,7 +378,12 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
           <>
             <Form.Item className="concludeBtns">
               {currentStep === 1 && (
-                <Button type="default" className="editBtn"   style={{ marginLeft: "5px" }} onClick={onCancel}>
+                <Button
+                  type="default"
+                  className="editBtn"
+                  style={{ marginLeft: "5px" }}
+                  onClick={onCancel}
+                >
                   Cancel
                 </Button>
               )}
@@ -412,7 +422,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
                   Next
                 </Button>
               )}
-              
+
               {currentStep === 2 && (
                 <Button
                   type="primary"

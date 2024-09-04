@@ -2,42 +2,39 @@ import { Upload, Form, Button, message } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useState } from "react";
+import PropTypes from "prop-types";
 
-const uploadProps = {
-  accept: ".jpg,.jpeg,.png",
-  beforeUpload: (file) => {
-    const isJpgOrPng =
-      file.type === "image/jpeg" ||
-      file.type === "image/png" ||
-      file.type === "image/jpg";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    return isJpgOrPng || Upload.LIST_IGNORE;
-  },
-  maxCount: 1,
-};
-
-const ImageUploadSection = () => {
-  const [imageUrl, setImageUrl] = useState(null);
+const ImageUploadSection = ({ setImageUrl }) => {
+  const uploadProps = {
+    accept: ".jpg,.jpeg,.png",
+    beforeUpload: (file) => {
+      const isJpgOrPng =
+        file.type === "image/jpeg" || file.type === "image/png";
+      if (!isJpgOrPng) {
+        message.error("You can only upload JPG/PNG file!");
+      }
+      return isJpgOrPng || Upload.LIST_IGNORE;
+    },
+    maxCount: 1,
+  };
 
   const handleUpload = async ({ file }) => {
     const formData = new FormData();
     formData.append("image", file);
-
+  
     try {
-        const response = await axios.post("http://localhost:3000/api/v1/processedproductformimages", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-        
+      const response = await axios.post("http://localhost:3000/api/v1/processedproductformimages", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
       if (response.status === 200) {
-        setImageUrl(response.data.imageUrl);
+        const imageUrl = String(response.data.imageUrl); // Convert to string (if necessary)
+        setImageUrl(imageUrl);
         message.success("Image uploaded successfully!");
         console.log("Image uploaded successfully:", response.data);
-        console.log("Image URL:", response.data.imageUrl);
+        console.log("Image URL:", imageUrl);
       } else {
         message.error("Failed to upload image.");
       }
@@ -46,6 +43,7 @@ const ImageUploadSection = () => {
       message.error("An error occurred while uploading the image.");
     }
   };
+  
 
   return (
     <>
@@ -71,15 +69,14 @@ const ImageUploadSection = () => {
         </Upload>
         <span>Supported file formats: JPG, JPEG, and PNG</span>
       </Form.Item>
-      {imageUrl && (
-        <img
-          src={imageUrl}
-          alt="Uploaded"
-          style={{ marginTop: 16, maxWidth: "100%" }}
-        />
-      )}
+        
     </>
   );
+};
+
+// Define PropTypes
+ImageUploadSection.propTypes = {
+  setImageUrl: PropTypes.func.isRequired,
 };
 
 export default ImageUploadSection;
