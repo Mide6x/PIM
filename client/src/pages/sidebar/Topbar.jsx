@@ -5,7 +5,7 @@ import "./Sidebar.css";
 import NotificationSidebar from "./Notifications";
 import userImage from "../../assets/user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faBars } from "@fortawesome/free-solid-svg-icons";
 
 const Topbar = () => {
   const { userData } = useAuth();
@@ -47,10 +47,20 @@ const Topbar = () => {
     setShowSidebar(false);
   };
 
+  const toggleSidebar = () => {
+    const sidebar = document.querySelector('.barbody');
+    if (sidebar) {
+      sidebar.classList.toggle('show');
+    }
+  };
+
   return (
     <>
       {userData && (
         <div className="topbarContent">
+          <div className="showSidebar" onClick={toggleSidebar}>
+            <FontAwesomeIcon icon={faBars} size="xl" style={{ color: "#069f7e" }} />
+          </div>
           <div className="topbarContent0">
             <h3>
               {getGreeting()}, <span>{userData.name} 👋 </span>
