@@ -108,6 +108,7 @@ const UploadTab = () => {
   };
 
   const cleanData = async (df) => {
+    console.log("User Data:", userData);
     return await Promise.all(
       df.map(async (row) => {
         const variant = convertVariantFormat(row.variant);
@@ -119,6 +120,19 @@ const UploadTab = () => {
           row.productName
         );
 
+        const createdBy =
+          userData && userData.email
+            ? String(userData.email)
+            : userData && userData._id
+            ? String(userData._id)
+            : null;
+
+        if (!createdBy) {
+          throw new Error(
+            "User data is missing, and 'createdBy' cannot be set."
+          );
+        }
+
         return {
           ...row,
           productCategory: productCategory,
@@ -127,7 +141,7 @@ const UploadTab = () => {
           variantType: "Size",
           amount: amount,
           weightInKg: weightInKg ? Math.round(weightInKg) : null,
-          createdBy: userData.email ? userData.email.toString() : userData._id,
+          createdBy: createdBy,
         };
       })
     );
@@ -148,6 +162,7 @@ const UploadTab = () => {
 
   const handlePushToApproval = async () => {
     try {
+      console.log("Data being sent:", data);
       await axios.post("http://localhost:3000/api/v1/approvals", data);
       message.success("Data successfully sent for approval.");
       await deleteProcessedImages(getImageIdsFromData(data));

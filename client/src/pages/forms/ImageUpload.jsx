@@ -30,7 +30,7 @@ const ImageUploadSection = ({ setImageUrl }) => {
       });
   
       if (response.status === 200) {
-        const imageUrl = String(response.data.imageUrl); // Convert to string (if necessary)
+        const imageUrl = String(response.data.imageUrl);
         setImageUrl(imageUrl);
         message.success("Image uploaded successfully!");
         console.log("Image uploaded successfully:", response.data);

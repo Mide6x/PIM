@@ -34,6 +34,7 @@ exports.createApproval = async (req, res, next) => {
         variant: productData.variant,
         weightInKg: productData.weightInKg,
         imageUrl: productData.imageUrl,
+        createdBy: productData.createdBy,
       });
 
       const savedApproval = await approval.save();
