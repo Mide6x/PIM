@@ -29,6 +29,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [step1Data, setStep1Data] = useState({});
   const [step2Data, setStep2Data] = useState({});
   const [imageUrl, setImageUrl] = useState(null);
+  const [variants, setVariants] = useState([]);
 
   const { description, loading, error } = useAutoPopulateDescription(
     productName,
@@ -92,6 +93,21 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
       message.error("Failed to fetch manufacturers 😔");
     }
   };
+
+  const fetchVariants = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/v1/variants");
+      console.log("Response:", response);
+      const variantsData = response.data.data;
+      setVariants(Array.isArray(variantsData) ? variantsData : []);
+    } catch (error) {
+      message.error("Failed to fetch variants 😔");
+    }
+  };
+
+  useEffect(() => {
+    fetchVariants();
+  }, []);
 
   const onManufacturerChange = (value) => {
     const selectedManu = manufacturers.find(
@@ -337,8 +353,23 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
                   { required: true, message: "Please enter the variant type" },
                 ]}
               >
-                <Input className="userInput" placeholder="Variant Type" />
+                <Select
+                  className="userSelection"
+                  placeholder="Select Variant Type"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().includes(input.toLowerCase())
+                  }
+                >
+                  {Array.isArray(variants) &&
+                    variants.map((variant) => (
+                      <Option key={variant._id} value={variant.name}>
+                        {variant.name}
+                      </Option>
+                    ))}
+                </Select>
               </Form.Item>
+
               <p className="formTitle">Variant</p>
               <Form.Item
                 name="variant"

@@ -111,7 +111,7 @@ const handleOk = async (values) => {
         if (Array.isArray(subVariants)) {
           return subVariants.map((variant) => variant.name).join(", ");
         }
-        return "No sub-variants"; // Or any other default text
+        return "No sub-variants"; 
       },
     } ,
     {

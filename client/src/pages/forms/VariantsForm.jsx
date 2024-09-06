@@ -32,29 +32,32 @@ const VariantForm = ({ initialValues, onCancel, onOk }) => {
     <>
       {userData && (
         <Form form={form} onFinish={onFinish}>
+              <p className="formTitle">Variant Name</p>
           <Form.Item
             name="name"
-            label="Variant Name"
+     
             rules={[
               { required: true, message: "Please input the variant name!" },
             ]}
           >
-            <Input placeholder="Enter variant name (e.g. Color, Size)" />
+            <Input  className="userInput" placeholder="Enter variant name (e.g. Color, Size)" />
           </Form.Item>
+          <p className="formTitle">Sub-Variants</p>
           <Form.Item
             name="subVariants"
-            label="Sub-Variants"
+          
             rules={[
               { required: true, message: "Please input the sub-variants!" },
             ]}
           >
-            <Input placeholder="Enter sub-variants separated by commas (e.g. Red, Blue, Green)" />
+            <Input  className="userInput" placeholder="Enter sub-variants separated by commas (e.g. Red, Blue, Green)" />
           </Form.Item>
           <Form.Item>
-            <Button onClick={onCancel}>Cancel</Button>
+            <Button onClick={onCancel}  className="editBtn">Cancel</Button>
             <Button
               type="primary"
               htmlType="submit"
+               className="addBtn"
               style={{ marginLeft: "10px" }}
             >
               Save
