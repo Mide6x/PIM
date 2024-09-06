@@ -30,6 +30,8 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const [step2Data, setStep2Data] = useState({});
   const [imageUrl, setImageUrl] = useState(null);
   const [variants, setVariants] = useState([]);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [subvariants, setSubvariants] = useState([]);
 
   const { description, loading, error } = useAutoPopulateDescription(
     productName,
@@ -350,23 +352,29 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
               <Form.Item
                 name="variantType"
                 rules={[
-                  { required: true, message: "Please enter the variant type" },
+                  { required: true, message: "Please select a variant type" },
                 ]}
               >
                 <Select
                   className="userSelection"
                   placeholder="Select Variant Type"
                   showSearch
+                  onChange={(value) => {
+                    const selected = variants.find(
+                      (variant) => variant.name === value
+                    );
+                    setSelectedVariant(selected);
+                    setSubvariants(selected?.subvariants || []);
+                  }}
                   filterOption={(input, option) =>
                     option.children.toLowerCase().includes(input.toLowerCase())
                   }
                 >
-                  {Array.isArray(variants) &&
-                    variants.map((variant) => (
-                      <Option key={variant._id} value={variant.name}>
-                        {variant.name}
-                      </Option>
-                    ))}
+                  {variants.map((variant) => (
+                    <Option key={variant._id} value={variant.name}>
+                      {variant.name}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
 
@@ -377,7 +385,31 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
                   { required: true, message: "Please enter the variant" },
                 ]}
               >
-                <Input className="userInput" placeholder="Variant" />
+                {selectedVariant &&
+                selectedVariant.subvariants.includes("-") ? (
+                  <Input
+                    className="userInput"
+                    placeholder="Variant"
+                    // Add any other props needed
+                  />
+                ) : (
+                  <Select
+                    className="userSelection"
+                    placeholder="Select Subvariant"
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  >
+                    {subvariants.map((subvariant) => (
+                      <Option key={subvariant._id} value={subvariant.name}>
+                        {subvariant.name}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
               </Form.Item>
 
               <p className="formTitle">Weight</p>
