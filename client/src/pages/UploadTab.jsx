@@ -270,7 +270,7 @@ const UploadTab = () => {
           <div>
             <div className="intro">
               <h2>Data Cleaning</h2>
-              <p style={{ marginTop: "10px" }}>
+              <p className="aboutPage" style={{ marginTop: "10px" }}>
                 Here the data is cleaned using our in-built Artificial
                 Intelligence system. the Product Category, Product Subcategory,
                 and other relvant details are automatically inputted.

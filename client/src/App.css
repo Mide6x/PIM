@@ -496,7 +496,7 @@ Form {
   .stats-item2 {
     width: 110% !important;
     display: flex !important;
-    justify-content: flex-start !important; 
+    justify-content: center !important; 
   }
 
   .stats-item-header,
@@ -511,6 +511,10 @@ Form {
 
   .stats-item-content {
     padding: 10px !important;
+  }
+
+  .aboutPage{
+    font-size: medium;
   }
 }
 

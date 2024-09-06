@@ -119,8 +119,8 @@ const handleOk = async (values) => {
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Edit</Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
+          <Button className="editBtn" onClick={() => handleEdit(record)}>Edit</Button>
+          <Button className="deleteBtn" onClick={() => handleDelete(record._id)}>
             Delete
           </Button>
         </Space>
@@ -135,7 +135,7 @@ const handleOk = async (values) => {
     <div>
       <div className="intro">
       <h2>Manage Variants</h2>
-      <p style={{ marginBottom: "10px" }}>
+      <p className="aboutPage" style={{ marginBottom: "10px" }}>
             Create custome variants to provide your customers more information abount the products in your catalogue  
           </p>
       <div className="searchBarContainer">

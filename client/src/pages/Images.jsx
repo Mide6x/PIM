@@ -235,7 +235,7 @@ const Images = () => {
       <div>
         <div className="intro">
           <h2>Image Conversion</h2>
-          <p style={{ marginBottom: "10px" }}>
+          <p className="aboutPage" style={{ marginBottom: "10px" }}>
             Download the template and insert your data so that we begin! Most
             processes are AI-assisted but ensure a level of data accuracy, and
             verify results before moving on to the next step.
