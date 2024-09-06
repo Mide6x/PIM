@@ -17,6 +17,7 @@ const processedImageRoutes = require('./routes/processedImageRoutes');
 const userRoutes = require('./routes/userRoute');
 const notificationRoutes = require('./routes/notificationRoutes');
 const processUploadedImageRoutes = require("./routes/processUploadedImageRoute");
+const variantRoutes = require('./routes/variantRoute');
 
 const app = express();
 const _dirname = path.resolve();
@@ -38,6 +39,11 @@ app.use("/api/v1/approvals", approvalRoutes);
 app.use("/api/v1/processedimages", processedImageRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use("/api/v1/processedproductformimages", processUploadedImageRoutes);
+app.use('/api/v1/variants', variantRoutes);
+
+
+
+
 
 
 

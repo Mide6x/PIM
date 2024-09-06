@@ -25,13 +25,15 @@ const CategoryDetails = () => {
     const fetchCategoryDetails = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:3000/api/v1/categories/${id}`);
+        const response = await axios.get(
+          `http://localhost:3000/api/v1/categories/${id}`
+        );
         setCategory(response.data);
         setIsArchived(response.data.isArchived);
         setSubcategoriesList(response.data.subcategories);
       } catch (error) {
         message.error("Failed to fetch category details 😔");
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -43,7 +45,9 @@ const CategoryDetails = () => {
     setEditingItem(item);
     setIsCategoryEdit(isCategory);
     setIsModalVisible(true);
-    form.setFieldsValue(isCategory ? { categoryName: item.name } : { subcategoryName: item });
+    form.setFieldsValue(
+      isCategory ? { categoryName: item.name } : { subcategoryName: item }
+    );
   };
 
   const handleSave = async () => {
@@ -64,7 +68,10 @@ const CategoryDetails = () => {
           ...category,
           subcategories: updatedSubcategories,
         });
-        setCategory((prev) => ({ ...prev, subcategories: updatedSubcategories }));
+        setCategory((prev) => ({
+          ...prev,
+          subcategories: updatedSubcategories,
+        }));
         message.success("Subcategory updated successfully! 🎉");
       }
       setIsModalVisible(false);
@@ -75,7 +82,9 @@ const CategoryDetails = () => {
 
   const handleArchive = async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/categories/${id}/archive`);
+      await axios.patch(
+        `http://localhost:3000/api/v1/categories/${id}/archive`
+      );
       setIsArchived(true);
       message.success("Category archived successfully 🎉");
     } catch (error) {
@@ -85,7 +94,9 @@ const CategoryDetails = () => {
 
   const handleUnarchive = async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/categories/${id}/unarchive`);
+      await axios.patch(
+        `http://localhost:3000/api/v1/categories/${id}/unarchive`
+      );
       setIsArchived(false);
       message.success("Category unarchived successfully 🎉");
     } catch (error) {
@@ -95,8 +106,9 @@ const CategoryDetails = () => {
 
   const handleSearch = (value) => {
     if (value.length >= 3) {
-      const filteredSubcategories = category.subcategories.filter((subcategories) =>
-        subcategories.toLowerCase().includes(value.toLowerCase())
+      const filteredSubcategories = category.subcategories.filter(
+        (subcategories) =>
+          subcategories.toLowerCase().includes(value.toLowerCase())
       );
       setSubcategoriesList(filteredSubcategories);
     } else {
@@ -127,9 +139,55 @@ const CategoryDetails = () => {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button className="editBtn" onClick={() => handleEdit(record.subcategory)}>
+        <Button
+          className="editBtn"
+          onClick={() => handleEdit(record.subcategory)}
+        >
           <FontAwesomeIcon icon={faPenToSquare} /> Edit
         </Button>
+      ),
+    },
+  ];
+
+  const tabItems = [
+    {
+      label: "Subcategories",
+      key: "1",
+      children: (
+        <>
+          <div className="searchBarContainer">
+            <Input
+              placeholder="Search Subcategories by name"
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ width: "100%" }}
+              className="searchBar"
+            />
+            <Button
+              type="primary"
+              className="archiveBtn"
+              onClick={handleCreate}
+            >
+              <FontAwesomeIcon
+                icon={faFileArrowUp}
+                size="lg"
+                style={{ color: "#008162" }}
+              />
+              Bulk Upload Subcategory
+            </Button>
+            <Button type="primary" className="addBtn" onClick={handleCreate}>
+              Add New Subcategory
+            </Button>
+          </div>
+          <Table
+            dataSource={subcategoriesList.map((subcategory) => ({
+              subcategory,
+            }))}
+            columns={columns}
+            loading={loading}
+            rowKey="subcategory"
+            pagination={{ position: ["bottomCenter"] }}
+          />
+        </>
       ),
     },
   ];
@@ -152,11 +210,16 @@ const CategoryDetails = () => {
           <div className="infoTitle">
             <div className="titleContent">
               {category?.name}
-              <span className="status">{isArchived ? "Archived" : "Active"}</span>
+              <span className="status">
+                {isArchived ? "Archived" : "Active"}
+              </span>
             </div>
 
             <div className="buttonContainer">
-              <Button className="editBtn" onClick={() => handleEdit(category, true)}>
+              <Button
+                className="editBtn"
+                onClick={() => handleEdit(category, true)}
+              >
                 <FontAwesomeIcon icon={faPenToSquare} /> Edit Details
               </Button>
               {isArchived ? (
@@ -188,45 +251,8 @@ const CategoryDetails = () => {
         </div>
       </div>
       <div className="detailsTable">
-      <Tabs defaultActiveKey="1" className="table">
-        <Tabs.TabPane tab="Subcategories" key="1">
-        <div className="searchBarContainer">
-              <Input
-                placeholder="Search Subcategories by name"
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ width: "100%" }}
-                className="searchBar"
-              />
-              <Button
-                type="primary"
-                className="archiveBtn"
-                onClick={handleCreate}
-              >
-                <FontAwesomeIcon
-                  icon={faFileArrowUp}
-                  size="lg"
-                  style={{ color: "#008162" }}
-                />
-                Bulk Upload Subcategory
-              </Button>
-              <Button
-                type="primary"
-                className="addBtn"
-                onClick={handleCreate}
-              >
-                Add New Subcategory
-              </Button>
-            </div>
-          <Table
-            dataSource={subcategoriesList.map((subcategory) => ({ subcategory }))}
-            columns={columns}
-            loading={loading}
-            rowKey="subcategory"
-            pagination={{ position: ["bottomCenter"] }}
-          />
-        </Tabs.TabPane>
-      </Tabs>
-</div>
+        <Tabs defaultActiveKey="1" className="table" items={tabItems} />
+      </div>
       <Modal
         title={isCategoryEdit ? "Edit Category" : "Edit Subcategory"}
         open={isModalVisible}
@@ -234,7 +260,9 @@ const CategoryDetails = () => {
         footer={null}
       >
         <Form form={form} onFinish={handleSave}>
-          <p className="formTitle">{isCategoryEdit ? "Category Details" : "Subcategory Details"}</p>
+          <p className="formTitle">
+            {isCategoryEdit ? "Category Details" : "Subcategory Details"}
+          </p>
           {isCategoryEdit ? (
             <Form.Item
               name="categoryName"
@@ -249,7 +277,10 @@ const CategoryDetails = () => {
               name="subcategoryName"
               initialValue={editingItem}
               rules={[
-                { required: true, message: "Please enter the subcategory name" },
+                {
+                  required: true,
+                  message: "Please enter the subcategory name",
+                },
               ]}
             >
               <Input className="userInput" placeholder="Subcategory Name" />

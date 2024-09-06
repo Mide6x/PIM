@@ -205,10 +205,16 @@ const ManufacturerDetails = () => {
           </div>
         </div>
       </div>
-
       <div className="detailsTable">
-        <Tabs defaultActiveKey="1" className="table">
-          <Tabs.TabPane tab="Brands" key="1">
+  <Tabs
+    defaultActiveKey="1"
+    className="table"
+    items={[
+      {
+        label: "Brands", 
+        key: "1",
+        children: (
+          <div>
             <div className="searchBarContainer">
               <Input
                 placeholder="Search Brands by name"
@@ -244,9 +250,13 @@ const ManufacturerDetails = () => {
               rowKey="brand"
               pagination={{ position: ["bottomCenter"] }}
             />
-          </Tabs.TabPane>
-        </Tabs>
-      </div>
+          </div>
+        ),
+      },
+    ]}
+  />
+</div>
+
       <Modal
         title={isEditingManufacturer ? "Edit Manufacturer" : "Edit Brand"}
         open={isModalVisible}
