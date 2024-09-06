@@ -113,7 +113,7 @@ const Register = () => {
                   size="large"
                   className="btn addBtn"
                 >
-                  {loading ? <Spin className="spinner"/> : "Create Account"}
+                  {loading ? <Spin className="spinner" /> : "Create Account"}
                 </Button>
               </Form.Item>
               <Form.Item>
@@ -125,7 +125,7 @@ const Register = () => {
               </Form.Item>
             </Form>
           </Flex>
-          <Flex flex={1}>
+          <Flex flex={1} className="auth-img-wrapper">
             <img src={registerImage} className="auth-img" alt="Register" />
           </Flex>
         </Flex>

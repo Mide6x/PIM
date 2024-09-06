@@ -22,8 +22,6 @@ h2 {
   margin: auto;
 }
 
-
-
 /* Layout */
 .container {
   display: flex;
@@ -66,7 +64,6 @@ h2 {
   color: #212b36 !important;
   font-weight: 700;
 }
-
 
 /* Containers */
 .cont {
@@ -464,8 +461,7 @@ Form {
 
 /* Media Queries for Responsive Design */
 @media screen and (max-width: 1024px) and (orientation: landscape),
-       screen and (max-width: 834px) and (orientation: portrait) {
-
+  screen and (max-width: 834px) and (orientation: portrait) {
   .content {
     width: 100% !important;
     margin: -10px;
@@ -488,7 +484,7 @@ Form {
   }
 
   .details {
-    width: 110% !important; 
+    width: 110% !important;
   }
 
   .stats-item0,
@@ -496,7 +492,7 @@ Form {
   .stats-item2 {
     width: 110% !important;
     display: flex !important;
-    justify-content: center !important; 
+    justify-content: center !important;
   }
 
   .stats-item-header,
@@ -513,7 +509,7 @@ Form {
     padding: 10px !important;
   }
 
-  .aboutPage{
+  .aboutPage {
     font-size: medium;
   }
 }

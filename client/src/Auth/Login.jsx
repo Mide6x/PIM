@@ -15,7 +15,7 @@ const Login = () => {
     <div className="authbody">
       <Card className="form-container">
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1 }} className="auth-img-wrapper">
             <img src={loginImage} className="auth-img" alt="Login" />
           </div>
           <div style={{ flex: 1 }}>
