@@ -77,7 +77,8 @@ const router = express.Router();
  *       404:
  *         description: Product not found
  */
-router.route("/:id")
+router
+  .route("/:id")
   .get(productController.getProductById)
   .put(productController.updateProduct)
   .delete(productController.deleteProduct);
@@ -191,5 +192,51 @@ router
   .route("/")
   .get(productController.getAllProducts)
   .post(productController.createProduct);
+
+/**
+ * @swagger
+ * /api/v1/products/archive/{id}:
+ *   patch:
+ *     tags:
+ *       - Products
+ *     summary: Archive a product
+ *     description: Mark a product as archived by ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the product to archive.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product archived successfully
+ *       404:
+ *         description: Product not found
+ */
+router.patch("/archive/:id", productController.archiveProduct);
+
+/**
+ * @swagger
+ * /api/v1/products/unarchive/{id}:
+ *   patch:
+ *     tags:
+ *       - Products
+ *     summary: Unarchive a product
+ *     description: Mark a product as unarchived by ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the product to unarchive.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product unarchived successfully
+ *       404:
+ *         description: Product not found
+ */
+router.patch("/unarchive/:id", productController.unarchiveProduct);
 
 module.exports = router;

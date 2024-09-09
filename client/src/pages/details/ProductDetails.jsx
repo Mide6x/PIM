@@ -60,7 +60,7 @@ const ProductDetails = () => {
 
   const handleArchive = async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/products/${id}/archive`);
+      await axios.patch(`http://localhost:3000/api/v1/products/archive/${id}`);
       setIsArchived(true);
       message.success("Product archived successfully 🎉");
     } catch (error) {
@@ -70,7 +70,7 @@ const ProductDetails = () => {
 
   const handleUnarchive = async () => {
     try {
-      await axios.patch(`http://localhost:3000/api/v1/products/${id}/unarchive`);
+      await axios.patch(`http://localhost:3000/api/v1/products/unarchive/${id}`);
       setIsArchived(false);
       message.success("Product unarchived successfully 🎉");
     } catch (error) {

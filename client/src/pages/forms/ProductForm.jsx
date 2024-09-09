@@ -460,7 +460,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
                   Previous
                 </Button>
               )}
-              {currentStep === 2 && (
+              {(currentStep === 1 || currentStep === 2) && (
                 <Button
                   type="default"
                   loading={loading}

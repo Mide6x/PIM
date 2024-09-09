@@ -12,10 +12,18 @@ const productSchema = new mongoose.Schema(
     weight: { type: Number, required: true },
     imageUrl: { type: String, required: true },
     description: { type: String, required: false },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
     createdBy: {
       type: String,
       required: true
     },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    }
   },
   { timestamps: true }
 );

@@ -116,6 +116,41 @@ exports.updateProduct = async (req, res, next) => {
   }
 };
 
+// Archive a product by ID
+exports.archiveProduct = async (req, res, next) => {
+  try {
+    const archivedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      { isArchived: true },
+      { new: true }
+    );
+    if (!archivedProduct) {
+      return res.status(404).json({ message: "Product not found 😔" });
+    }
+    res.status(200).json({ message: "Product archived successfully 🗄️", archivedProduct });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Unarchive a product by ID
+exports.unarchiveProduct = async (req, res, next) => {
+  try {
+    const unarchivedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      { isArchived: false },
+      { new: true }
+    );
+    if (!unarchivedProduct) {
+      return res.status(404).json({ message: "Product not found 😔" });
+    }
+    res.status(200).json({ message: "Product unarchived successfully 📂", unarchivedProduct });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 // Delete a product by ID
 exports.deleteProduct = async (req, res, next) => {
   try {
