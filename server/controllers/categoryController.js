@@ -56,6 +56,37 @@ exports.createCategory = async (req, res) => {
   }
 };
 
+//Bulk Upload and Archive
+exports.bulkUploadAndArchive = async (req, res) => {
+  const {categories} = req.body;
+
+  if (!Array.isArray(categories) || categories.length === 0) {
+    return res.status(400).json({ message: "No Category data provided" });
+  }
+
+  try {
+    const bulkOps = categories.map((category) => ({
+      updateOne: {
+        filter: {name: category.name},
+        update: { $set: {...category, isArchived: true}},
+        upsert: true,
+      },
+    }));
+
+    await Category.bulkWrite(bulkOps);
+
+    res
+      .status(200)
+      .json({ message: "Categories uploaded and archived successfully"});
+  } catch (error) {
+    console.error("Error during bulk upload:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to upload and archive categories"});
+  }
+
+};
+
 // Update a category
 exports.updateCategory = async (req, res) => {
   try {

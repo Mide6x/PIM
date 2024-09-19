@@ -208,4 +208,6 @@ router.patch("/:id/archive", categoryController.archiveCategory);
  */
 router.patch("/:id/unarchive", categoryController.unarchiveCategory);
 
+router.post('/bulk-upload', categoryController.bulkUploadAndArchive);
+
 module.exports = router;

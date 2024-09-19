@@ -33,9 +33,12 @@ const Categories = () => {
   const fetchCategories = async (search = "") => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/categories", {
-        params: { search },
-      });
+      const response = await axios.get(
+        "http://localhost:3000/api/v1/categories",
+        {
+          params: { search },
+        }
+      );
       if (Array.isArray(response.data)) {
         setCategories(response.data.filter((c) => !c.isArchived));
         setArchivedCategories(response.data.filter((c) => c.isArchived));
@@ -51,7 +54,7 @@ const Categories = () => {
     }
   };
 
-  const handleUpload = (info) => {
+  const handleUpload = async (info) => {
     const file = info.file;
     if (!file) {
       message.error("No file selected");
@@ -65,7 +68,7 @@ const Categories = () => {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const arrayBuffer = e.target.result;
       try {
         const wb = XLSX.read(arrayBuffer, { type: "array" });
@@ -73,16 +76,36 @@ const Categories = () => {
         const ws = wb.Sheets[wsname];
         const parsedData = XLSX.utils.sheet_to_json(ws);
 
-        const hasEmptyVariants = parsedData.some(
-          (item) => !item["Manufacturer"]
+        const hasEmptyCategory = parsedData.some(
+          (item) => !item["Category"] || item["Category"].trim() === ""
         );
-        if (hasEmptyVariants) {
+        if (hasEmptyCategory) {
           message.error(
-            "Some rows have empty Manufacturer values. Please check your file. 🤔"
+            "Some rows have empty Category values. Please check your file. 🤔"
           );
           return;
         }
-        console.log("Parsed data:", parsedData);
+
+        const categoriesToSave = parsedData.map((item) => ({
+          name: item["Category"],
+          subcategories: item["Subcategories"]
+            ? item["Subcategories"]
+                .split(",")
+                .map((subcategory) => subcategory.trim())
+            : [],
+        }));
+
+        try {
+          await axios.post(
+            "http://localhost:3000/api/v1/categories/bulk-upload",
+            { categories: categoriesToSave }
+          );
+          message.success("Categories uploaded and archived successfully 🎉");
+          fetchCategories();
+        } catch (error) {
+          message.error("Failed to save categories 😔");
+          console.error("Error saving categories:", error);
+        }
       } catch (error) {
         message.error(
           "Failed to read the file. Ensure it is a valid Excel (XLSX) file. 😔"
@@ -95,11 +118,11 @@ const Categories = () => {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch("/BulkUploadManufacturers.xlsx");
+      const response = await fetch("/BulkUploadCategories.xlsx");
       if (!response.ok) throw new Error("File not found");
 
       const blob = await response.blob();
-      saveAs(blob, "BulkUploadManufacturers.xlsx");
+      saveAs(blob, "BulkUploadCategories.xlsx");
     } catch (error) {
       message.error(`Failed to download template: ${error.message} 😔`);
     }
@@ -270,10 +293,7 @@ const Categories = () => {
               onChange={handleUpload}
               showUploadList={false}
             >
-              <Button
-                type="primary"
-                className="archiveBtn"
-              >
+              <Button type="primary" className="archiveBtn">
                 <FontAwesomeIcon
                   icon={faFileArrowUp}
                   size="lg"

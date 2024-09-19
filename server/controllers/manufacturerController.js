@@ -25,7 +25,6 @@ exports.getManufacturerById = async (req, res) => {
   }
 };
 
-
 // Create a new manufacturer
 exports.createManufacturer = async (req, res) => {
   const manufacturer = new Manufacturer({
@@ -45,12 +44,11 @@ exports.bulkUploadAndArchive = async (req, res) => {
   const { manufacturers } = req.body;
 
   if (!Array.isArray(manufacturers) || manufacturers.length === 0) {
-    return res.status(400).json({ message: 'No manufacturers data provided' });
+    return res.status(400).json({ message: "No manufacturers data provided" });
   }
 
   try {
-    // Map through the array and archive each manufacturer
-    const bulkOps = manufacturers.map(manufacturer => ({
+    const bulkOps = manufacturers.map((manufacturer) => ({
       updateOne: {
         filter: { name: manufacturer.name },
         update: { $set: { ...manufacturer, isArchived: true } },
@@ -58,13 +56,16 @@ exports.bulkUploadAndArchive = async (req, res) => {
       },
     }));
 
-    // Perform bulk write operation
     await Manufacturer.bulkWrite(bulkOps);
 
-    res.status(200).json({ message: 'Manufacturers uploaded and archived successfully' });
+    res
+      .status(200)
+      .json({ message: "Manufacturers uploaded and archived successfully" });
   } catch (error) {
-    console.error('Error during bulk upload:', error);
-    res.status(500).json({ message: 'Failed to upload and archive manufacturers' });
+    console.error("Error during bulk upload:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to upload and archive manufacturers" });
   }
 };
 
@@ -127,4 +128,3 @@ exports.deleteManufacturer = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
