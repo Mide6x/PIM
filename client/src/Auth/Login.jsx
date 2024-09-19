@@ -69,6 +69,7 @@ const Login = () => {
                   className="alert"
                 />
               )}
+            <div style={{ marginTop: 8 }}></div>
               <Form.Item>
                 <Button
                   type={loading ? "default" : "primary"}

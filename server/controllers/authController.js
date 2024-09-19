@@ -36,6 +36,7 @@ exports.signup = async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.error("Error during registration:", error);  // Log the error
     next(error);
   }
 };

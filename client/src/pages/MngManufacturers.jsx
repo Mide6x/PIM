@@ -55,7 +55,7 @@ const MngManufacturers = () => {
     }
   };
 
-  const handleUpload = (info) => {
+  const handleUpload = async (info) => {
     const file = info.file;
     if (!file) {
       message.error("No file selected");
@@ -69,7 +69,7 @@ const MngManufacturers = () => {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const arrayBuffer = e.target.result;
       try {
         const wb = XLSX.read(arrayBuffer, { type: "array" });
@@ -77,16 +77,36 @@ const MngManufacturers = () => {
         const ws = wb.Sheets[wsname];
         const parsedData = XLSX.utils.sheet_to_json(ws);
 
-        const hasEmptyVariants = parsedData.some(
-          (item) => !item["Manufacturer"]
+        const hasEmptyManufacturers = parsedData.some(
+          (item) => !item["Manufacturer"] || item["Manufacturer"].trim() === ""
         );
-        if (hasEmptyVariants) {
+        if (hasEmptyManufacturers) {
           message.error(
-            "Some rows have empty Manufacturer values. Please check your file. 🤔"
+            "Some rows have empty Manufacturer names. Please check your file. 🤔"
           );
           return;
         }
-        console.log("Parsed data:", parsedData);
+
+        const manufacturersToSave = parsedData.map((item) => ({
+          name: item["Manufacturer"],
+          brands: item["Brands"]
+            ? item["Brands"].split(",").map((brand) => brand.trim())
+            : [],
+        }));
+
+        try {
+          await axios.post(
+            "http://localhost:3000/api/v1/manufacturer/bulk-upload",
+            { manufacturers: manufacturersToSave }
+          );
+          message.success(
+            "Manufacturers uploaded and archived successfully 🎉"
+          );
+          fetchManufacturers();
+        } catch (error) {
+          message.error("Failed to save manufacturers 😔");
+          console.error("Error saving manufacturers:", error);
+        }
       } catch (error) {
         message.error(
           "Failed to read the file. Ensure it is a valid Excel (XLSX) file. 😔"

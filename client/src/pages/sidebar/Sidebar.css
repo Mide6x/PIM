@@ -259,12 +259,13 @@
   .bellIconWrapper {
     position: static;
     margin: 0;
+    width: fit-content;
   }
 
   .notificationDot {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 15px;
+    right: 20px;
   }
 
   .logo-img2 {

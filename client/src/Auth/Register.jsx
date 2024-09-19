@@ -106,6 +106,7 @@ const Register = () => {
                   className="alert"
                 />
               )}
+              <div style={{ marginTop: 8 }}></div>
               <Form.Item>
                 <Button
                   type={loading ? "" : "primary"}
