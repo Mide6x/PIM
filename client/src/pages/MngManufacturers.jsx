@@ -100,6 +100,7 @@ const MngManufacturers = () => {
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingManufacturer, setEditingManufacturer] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [activeTab, setActiveTab] = useState("live");
 
   const fetchManufacturers = async (search = "") => {
@@ -176,6 +177,31 @@ const MngManufacturers = () => {
     }
   };
 
+  const handleBulkUnarchive = async () => {
+    console.log("Selected rows to be approved:", selectedRows);
+    setLoading(true);
+    try {
+      const unarchivedItems = selectedRows.map((manufacturer) => ({
+        ...manufacturer,
+      }));
+      await Promise.all(
+        unarchivedItems.map(async (manufacturer) => {
+          console.log("Sending request to server for item:", manufacturer);
+          await axios.patch(
+            `/api/v1/manufacturer/${manufacturer._id}/unarchive`,
+            manufacturer
+          );
+        })
+      );
+      message.success("Selected items unarchived successfully 🎉");
+      fetchManufacturers();
+    } catch (error) {
+      message.error("Failed to unarchived selected items 😔");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDownload = async () => {
     try {
       const response = await fetch("/BulkUploadManufacturers.xlsx");
@@ -204,6 +230,15 @@ const MngManufacturers = () => {
     } catch (error) {
       message.error("Failed to delete manufacturer 😔");
     }
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedRows(selectedRows);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.status === "",
+    }),
   };
 
   const handleCreate = () => {
@@ -273,10 +308,20 @@ const MngManufacturers = () => {
                   handleUnarchive
                 )}
                 dataSource={archivedManufacturers}
+                rowSelection={rowSelection}
                 loading={loading}
                 rowKey="_id"
                 pagination={{ position: ["bottomCenter"] }}
               />
+              <Button
+                type="primary"
+                className="spaced archiveBtn"
+                onClick={handleBulkUnarchive}
+                style={{ marginTop: "20px" }}
+                disabled={selectedRows.length === 0}
+              >
+                Unarchive Selected
+              </Button>
             </TabPane>
           </Tabs>
         </div>

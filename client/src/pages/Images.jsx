@@ -284,6 +284,7 @@ const Images = () => {
                 type="primary"
                 className="spaced editBtn"
                 onClick={processImages}
+                style={{ marginTop: "20px" }}
                 loading={loading}
                 disabled={loading || !data.length}
               >
@@ -303,7 +304,7 @@ const Images = () => {
                 <Button
                   type="primary"
                   className="spaced editBtn"
-                  style={{ marginBottom: "20px" }}
+                    style={{ marginTop: "20px" }}
                   disabled={processedImages.length === 0}
                 >
                   Next

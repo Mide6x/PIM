@@ -343,7 +343,7 @@ const Approval = () => {
                 type="primary"
                 className="spaced archiveBtn"
                 onClick={handleBulkApprove}
-                style={{ marginBottom: "20px" }}
+                  style={{ marginTop: "20px" }}
                 disabled={selectedRows.length === 0}
               >
                 Approve Selected
@@ -363,7 +363,7 @@ const Approval = () => {
                 type="primary"
                 onClick={handleConfirm}
                 className="spaced addBtn"
-                style={{ marginBottom: "20px" }}
+                  style={{ marginTop: "20px" }}
                 disabled={selectedRows.length === 0}
               >
                 Confirm and Push to Database
@@ -392,7 +392,7 @@ const Approval = () => {
                 type="primary"
                 onClick={handleDeleteDuplicates}
                 className="spaced deleteBtn"
-                style={{ marginBottom: "20px" }}
+                  style={{ marginTop: "20px" }}
                 danger
               >
                 Delete Duplicates
