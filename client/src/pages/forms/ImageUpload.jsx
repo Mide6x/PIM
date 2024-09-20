@@ -23,7 +23,7 @@ const ImageUploadSection = ({ setImageUrl }) => {
     formData.append("image", file);
   
     try {
-      const response = await axios.post("http://localhost:3000/api/v1/processedproductformimages", formData, {
+      const response = await axios.post("/api/v1/processedproductformimages", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

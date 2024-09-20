@@ -1,100 +1,95 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button, Table, Modal, Flex, message, Space } from "antd";
 import axios from "axios";
 import VariantForm from "./forms/VariantsForm";
 import useAuth from "../contexts/useAuth";
 
-const ManageVariants = () => {
-  const { userData } = useAuth();
+
+const useVariants = (userId, setLoading) => {
   const [variants, setVariants] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingVariant, setEditingVariant] = useState(null);
-  const fetchVariants = async () => {
+
+  const fetchVariants = useCallback(async () => {
+    if (!userId) return;
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/variants");
-      const data = response?.data?.data; // Adjust based on actual response structure
-  
+      const response = await axios.get("/api/v1/variants");
+      const data = response?.data?.data;
+
       if (Array.isArray(data)) {
-        setVariants(data ?? []);
+        setVariants(data);
       } else {
-        message.error("Unexpected data format. Expected an array 😔");
-        setVariants([]);
+        throw new Error("Unexpected data format");
       }
     } catch (error) {
-      console.error("Error fetching variants:", error);
       message.error("Failed to fetch variants 😔");
-      setVariants([]);
+      console.error("Error fetching variants:", error);
     } finally {
       setLoading(false);
     }
-  };
-  
+  }, [userId, setLoading]);
 
   useEffect(() => {
-    if (userData && userData._id) {
     fetchVariants();
+  }, [fetchVariants]);
+
+  return { variants, fetchVariants };
+};
+
+
+const handleApiRequest = async (requestType, url, payload = null) => {
+  try {
+    const response = requestType === "delete"
+      ? await axios.delete(url)
+      : await axios[requestType](url, payload);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response ? error.response.data : error.message);
   }
-  }, [userData]);
+};
 
-  const handleCreate = () => {
-    setEditingVariant(null);
-    setIsModalVisible(true);
-  };
+const ManageVariants = () => {
+  const { userData } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingVariant, setEditingVariant] = useState(null);
+  const { variants, fetchVariants } = useVariants(userData?._id, setLoading);
 
-  const handleEdit = (variant) => {
+  const createdBy = userData?.email || userData?._id || null;
+  if (!createdBy) {
+    throw new Error("User data is missing, and 'createdBy' cannot be set.");
+  }
+
+  const handleModalOpen = (variant = null) => {
     setEditingVariant(variant);
     setIsModalVisible(true);
   };
 
+  const handleSaveVariant = async (values) => {
+    const url = editingVariant
+      ? `/api/v1/variants/${editingVariant._id}`
+      : "/api/v1/variants";
+    const requestType = editingVariant ? "put" : "post";
+    const payload = { ...values, createdBy };
+
+    try {
+      await handleApiRequest(requestType, url, payload);
+      message.success(editingVariant ? "Variant updated 🎉" : "Variant created 🎉");
+      fetchVariants();
+      setIsModalVisible(false);
+    } catch (error) {
+      message.error("Failed to save variant 😔");
+      console.error("Error saving variant:", error.message);
+    }
+  };
+
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/variants/${id}`);
+      await handleApiRequest("delete", `/api/v1/variants/${id}`);
       message.success("Variant deleted successfully 🎉");
       fetchVariants();
     } catch (error) {
       message.error("Failed to delete variant 😔");
     }
-  };
-
-  const createdBy =
-  userData && userData.email
-    ? String(userData.email)
-    : userData && userData._id
-    ? String(userData._id)
-    : null;
-
-if (!createdBy) {
-  throw new Error(
-    "User data is missing, and 'createdBy' cannot be set."
-  );
-}
-
-const handleOk = async (values) => {
-  try {
-    console.log("Submitting values:", values);
-    if (editingVariant) {
-      await axios.put(
-        `http://localhost:3000/api/v1/variants/${editingVariant._id}`,
-        { ...values, createdBy: createdBy }
-      );
-      message.success("Variant updated successfully 🎉");
-    } else {
-      await axios.post("http://localhost:3000/api/v1/variants", { ...values, createdBy: createdBy });
-      message.success("Variant created successfully 🎉");
-    }
-    fetchVariants();
-    setIsModalVisible(false);
-  } catch (error) {
-    console.error("Error saving variant:", error.response ? error.response.data : error.message);
-    message.error("Failed to save variant 😔");
-  }
-};
-
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
   };
 
   const columns = [
@@ -107,71 +102,54 @@ const handleOk = async (values) => {
       title: "Sub-Variants",
       dataIndex: "subvariants",
       key: "subVariants",
-      render: (subVariants) => {
-        if (Array.isArray(subVariants)) {
-          return subVariants.map((variant) => variant.name).join(", ");
-        }
-        return "No sub-variants"; 
-      },
-    } ,
+      render: (subVariants) =>
+        Array.isArray(subVariants)
+          ? subVariants.map((variant) => variant.name).join(", ")
+          : "No sub-variants",
+    },
     {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
-          <Button className="editBtn" onClick={() => handleEdit(record)}>Edit</Button>
-          <Button className="deleteBtn" onClick={() => handleDelete(record._id)}>
-            Delete
-          </Button>
+          <Button className="editBtn" onClick={() => handleModalOpen(record)}>Edit</Button>
+          <Button className="deleteBtn" onClick={() => handleDelete(record._id)}>Delete</Button>
         </Space>
       ),
     },
   ];
 
   return (
-    <>
-      {userData && (
     <Flex vertical flex={1} className="content">
-    <div>
       <div className="intro">
-      <h2>Manage Variants</h2>
-      <p className="aboutPage" style={{ marginBottom: "10px" }}>
-            Create custome variants to provide your customers more information abount the products in your catalogue  
-          </p>
-      <div className="searchBarContainer">
-      <Button className="addBtn"  type="primary" onClick={handleCreate}>
-        Add Variant
-      </Button>
+        <h2>Manage Variants</h2>
+        <p className="aboutPage">Create custom variants to provide more product information</p>
+        <div className="searchBarContainer">
+        <Button type="primary" className="addBtn" onClick={() => handleModalOpen()}>Add Variant</Button>
       </div>
       </div>
-
       <div className="details">
-          <span style={{ margin: "0 8px", marginTop: "60px" }} />
       <Table
         columns={columns}
         dataSource={variants}
         loading={loading}
         rowKey="_id"
-        pagination={{ position: ["bottomCenter"] }}
          className="table"
+        pagination={{ position: ["bottomCenter"] }}
       />
       <Modal
         title={editingVariant ? "Edit Variant" : "Create Variant"}
         open={isModalVisible}
-        onCancel={handleCancel}
+        onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
         <VariantForm
           initialValues={editingVariant}
-          onCancel={handleCancel}
-          onOk={handleOk}
+          onCancel={() => setIsModalVisible(false)}
+          onOk={handleSaveVariant}
         />
-      </Modal>
-      </div>
-    </div>
+      </Modal></div>
     </Flex>
-      )}
-    </>
   );
 };
 

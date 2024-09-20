@@ -7,94 +7,74 @@ import userImage from "../../assets/user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faBars } from "@fortawesome/free-solid-svg-icons";
 
+const fetchNotifications = async (userId, setHasNotifications) => {
+  try {
+    const response = await axios.get(`/api/v1/notifications/`);
+    const unreadNotifications = response.data.data.some(notification => !notification.read);
+    setHasNotifications(unreadNotifications);
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+  }
+};
+
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  return hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+};
+
 const Topbar = () => {
   const { userData } = useAuth();
   const [showSidebar, setShowSidebar] = useState(false);
   const [hasNotifications, setHasNotifications] = useState(false);
 
   useEffect(() => {
-    if (userData && userData._id) {
-      axios.get(`http://localhost:3000/api/v1/notifications/`)
-        .then((response) => {
-          const unreadNotifications = response.data.data.some(notification => !notification.read);
-          setHasNotifications(unreadNotifications);
-        })
-        .catch((error) => {
-          console.error("Error fetching notifications:", error);
-        });
+    if (userData?._id) {
+      fetchNotifications(userData._id, setHasNotifications);
     }
   }, [userData]);
-
-  const getGreeting = () => {
-    const now = new Date();
-    const hour = now.getHours();
-
-    if (hour < 12) {
-      return "Good Morning";
-    } else if (hour < 17) {
-      return "Good Afternoon";
-    } else {
-      return "Good Evening";
-    }
-  };
 
   const handleBellClick = () => {
     setShowSidebar(true);
     setHasNotifications(false);
   };
 
-  const handleSidebarClose = () => {
-    setShowSidebar(false);
-  };
-
   const toggleSidebar = () => {
-    const sidebar = document.querySelector('.barbody');
-    if (sidebar) {
-      sidebar.classList.toggle('show');
-    }
+    document.querySelector('.barbody')?.classList.toggle('show');
   };
 
-  return (
+  return userData ? (
     <>
-      {userData && (
-        <div className="topbarContent">
-          <div className="showSidebar" onClick={toggleSidebar}>
-            <FontAwesomeIcon icon={faBars} size="xl" style={{ color: "#069f7e" }} />
+      <div className="topbarContent">
+        <div className="showSidebar" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faBars} size="xl" style={{ color: "#069f7e" }} />
+        </div>
+        <div className="topbarContent0">
+          <h3>{getGreeting()}, <span>{userData.name} 👋</span></h3>
+        </div>
+        <div className="topbarContent1">
+          <div className="flex1">
+            <div className="bellIconWrapper">
+              <FontAwesomeIcon
+                icon={faBell}
+                size="xl"
+                className="iconContent3"
+                onClick={handleBellClick}
+              />
+              {hasNotifications && <div className="notificationDot"></div>}
+            </div>
           </div>
-          <div className="topbarContent0">
-            <h3>
-              {getGreeting()}, <span>{userData.name} 👋 </span>
-            </h3>
+          <div className="flex2">
+            <img src={userImage} className="logo-img2" alt="User" />
           </div>
-          <div className="topbarContent1">
-            <div className="flex1">
-              <div className="bellIconWrapper">
-                <FontAwesomeIcon
-                  icon={faBell}
-                  size="xl"
-                  className="iconContent3"
-                  onClick={handleBellClick}
-                />
-                {hasNotifications && <div className="notificationDot"></div>}
-              </div>
-            </div>
-            <div className="flex2">
-              <img src={userImage} className="logo-img2" alt="User" />
-            </div>
-            <div className="flex3">
-              <h3>
-                <span>{userData.name}.</span>
-              </h3>
-              <p style={{ fontSize: "12px", color: "#878787" }}>
-                {userData.email}
-              </p>
-            </div>
+          <div className="flex3">
+            <h3><span>{userData.name}.</span></h3>
+            <p style={{ fontSize: "12px", color: "#878787" }}>{userData.email}</p>
           </div>
         </div>
-      )}
-      {showSidebar && <NotificationSidebar userId={userData._id} onClose={handleSidebarClose} />}
+      </div>
+      {showSidebar && <NotificationSidebar userId={userData._id} onClose={() => setShowSidebar(false)} />}
     </>
-  );
+  ) : null;
 };
 
 export default Topbar;

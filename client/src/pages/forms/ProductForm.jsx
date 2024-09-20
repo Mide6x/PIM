@@ -62,7 +62,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/categories"
+        "/api/v1/categories"
       );
       setCategories(response.data);
     } catch (error) {
@@ -73,7 +73,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const fetchSubcategories = useCallback(async (categoryName) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/categories/${categoryName}/subcategories`
+        `/api/v1/categories/${categoryName}/subcategories`
       );
       if (Array.isArray(response.data.subcategories)) {
         setSubcategories(response.data.subcategories);
@@ -88,7 +88,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
   const fetchManufacturers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/manufacturer"
+        "/api/v1/manufacturer"
       );
       setManufacturers(response.data);
     } catch (error) {
@@ -98,7 +98,7 @@ const ProductForm = ({ initialValues, onCancel, onOk }) => {
 
   const fetchVariants = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/variants");
+      const response = await axios.get("/api/v1/variants");
       console.log("Response:", response);
       const variantsData = response.data.data;
       setVariants(Array.isArray(variantsData) ? variantsData : []);

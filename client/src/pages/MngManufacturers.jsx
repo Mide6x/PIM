@@ -23,6 +23,77 @@ import { Link } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
+const formatDate = (dateString) => {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+  return date.toLocaleString("en-GB", options).replace(",", " ");
+};
+
+// Common column generator for manufacturers table
+const createColumns = (handleEdit, handleDelete, handleUnarchive = null) => [
+  {
+    title: "Name",
+    dataIndex: "name",
+    key: "name",
+    render: (text, record) => (
+      <Link className="nameListing" to={`/manufacturers/${record._id}`}>
+        {text}
+      </Link>
+    ),
+  },
+  {
+    title: "Date Created",
+    dataIndex: "updatedAt",
+    key: "updatedAt",
+    render: formatDate,
+  },
+  {
+    title: "Number of Brands",
+    dataIndex: "brands",
+    key: "brands",
+    render: (brands) => <span>{brands.length}</span>,
+  },
+  {
+    title: "Actions",
+    key: "actions",
+    render: (text, record) => (
+      <Space size="middle">
+        <Button className="editBtn" onClick={() => handleEdit(record)}>
+          Edit
+        </Button>
+        {handleUnarchive ? (
+          <>
+            <Button
+              className="unarchiveBtn"
+              onClick={() => handleUnarchive(record)}
+            >
+              Unarchive
+            </Button>
+            <Button
+              className="deleteBtn"
+              onClick={() => handleDelete(record._id)}
+            >
+              Delete
+            </Button>
+          </>
+        ) : (
+          <Link to={`/manufacturers/${record._id}`}>
+            <Button className="archiveBtn">View Details</Button>
+          </Link>
+        )}
+      </Space>
+    ),
+  },
+];
+
 const MngManufacturers = () => {
   const [manufacturers, setManufacturers] = useState([]);
   const [archivedManufacturers, setArchivedManufacturers] = useState([]);
@@ -35,18 +106,17 @@ const MngManufacturers = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/manufacturer",
-        {
-          params: { search },
-        }
+        "/api/v1/manufacturer",
+        { params: { search } }
       );
-      if (Array.isArray(response.data)) {
-        setManufacturers(response.data.filter((m) => !m.isArchived));
-        setArchivedManufacturers(response.data.filter((m) => m.isArchived));
+      const data = response.data;
+      if (Array.isArray(data)) {
+        setManufacturers(data.filter((m) => !m.isArchived));
+        setArchivedManufacturers(data.filter((m) => m.isArchived));
       } else {
+        message.error("Invalid data format received from server 🤔");
         setManufacturers([]);
         setArchivedManufacturers([]);
-        message.error("Invalid data format received from server 🤔");
       }
     } catch (error) {
       message.error("Failed to fetch manufacturers 😔");
@@ -57,71 +127,59 @@ const MngManufacturers = () => {
 
   const handleUpload = async (info) => {
     const file = info.file;
-    if (!file) {
-      message.error("No file selected");
-      return;
-    }
-    if (
-      !file.type.includes("spreadsheetml.sheet") &&
-      !file.type.includes("excel")
-    ) {
-      message.error("Invalid file type. Please upload an Excel file. 🤔");
+    if (!file || !file.type.includes("spreadsheetml.sheet")) {
+      message.error("Please upload a valid Excel file. 🤔");
       return;
     }
     const reader = new FileReader();
     reader.onload = async (e) => {
-      const arrayBuffer = e.target.result;
       try {
-        const wb = XLSX.read(arrayBuffer, { type: "array" });
-        const wsname = wb.SheetNames[0];
-        const ws = wb.Sheets[wsname];
+        const wb = XLSX.read(e.target.result, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
         const parsedData = XLSX.utils.sheet_to_json(ws);
-
-        const hasEmptyManufacturers = parsedData.some(
-          (item) => !item["Manufacturer"] || item["Manufacturer"].trim() === ""
-        );
-        if (hasEmptyManufacturers) {
-          message.error(
-            "Some rows have empty Manufacturer names. Please check your file. 🤔"
-          );
-          return;
-        }
-
         const manufacturersToSave = parsedData.map((item) => ({
           name: item["Manufacturer"],
           brands: item["Brands"]
             ? item["Brands"].split(",").map((brand) => brand.trim())
             : [],
         }));
-
-        try {
-          await axios.post(
-            "http://localhost:3000/api/v1/manufacturer/bulk-upload",
-            { manufacturers: manufacturersToSave }
-          );
-          message.success(
-            "Manufacturers uploaded and archived successfully 🎉"
-          );
-          fetchManufacturers();
-        } catch (error) {
-          message.error("Failed to save manufacturers 😔");
-          console.error("Error saving manufacturers:", error);
-        }
+        await saveManufacturers(manufacturersToSave);
+        fetchManufacturers();
       } catch (error) {
-        message.error(
-          "Failed to read the file. Ensure it is a valid Excel (XLSX) file. 😔"
-        );
-        console.error("Error reading file:", error);
+        message.error("Failed to process the Excel file. 😔");
       }
     };
     reader.readAsArrayBuffer(file);
+  };
+
+  const saveManufacturers = async (manufacturersToSave) => {
+    try {
+      await axios.post(
+        "/api/v1/manufacturer/bulk-upload",
+        { manufacturers: manufacturersToSave }
+      );
+      message.success("Manufacturers uploaded successfully 🎉");
+    } catch (error) {
+      message.error("Failed to save manufacturers 😔");
+    }
+  };
+
+  const handleUnarchive = async (manufacturer) => {
+    try {
+      await axios.patch(
+        `/api/v1/manufacturer/${manufacturer._id}/unarchive`
+      );
+      message.success(`${manufacturer.name} has been unarchived 🎉`);
+      fetchManufacturers();
+    } catch (error) {
+      message.error("Failed to unarchive manufacturer 😔");
+    }
   };
 
   const handleDownload = async () => {
     try {
       const response = await fetch("/BulkUploadManufacturers.xlsx");
       if (!response.ok) throw new Error("File not found");
-
       const blob = await response.blob();
       saveAs(blob, "BulkUploadManufacturers.xlsx");
     } catch (error) {
@@ -140,7 +198,7 @@ const MngManufacturers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/manufacturer/${id}`);
+      await axios.delete(`/api/v1/manufacturer/${id}`);
       message.success("Manufacturer deleted successfully 🎉");
       fetchManufacturers();
     } catch (error) {
@@ -155,16 +213,16 @@ const MngManufacturers = () => {
 
   const handleOk = async (values) => {
     try {
-      if (editingManufacturer) {
-        await axios.put(
-          `http://localhost:3000/api/v1/manufacturer/${editingManufacturer._id}`,
-          values
-        );
-        message.success("Manufacturer updated successfully 🎉");
-      } else {
-        await axios.post("http://localhost:3000/api/v1/manufacturer", values);
-        message.success("Manufacturer created successfully 🎉");
-      }
+      const url = editingManufacturer
+        ? `/api/v1/manufacturer/${editingManufacturer._id}`
+        : "/api/v1/manufacturer";
+      const method = editingManufacturer ? "put" : "post";
+      await axios[method](url, values);
+      message.success(
+        `Manufacturer ${
+          editingManufacturer ? "updated" : "created"
+        } successfully 🎉`
+      );
       fetchManufacturers();
       setIsModalVisible(false);
     } catch (error) {
@@ -172,148 +230,9 @@ const MngManufacturers = () => {
     }
   };
 
-  const handleUnarchive = async (manufacturer) => {
-    try {
-      await axios.patch(
-        `http://localhost:3000/api/v1/manufacturer/${manufacturer._id}/unarchive`
-      );
-      message.success("Manufacturer unarchived successfully 🎉");
-      fetchManufacturers();
-    } catch (error) {
-      message.error("Failed to unarchive manufacturer 😔");
-    }
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const handleSearch = debounce((value) => {
-    if (value.length >= 3) {
-      fetchManufacturers(value);
-    } else {
-      fetchManufacturers();
-    }
+    value.length >= 3 ? fetchManufacturers(value) : fetchManufacturers();
   }, 300);
-
-  const manufacturerCount = manufacturers.length + archivedManufacturers.length;
-  const activeManufacturerCount = manufacturers.length;
-  const inactiveManufacturerCount = archivedManufacturers.length;
-
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => (
-        <Link className="nameListing" to={`/manufacturers/${record._id}`}>
-          {text}
-        </Link>
-      ),
-    },
-    {
-      title: "Date Created",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (text) => {
-        if (!text) return null;
-        const date = new Date(text);
-        const options = {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        };
-        return date.toLocaleString("en-GB", options).replace(",", " |");
-      },
-    },
-    {
-      title: "Number of Brands",
-      dataIndex: "brands",
-      key: "brands",
-      render: (brands) => <span>{brands.length}</span>,
-    },
-
-    {
-      title: "Actions",
-      key: "actions",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button className="editBtn" onClick={() => handleEdit(record)}>
-            Edit
-          </Button>
-
-          <Link to={`/manufacturers/${record._id}`}>
-            <Button className="archiveBtn">View Details</Button>
-          </Link>
-        </Space>
-      ),
-    },
-  ];
-
-  const archivedColumns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-
-      render: (text, record) => (
-        <Link className="nameListing" to={`/manufacturers/${record._id}`}>
-          {text}
-        </Link>
-      ),
-    },
-    {
-      title: "Date Created",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
-      render: (text) => {
-        if (!text) return null;
-        const date = new Date(text);
-        const options = {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        };
-        return date.toLocaleString("en-GB", options).replace(",", " ");
-      },
-    },
-    {
-      title: "Number of Brands",
-      dataIndex: "brands",
-      key: "brands",
-      render: (brands) => <span>{brands.length}</span>,
-    },
-
-    {
-      title: "Actions",
-      key: "actions",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button className="editBtn" onClick={() => handleEdit(record)}>
-            Edit
-          </Button>
-          <Button
-            className="unarchiveBtn"
-            onClick={() => handleUnarchive(record)}
-          >
-            Unarchive
-          </Button>
-          <Button
-            className="deleteBtn"
-            onClick={() => handleDelete(record._id)}
-          >
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ];
 
   return (
     <Flex vertical flex={1} className="content">
@@ -321,74 +240,25 @@ const MngManufacturers = () => {
         <div className="intro">
           <h2>Manufacturers</h2>
         </div>
-        <div className="stats-container">
-          <Card className="stats-item0">
-            <div className="stats-item-content">
-              <div className="text-content">
-                <p className="stats-item-header">Total Manufacturer</p>
-                <p className="stats-item-body">{manufacturerCount}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="stats-item1">
-            <div className="stats-item-content">
-              <div className="text-content">
-                <p className="stats-item-header">Active Manufacturers</p>
-                <p className="stats-item-body">{activeManufacturerCount}</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="stats-item2">
-            <div className="stats-item-content">
-              <div className="text-content">
-                <p className="stats-item-header">Inactive Manufacturers</p>
-                <p className="stats-item-body">{inactiveManufacturerCount}</p>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <ManufacturerStats
+          manufacturerCount={
+            manufacturers.length + archivedManufacturers.length
+          }
+          activeManufacturerCount={manufacturers.length}
+          inactiveManufacturerCount={archivedManufacturers.length}
+        />
         <div className="details">
           <span style={{ margin: "0 8px", marginTop: "60px" }} />
-          <div className="searchBarContainer">
-            <Input
-              placeholder="Search Manufacturer by name"
-              onChange={(e) => handleSearch(e.target.value)}
-              style={{ width: "100%" }}
-              className="searchBar"
-            />
-            <Button type="primary" className="addBtn" onClick={handleDownload}>
-              Download Excel Template
-            </Button>
-            <Upload
-              name="file"
-              accept=".xlsx, .xls"
-              beforeUpload={() => false}
-              onChange={handleUpload}
-              showUploadList={false}
-            >
-              <Button type="primary" className="archiveBtn">
-                <FontAwesomeIcon
-                  icon={faFileArrowUp}
-                  size="lg"
-                  style={{ color: "#008162" }}
-                />
-                Bulk Upload Manufacturers
-              </Button>
-            </Upload>
-
-            <Button type="primary" className="addBtn" onClick={handleCreate}>
-              Add Manufacturer
-            </Button>
-          </div>
-          <Tabs
-            activeKey={activeTab}
-            onChange={(key) => setActiveTab(key)}
-            className="table"
-          >
+          <ManufacturerActions
+            handleDownload={handleDownload}
+            handleUpload={handleUpload}
+            handleCreate={handleCreate}
+            handleSearch={handleSearch}
+          />
+          <Tabs    className="table" activeKey={activeTab} onChange={setActiveTab}>
             <TabPane tab="Live Manufacturers" key="live">
               <Table
-                columns={columns}
+                columns={createColumns(handleEdit)}
                 dataSource={manufacturers}
                 loading={loading}
                 rowKey="_id"
@@ -397,7 +267,11 @@ const MngManufacturers = () => {
             </TabPane>
             <TabPane tab="Archived Manufacturers" key="archived">
               <Table
-                columns={archivedColumns}
+                columns={createColumns(
+                  handleEdit,
+                  handleDelete,
+                  handleUnarchive
+                )}
                 dataSource={archivedManufacturers}
                 loading={loading}
                 rowKey="_id"
@@ -406,86 +280,132 @@ const MngManufacturers = () => {
             </TabPane>
           </Tabs>
         </div>
-        <Modal
-          title={
-            editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"
-          }
-          open={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <ManufacturerForm
-            initialValues={editingManufacturer}
-            onCancel={handleCancel}
-            onOk={handleOk}
-          />
-        </Modal>
+        <ManufacturerModal
+          isVisible={isModalVisible}
+          editingManufacturer={editingManufacturer}
+          onCancel={() => setIsModalVisible(false)}
+          onOk={handleOk}
+        />
       </div>
     </Flex>
   );
 };
 
-const ManufacturerForm = ({ initialValues, onCancel, onOk }) => {
-  const [form] = Form.useForm();
+const ManufacturerStats = ({
+  manufacturerCount,
+  activeManufacturerCount,
+  inactiveManufacturerCount,
+}) => (
+  <div className="stats-container">
+    <Card className="stats-item0">
+      <div className="stats-item-content">
+        <div className="text-content">
+          <p className="stats-item-header">Total Manufacturer</p>
+          <p className="stats-item-body">{manufacturerCount}</p>
+        </div>
+      </div>
+    </Card>
+    <Card className="stats-item1">
+      <div className="stats-item-content">
+        <div className="text-content">
+          <p className="stats-item-header">Active Manufacturers</p>
+          <p className="stats-item-body">{activeManufacturerCount}</p>
+        </div>
+      </div>
+    </Card>
+    <Card className="stats-item2">
+      <div className="stats-item-content">
+        <div className="text-content">
+          <p className="stats-item-header">Inactive Manufacturers</p>
+          <p className="stats-item-body">{inactiveManufacturerCount}</p>
+        </div>
+      </div>
+    </Card>
+  </div>
+);
 
-  useEffect(() => {
-    form.setFieldsValue(initialValues);
-  }, [initialValues, form]);
+const ManufacturerActions = ({
+  handleDownload,
+  handleUpload,
+  handleCreate,
+  handleSearch,
+}) => (
+  <div className="searchBarContainer">
+    <Input
+      placeholder="Search Manufacturer"
+      onChange={(e) => handleSearch(e.target.value)}
+        style={{ width: "100%" }}
+              className="searchBar"
+    />
+    <Button className="addBtn" onClick={handleDownload}>
+      Download Template
+    </Button>
+    <Upload beforeUpload={() => false} onChange={handleUpload}>
+      <Button className="archiveBtn">
+        <FontAwesomeIcon
+          size="lg"
+          style={{ color: "#008162" }}
+          icon={faFileArrowUp}
+        />{" "}
+        Bulk Upload
+      </Button>
+    </Upload>
+    <Button className="addBtn" onClick={handleCreate}>
+      Add Manufacturer
+    </Button>
+  </div>
+);
 
-  const onFinish = (values) => {
-    onOk(values);
-  };
-
-  return (
-    <Form form={form} onFinish={onFinish}>
-      <p className="formTitle">Manufacturer Details</p>
+const ManufacturerModal = ({
+  isVisible,
+  editingManufacturer,
+  onCancel,
+  onOk,
+}) => (
+  <Modal
+    title={editingManufacturer ? "Edit Manufacturer" : "Create Manufacturer"}
+    open={isVisible}
+    onCancel={onCancel}
+    footer={null}
+  >
+    <Form initialValues={editingManufacturer} onFinish={onOk}>
       <Form.Item
+        label="Manufacturer Name"
         name="name"
-        rules={[{ required: true, message: "Please input the name!" }]}
+        rules={[{ required: true, message: "Please enter a name" }]}
       >
-        <Input className="userInput" placeholder="Name" />
+        <Input className="userInput" placeholder="Enter manufacturer name" />
       </Form.Item>
-      <Form.Item
-        name="brands"
-        rules={[
-          {
-            required: true,
-            message: "Please input the brands!",
-          },
-        ]}
-      >
-        <Input className="userInput" placeholder="Brands" />
+      <Form.Item label="Brands (comma separated)" name="brands">
+        <Input.TextArea className="userInput" placeholder="Enter brands" />
       </Form.Item>
-      <Form.Item className="concludeBtns">
-        <Button className="editBtn" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          className="addBtn"
-          type="primary"
-          htmlType="submit"
-          style={{ marginLeft: "10px" }}
-        >
-          Save
+      <Form.Item>
+        <Button  className="addBtn" type="primary" htmlType="submit">
+          {editingManufacturer ? "Save" : "Create"}
         </Button>
       </Form.Item>
     </Form>
-  );
+  </Modal>
+);
+
+ManufacturerStats.propTypes = {
+  manufacturerCount: PropTypes.number.isRequired,
+  activeManufacturerCount: PropTypes.number.isRequired,
+  inactiveManufacturerCount: PropTypes.number.isRequired,
 };
 
-ManufacturerForm.propTypes = {
-  initialValues: PropTypes.object,
+ManufacturerActions.propTypes = {
+  handleDownload: PropTypes.func.isRequired,
+  handleUpload: PropTypes.func.isRequired,
+  handleCreate: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+};
+
+ManufacturerModal.propTypes = {
+  isVisible: PropTypes.bool.isRequired,
+  editingManufacturer: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,
-};
-
-MngManufacturers.propTypes = {
-  manufacturers: PropTypes.array,
-  archivedManufacturers: PropTypes.array,
-  loading: PropTypes.bool,
-  isModalVisible: PropTypes.bool,
-  editingManufacturer: PropTypes.object,
-  activeTab: PropTypes.string,
 };
 
 export default MngManufacturers;

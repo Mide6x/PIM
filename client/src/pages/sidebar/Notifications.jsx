@@ -1,27 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./Sidebar.css";
 import PropTypes from "prop-types";
 
+const API_URL = "/api/v1/notifications/";
+
 const NotificationSidebar = ({ onClose }) => {
   const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("Fetching all notifications");
-    axios
-      .get("http://localhost:3000/api/v1/notifications/")
-      .then((response) => {
+    const fetchNotifications = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(API_URL);
         setNotifications(response.data.data || []);
-      })
-      .catch((error) => {
-        console.error("Error fetching notifications:", error);
-        setNotifications([]);
-      });
+      } catch (err) {
+        console.error("Error fetching notifications:", err);
+        setError("Failed to load notifications.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
   }, []);
 
-  const handleNotificationClick = (id) => {
-    axios
-      .patch(`http://localhost:3000/api/v1/notifications/${id}/read`)
+  const handleNotificationClick = useCallback((id) => {
+    axios.patch(`${API_URL}${id}/read`)
       .then(() => {
         setNotifications((prev) =>
           prev.map((notification) =>
@@ -34,11 +42,10 @@ const NotificationSidebar = ({ onClose }) => {
       .catch((error) => {
         console.error("Error marking notification as read:", error);
       });
-  };
+  }, []);
 
-  const handleNotificationDelete = (id) => {
-    axios
-      .delete(`http://localhost:3000/api/v1/notifications/${id}`)
+  const handleNotificationDelete = useCallback((id) => {
+    axios.delete(`${API_URL}${id}`)
       .then(() => {
         setNotifications((prev) =>
           prev.filter((notification) => notification._id !== id)
@@ -47,6 +54,31 @@ const NotificationSidebar = ({ onClose }) => {
       .catch((error) => {
         console.error("Error deleting notification:", error);
       });
+  }, []);
+
+  const renderNotifications = () => {
+    if (loading) return <p>Loading notifications...</p>;
+    if (error) return <p>{error}</p>;
+    if (notifications.length === 0) return <p>No notifications</p>;
+
+    return notifications.map((notification) => (
+      <div
+        key={notification._id}
+        className={`notificationItem ${notification.read ? "read" : "unread"}`}
+        onClick={() => handleNotificationClick(notification._id)}
+      >
+        {notification.message}
+        <button
+          className="deleteButton"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleNotificationDelete(notification._id);
+          }}
+        >
+          🗑️
+        </button>
+      </div>
+    ));
   };
 
   return (
@@ -55,30 +87,7 @@ const NotificationSidebar = ({ onClose }) => {
         ✖
       </button>
       <div className="notificationContent">
-        {notifications.length > 0 ? (
-          notifications.map((notification) => (
-            <div
-              key={notification._id}
-              className={`notificationItem ${
-                notification.read ? "read" : "unread"
-              }`}
-              onClick={() => handleNotificationClick(notification._id)}
-            >
-              {notification.message}
-              <button
-                className="deleteButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNotificationDelete(notification._id);
-                }}
-              >
-                🗑️
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>No notifications</p>
-        )}
+        {renderNotifications()}
       </div>
     </div>
   );

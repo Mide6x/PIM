@@ -34,7 +34,7 @@ const Categories = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/v1/categories",
+        "/api/v1/categories",
         {
           params: { search },
         }
@@ -97,7 +97,7 @@ const Categories = () => {
 
         try {
           await axios.post(
-            "http://localhost:3000/api/v1/categories/bulk-upload",
+            "/api/v1/categories/bulk-upload",
             { categories: categoriesToSave }
           );
           message.success("Categories uploaded and archived successfully 🎉");
@@ -139,7 +139,7 @@ const Categories = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/categories/${id}`);
+      await axios.delete(`/api/v1/categories/${id}`);
       message.success("Category deleted successfully 🎉");
       fetchCategories();
     } catch (error) {
@@ -150,7 +150,7 @@ const Categories = () => {
   const handleUnarchive = async (category) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/v1/categories/${category._id}/unarchive`
+        `/api/v1/categories/${category._id}/unarchive`
       );
       message.success("Category unarchived successfully 🎉");
       fetchCategories();
@@ -168,12 +168,12 @@ const Categories = () => {
     try {
       if (editingCategory) {
         await axios.put(
-          `http://localhost:3000/api/v1/categories/${editingCategory._id}`,
+          `/api/v1/categories/${editingCategory._id}`,
           values
         );
         message.success("Category updated successfully 🎉");
       } else {
-        await axios.post("http://localhost:3000/api/v1/categories", values);
+        await axios.post("/api/v1/categories", values);
         message.success("Category created successfully 🎉");
       }
       fetchCategories();
