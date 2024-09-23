@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Tabs, Table, message, Input, Button, Form,Flex, Modal } from "antd";
+import { Tabs, Table, message, Input, Button, Form, Modal } from "antd";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFileArrowUp,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { ArrowLeftOutlined } from "@ant-design/icons";
@@ -15,7 +14,9 @@ const ManufacturerDetails = () => {
   const [manufacturer, setManufacturer] = useState(null);
   const [editingBrand, setEditingBrand] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isAddBrandModalVisible, setIsAddBrandModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [addBrandForm] = Form.useForm();
   const [isArchived, setIsArchived] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isEditingManufacturer, setIsEditingManufacturer] = useState(false);
@@ -25,15 +26,13 @@ const ManufacturerDetails = () => {
     const fetchManufacturerDetails = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
-          `/api/v1/manufacturer/${id}`
-        );
+        const response = await axios.get(`/api/v1/manufacturer/${id}`);
         setManufacturer(response.data);
         setIsArchived(response.data.isArchived);
         setBrandsList(response.data.brands);
       } catch (error) {
         message.error("Failed to fetch manufacturer details 😔");
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -52,7 +51,27 @@ const ManufacturerDetails = () => {
     }
     setIsModalVisible(true);
   };
+  const handleArchive = async () => {
+    try {
+      await axios.patch(`/api/v1/manufacturer/${id}/archive`);
+      setIsArchived(true);
+      message.success("Manufacturer archived successfully 🎉");
+    } catch (error) {
+      message.error("Failed to archive manufacturer 😔");
+    }
+  };
 
+  const handleUnarchive = async () => {
+    try {
+      await axios.patch(
+        `/api/v1/manufacturer/${id}/unarchive`
+      );
+      setIsArchived(false);
+      message.success("Manufacturer unarchived successfully 🎉");
+    } catch (error) {
+      message.error("Failed to unarchive manufacturer 😔");
+    }
+  };
   const handleSave = async () => {
     try {
       const values = form.getFieldsValue();
@@ -83,25 +102,23 @@ const ManufacturerDetails = () => {
     }
   };
 
-  const handleArchive = async () => {
+  const handleCreateNewBrand = async (values) => {
     try {
-      await axios.patch(`/api/v1/manufacturer/${id}/archive`);
-      setIsArchived(true);
-      message.success("Manufacturer archived successfully 🎉");
-    } catch (error) {
-      message.error("Failed to archive manufacturer 😔");
-    }
-  };
+      const newBrands = values.newBrandName.split(",").map((brand) => brand.trim());
+      const updatedBrands = [...manufacturer.brands, ...newBrands];
 
-  const handleUnarchive = async () => {
-    try {
-      await axios.patch(
-        `/api/v1/manufacturer/${id}/unarchive`
-      );
-      setIsArchived(false);
-      message.success("Manufacturer unarchived successfully 🎉");
+      await axios.put(`/api/v1/manufacturer/${id}`, {
+        ...manufacturer,
+        brands: updatedBrands,
+      });
+
+      setManufacturer((prev) => ({ ...prev, brands: updatedBrands }));
+      setBrandsList(updatedBrands);
+      message.success("New Brand added successfully! 🎉");
+      setIsAddBrandModalVisible(false);
+      addBrandForm.resetFields();
     } catch (error) {
-      message.error("Failed to unarchive manufacturer 😔");
+      message.error("Failed to add new brand 😔");
     }
   };
 
@@ -126,10 +143,6 @@ const ManufacturerDetails = () => {
     }
   };
 
-  const handleCreate = () => {
-    // Placeholder for the function to create a new brand
-  };
-
   const columns = [
     {
       title: "Brand",
@@ -149,7 +162,7 @@ const ManufacturerDetails = () => {
   ];
 
   return (
-    <Flex vertical flex={1} className="content">
+    <div className="content">
       <div className="intro">
         <Button
           icon={<ArrowLeftOutlined />}
@@ -160,7 +173,7 @@ const ManufacturerDetails = () => {
         </Button>
         <h2>Manufacturer Details</h2>
       </div>
-      <div className="details" style={{ marginTop: "20px" }}>
+      <div className="details">
         <div className="infoContainer">
           <div className="infoTitle">
             <div className="titleContent">
@@ -180,7 +193,7 @@ const ManufacturerDetails = () => {
               {isArchived ? (
                 <Button
                   className="unarchiveBtn"
-                  onClick={handleUnarchive}
+                  onClick={() => handleUnarchive()}
                   style={{ marginLeft: "10px" }}
                 >
                   Unarchive
@@ -188,7 +201,7 @@ const ManufacturerDetails = () => {
               ) : (
                 <Button
                   className="archiveBtn"
-                  onClick={handleArchive}
+                  onClick={() => handleArchive()}
                   style={{ marginLeft: "10px" }}
                 >
                   Archive
@@ -205,57 +218,71 @@ const ManufacturerDetails = () => {
           </div>
         </div>
       </div>
-      <div className="detailsTable">
-  <Tabs
-    defaultActiveKey="1"
-    className="table"
-    items={[
-      {
-        label: "Brands", 
-        key: "1",
-        children: (
-          <div>
-            <div className="searchBarContainer">
-              <Input
-                placeholder="Search Brands by name"
-                onChange={(e) => handleSearch(e.target.value)}
-                style={{ width: "100%" }}
-                className="searchBar"
-              />
-              <Button
-                type="primary"
-                className="archiveBtn"
-                onClick={handleCreate}
-              >
-                <FontAwesomeIcon
-                  icon={faFileArrowUp}
-                  size="lg"
-                  style={{ color: "#008162" }}
-                />
-                Bulk Upload Brand
-              </Button>
-              <Button
-                type="primary"
-                className="addBtn"
-                onClick={handleCreate}
-              >
-                Add New Brand
-              </Button>
-            </div>
 
-            <Table
-              dataSource={brandsList.map((brand) => ({ brand }))}
-              columns={columns}
-              loading={loading}
-              rowKey="brand"
-              pagination={{ position: ["bottomCenter"] }}
-            />
-          </div>
-        ),
-      },
-    ]}
-  />
-</div>
+      <div className="detailsTable">
+        <Tabs
+          defaultActiveKey="1"
+          className="table"
+          items={[
+            {
+              label: "Brands",
+              key: "1",
+              children: (
+                <div>
+                  <div className="searchBarContainer">
+                    <Input
+                      placeholder="Search Brands by name"
+                      onChange={(e) => handleSearch(e.target.value)}
+                      style={{ width: "100%" }}
+                      className="searchBar"
+                    />
+                    <Button
+                      type="primary"
+                      className="addBtn"
+                      onClick={() => setIsAddBrandModalVisible(true)}
+                    >
+                      Add New Brand
+                    </Button>
+                  </div>
+
+                  <Table
+                    dataSource={brandsList.map((brand) => ({ brand }))}
+                    columns={columns}
+                    loading={loading}
+                    rowKey="brand"
+                    pagination={{ position: ["bottomCenter"] }}
+                  />
+                </div>
+              ),
+            },
+          ]}
+        />
+      </div>
+
+      {/* Add New Brand Modal */}
+      <Modal
+        title="Add New Brand"
+        open={isAddBrandModalVisible}
+        onCancel={() => setIsAddBrandModalVisible(false)}
+        footer={null}
+      >
+        <Form form={addBrandForm} onFinish={handleCreateNewBrand}>
+          <Form.Item
+            name="newBrandName"
+            rules={[{ required: true, message: "Please enter the new brand name" }]}
+          >
+            <Input placeholder="Enter new brand name(s) separated by commas" />
+          </Form.Item>
+          <Form.Item className="concludeBtns">
+            <Button  className="deleteBtn" onClick={() => setIsAddBrandModalVisible(false)}>
+              Cancel
+            </Button>
+            <Button type="primary"  className="addBtn" htmlType="submit" style={{ marginLeft: "10px" }}>
+              Add
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
 
       <Modal
         title={isEditingManufacturer ? "Edit Manufacturer" : "Edit Brand"}
@@ -272,19 +299,17 @@ const ManufacturerDetails = () => {
             rules={[
               {
                 required: true,
-                message: isEditingManufacturer
-                  ? "Please enter the manufacturer name"
-                  : "Please enter the brand name",
+                message: `Please enter the ${
+                  isEditingManufacturer ? "manufacturer" : "brand"
+                } name`,
               },
             ]}
           >
             <Input
-              className="userInput"
-              placeholder={
-                isEditingManufacturer ? "Manufacturer Name" : "Brand Name"
-              }
+              placeholder={`Enter ${isEditingManufacturer ? "manufacturer" : "brand"} name`}
             />
           </Form.Item>
+
           <Form.Item className="concludeBtns">
             <Button
               className="editBtn"
@@ -302,7 +327,7 @@ const ManufacturerDetails = () => {
           </Form.Item>
         </Form>
       </Modal>
-    </Flex>
+    </div>
   );
 };
 

@@ -99,8 +99,8 @@ const ProductDetails = () => {
       >
         Dashboard
       </Button>
-      <h2>Product Not Found</h2>
-    </div>;
+      <h3 style={{marginTop:"20px"}}>loading product details...</h3>
+    </div>
     </Flex>
   }
 

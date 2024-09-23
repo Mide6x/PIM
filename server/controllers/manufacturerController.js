@@ -85,6 +85,20 @@ exports.updateManufacturer = async (req, res) => {
   }
 };
 
+exports.addBrandsToManufacturer = async (req, res) => {
+  try {
+    const manufacturer = await Manufacturer.findById(req.params.id);
+    if (!manufacturer) {
+      return res.status(404).json({ message: "Manufacturer not found 😔" });
+    }
+    manufacturer.brands = req.body.brands;
+    const updatedManufacturer = await manufacturer.save();
+    res.json(updatedManufacturer);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
 // Archive a manufacturer
 exports.archiveManufacturer = async (req, res) => {
   try {
