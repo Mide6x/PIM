@@ -178,9 +178,9 @@ const ManufacturerDetails = () => {
           <div className="infoTitle">
             <div className="titleContent">
               {manufacturer?.name}
-              <span className="status">
-                {isArchived ? "Archived" : "Active"}
-              </span>
+              
+                {isArchived ? <span className="archivedStatus">Archived </span> : <span className="activeStatus">Active</span>}
+             
             </div>
 
             <div className="buttonContainer">

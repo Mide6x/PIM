@@ -187,9 +187,17 @@ const Dashboard = () => {
       className: "nameListing",
     },
     {
-      title: "Weight (Kg)",
-      dataIndex: "weight",
-      key: "weight",
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text, record) => {
+        if (record.isArchived === true) {
+          return ( <span className="archivedStatus">Archived </span>)
+           
+        } else {
+          return <span className="activeStatus">Active</span>;
+        }
+      },
     },
     {
       title: "Actions",

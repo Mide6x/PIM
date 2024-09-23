@@ -37,7 +37,7 @@ const formatDate = (dateString) => {
   return date.toLocaleString("en-GB", options).replace(",", " ");
 };
 
-// Common column generator for manufacturers table
+
 const createColumns = (handleEdit, handleDelete, handleUnarchive = null) => [
   {
     title: "Name",
@@ -102,6 +102,7 @@ const MngManufacturers = () => {
   const [editingManufacturer, setEditingManufacturer] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeTab, setActiveTab] = useState("live");
+  
 
   const fetchManufacturers = async (search = "") => {
     setLoading(true);

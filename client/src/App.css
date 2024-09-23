@@ -149,13 +149,23 @@ h2 {
   align-items: center;
 }
 
-.status {
+.archivedStatus {
   padding: 10px;
   border-radius: 10px;
   margin-left: 10px;
   font-weight: lighter;
   background: #ffaa0028;
   color: #b76e00;
+  font-size: 13px !important;
+}
+
+.activeStatus {
+  padding: 10px;
+  border-radius: 10px;
+  margin-left: 10px;
+  font-weight: lighter;
+  background: #00ff8c28;
+  color: #00b771;
   font-size: 13px !important;
 }
 

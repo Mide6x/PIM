@@ -210,9 +210,7 @@ const CategoryDetails = () => {
           <div className="infoTitle">
             <div className="titleContent">
               {category?.name}
-              <span className="status">
-                {isArchived ? "Archived" : "Active"}
-              </span>
+                {isArchived ? <span className="archivedStatus">Archived </span> : <span className="activeStatus">Active</span>}
             </div>
 
             <div className="buttonContainer">
