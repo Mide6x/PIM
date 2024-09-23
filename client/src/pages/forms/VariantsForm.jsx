@@ -9,22 +9,24 @@ const VariantForm = ({ initialValues, onCancel, onOk }) => {
 
   useEffect(() => {
     if (userData && userData._id) {
+      console.log("Running useEffect, initialValues:", initialValues);
       if (initialValues) {
-        form.setFieldsValue({
-          ...initialValues,
-          subVariants: initialValues.subVariants.join(", "),
-        });
+        console.log("Setting form values from initialValues");
+        const subvariants = Array.isArray(initialValues.subvariants)
+          ? initialValues.subvariants.map((variant) => variant.name).join(", ")
+          : "";
+        form.setFieldsValue({ ...initialValues, subvariants });
       } else {
+        console.log("Resetting form fields");
         form.resetFields();
       }
     }
   }, [initialValues, form, userData]);
 
   const onFinish = (values) => {
-    values.subvariants = values.subVariants
+    values.subvariants = values.subvariants
       .split(",")
-      .map((item) => item.trim());
-
+      .map((item) => ({ name: item.trim() }));
     onOk(values);
   };
 
@@ -32,32 +34,38 @@ const VariantForm = ({ initialValues, onCancel, onOk }) => {
     <>
       {userData && (
         <Form form={form} onFinish={onFinish}>
-              <p className="formTitle">Variant Name</p>
+          <p className="formTitle">Variant Name</p>
           <Form.Item
             name="name"
-     
             rules={[
               { required: true, message: "Please input the variant name!" },
             ]}
           >
-            <Input  className="userInput" placeholder="Enter variant name (e.g. Color, Size)" />
+            <Input
+              className="userInput"
+              placeholder="Enter variant name (e.g. Color, Size)"
+            />
           </Form.Item>
-          <p className="formTitle">Sub-Variants</p>
+          <p className="formTitle">Attributes</p>
           <Form.Item
-            name="subVariants"
-          
+            name="subvariants"
             rules={[
-              { required: true, message: "Please input the sub-variants!" },
+              { required: true, message: "Please input the attributes!" },
             ]}
           >
-            <Input  className="userInput" placeholder="Enter sub-variants separated by commas (e.g. Red, Blue, Green)" />
+            <Input
+              className="userInput"
+              placeholder="Enter attributes (e.g. Red, Blue, Green)"
+            />
           </Form.Item>
           <Form.Item>
-            <Button onClick={onCancel}  className="editBtn">Cancel</Button>
+            <Button onClick={onCancel} className="editBtn">
+              Cancel
+            </Button>
             <Button
               type="primary"
               htmlType="submit"
-               className="addBtn"
+              className="addBtn"
               style={{ marginLeft: "10px" }}
             >
               Save
@@ -72,7 +80,7 @@ const VariantForm = ({ initialValues, onCancel, onOk }) => {
 VariantForm.propTypes = {
   initialValues: PropTypes.shape({
     name: PropTypes.string,
-    subVariants: PropTypes.arrayOf(PropTypes.string),
+    subvariants: PropTypes.arrayOf(PropTypes.object),
   }),
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,

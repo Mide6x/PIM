@@ -1,9 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { Button, Table, Modal, Flex, message, Space } from "antd";
+import { Button, Table, Modal, Flex, message, Space, Upload } from "antd";
 import axios from "axios";
 import VariantForm from "./forms/VariantsForm";
 import useAuth from "../contexts/useAuth";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const useVariants = (userId, setLoading) => {
   const [variants, setVariants] = useState([]);
@@ -35,12 +38,12 @@ const useVariants = (userId, setLoading) => {
   return { variants, fetchVariants };
 };
 
-
 const handleApiRequest = async (requestType, url, payload = null) => {
   try {
-    const response = requestType === "delete"
-      ? await axios.delete(url)
-      : await axios[requestType](url, payload);
+    const response =
+      requestType === "delete"
+        ? await axios.delete(url)
+        : await axios[requestType](url, payload);
     return response.data;
   } catch (error) {
     throw new Error(error.response ? error.response.data : error.message);
@@ -73,7 +76,9 @@ const ManageVariants = () => {
 
     try {
       await handleApiRequest(requestType, url, payload);
-      message.success(editingVariant ? "Variant updated 🎉" : "Variant created 🎉");
+      message.success(
+        editingVariant ? "Variant updated 🎉" : "Variant created 🎉"
+      );
       fetchVariants();
       setIsModalVisible(false);
     } catch (error) {
@@ -92,14 +97,52 @@ const ManageVariants = () => {
     }
   };
 
+  const handleUpload = async (info) => {
+    const file = info.file;
+    if (!file || !file.type.includes("spreadsheetml.sheet")) {
+      message.error("Please upload a valid Excel file. 🤔");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const parsedData = XLSX.utils.sheet_to_json(ws);
+        const variantsToSave = parsedData.map((item) => ({
+          name: item["Variants"],
+          brands: item["Attributes"]
+            ? item["Attributes"].split(",").map((brand) => brand.trim())
+            : [],
+        }));
+        await handleSaveVariant(variantsToSave);
+        fetchVariants();
+      } catch (error) {
+        message.error("Failed to process the Excel file. 😔");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const handleDownload = async () => {
+    try {
+      const response = await fetch("/BulkUploadVariants.xlsx");
+      if (!response.ok) throw new Error("File not found");
+      const blob = await response.blob();
+      saveAs(blob, "BulkUploadVariants.xlsx");
+    } catch (error) {
+      message.error(`Failed to download template: ${error.message} 😔`);
+    }
+  };
+
   const columns = [
     {
-      title: "Variant Name",
+      title: "Variant",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Sub-Variants",
+      title: "Attributes",
       dataIndex: "subvariants",
       key: "subVariants",
       render: (subVariants) =>
@@ -123,32 +166,54 @@ const ManageVariants = () => {
     <Flex vertical flex={1} className="content">
       <div className="intro">
         <h2>Manage Variants</h2>
-        <p className="aboutPage">Create custom variants to provide more product information</p>
+        <p className="aboutPage" style={{ marginBottom: "10px" }}>
+          Create custom variants to provide more product information
+        </p>
         <div className="searchBarContainer">
-        <Button type="primary" className="addBtn" onClick={() => handleModalOpen()}>Add Variant</Button>
-      </div>
+          <Button className="addBtn" onClick={handleDownload}>
+            Download Template
+          </Button>
+          <Upload beforeUpload={() => false} onChange={handleUpload}>
+            <Button className="archiveBtn">
+              <FontAwesomeIcon
+                size="lg"
+                style={{ color: "#008162" }}
+                icon={faFileArrowUp}
+              />{" "}
+              Bulk Upload
+            </Button>
+          </Upload>
+          <Button
+            type="primary"
+            className="addBtn"
+            onClick={() => handleModalOpen()}
+          >
+            Add Single Variant
+          </Button>
+        </div>
       </div>
       <div className="details">
-      <Table
-        columns={columns}
-        dataSource={variants}
-        loading={loading}
-        rowKey="_id"
-         className="table"
-        pagination={{ position: ["bottomCenter"] }}
-      />
-      <Modal
-        title={editingVariant ? "Edit Variant" : "Create Variant"}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
-        <VariantForm
-          initialValues={editingVariant}
-          onCancel={() => setIsModalVisible(false)}
-          onOk={handleSaveVariant}
+        <Table
+          columns={columns}
+          dataSource={variants}
+          loading={loading}
+          rowKey="_id"
+          className="table"
+          pagination={{ position: ["bottomCenter"] }}
         />
-      </Modal></div>
+        <Modal
+          title={editingVariant ? "Edit Variant" : "Create Variant"}
+          open={isModalVisible}
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+        >
+          <VariantForm
+            initialValues={editingVariant}
+            onCancel={() => setIsModalVisible(false)}
+            onOk={handleSaveVariant}
+          />
+        </Modal>
+      </div>
     </Flex>
   );
 };
