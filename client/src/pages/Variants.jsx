@@ -73,7 +73,7 @@ const ManageVariants = () => {
       : "/api/v1/variants";
     const requestType = editingVariant ? "put" : "post";
     const payload = { ...values, createdBy };
-
+  
     try {
       await handleApiRequest(requestType, url, payload);
       message.success(
@@ -83,9 +83,11 @@ const ManageVariants = () => {
       setIsModalVisible(false);
     } catch (error) {
       message.error("Failed to save variant 😔");
-      console.error("Error saving variant:", error.message);
+      // More detailed logging of the error object
+      console.error("Error saving variant:", error.response || error.message || error);
     }
   };
+  
 
   const handleDelete = async (id) => {
     try {

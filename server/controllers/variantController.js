@@ -17,36 +17,30 @@ exports.getVariants = async (req, res, next) => {
 
 // @desc    Create a new variant
 // @route   POST /api/v1/variants
-exports.createVariant = async (req, res, next) => {
+exports.createVariant = async (req, res) => {
   try {
-    console.log(req.body);
-
     const { name, subvariants, createdBy } = req.body;
-    const subVariantsArray = Array.isArray(subvariants) ? subvariants : [];
 
-    const existingVariant = await Variant.findOne({ name: name.trim() });
-    if (existingVariant) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Variant with this name already exists.',
-      });
-    }
+    // Correctly access the name property for each subvariant before trimming
+    const trimmedSubvariants = subvariants.map((sub) => ({
+      ...sub,
+      name: sub.name.trim(),  // Trim the name of each subvariant
+    }));
 
-    const newVariant = await Variant.create({
+    const newVariant = new Variant({
       name: name.trim(),
-      subvariants: subVariantsArray.map((sub) => ({ name: sub.trim() })),
-      createdBy: createdBy,
+      subvariants: trimmedSubvariants,
+      createdBy,
     });
 
-    res.status(201).json({
-      status: 'success',
-      data: newVariant,
-    });
+    await newVariant.save();
+    res.status(201).json({ success: true, data: newVariant });
   } catch (error) {
-    console.error('Error creating variant:', error);
-    next(error);
+    console.error("Error creating variant:", error);
+    res.status(500).json({ success: false, message: "Error creating variant", error });
   }
 };
+
 
 // @desc    Update a variant
 // @route   PUT /api/v1/variants/:id
